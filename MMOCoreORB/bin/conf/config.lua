@@ -65,8 +65,8 @@ LoginRequiredVersion = "20050408-18:00"
 
 MantisHost = "127.0.0.1"
 MantisPort = 3306
-MantisName = "swgemu"
-MantisUser = "root"
+MantisName = "root"
+MantisUser = "swgemu"
 MantisPass = "res16"
 MantisPrfx = "mantis_" -- The prefix for your mantis tables.
 
