@@ -42,3 +42,6 @@ includeFile("lair/serverobjects.lua")
 
 -- Outfits
 includeFile("outfits/serverobjects.lua")
+
+--Jedi Trainers Customized (12/30/16)
+includeFile("jedi_trainers/serverobjects.lua")
