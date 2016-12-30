@@ -1526,25 +1526,37 @@ object_tangible_terminal_terminal_character_builder = object_tangible_terminal_s
 		},
 		"Items",
 		{
-			--"Attachments",
-			--{
-			--	"Armor Attachment", "object/tangible/gem/armor.iff",
-			--	"Clothing Attachment", "object/tangible/gem/clothing.iff",	
-			--},
+			
+			"Admin Clothing Items",
+			{
+				"Robe S01", "object/tangible/wearables/robe/robe_s01.iff",
+				"Robe S04", "object/tangible/wearables/robe/robe_s04.iff",
+				"Robe S05", "object/tangible/wearables/robe/robe_s05.iff",
+				"Robe S05_h1", "object/tangible/wearables/robe/robe_s05_h1.iff",
+				"Robe s12", "object/tangible/wearables/robe/robe_s12.iff",
+				"Robe S18", "object/tangible/wearables/robe/robe_s18.iff",
+				"Robe S27", "object/tangible/wearables/robe/robe_s27.iff",
+			
+			}
+			"Attachments",
+			{
+				"Armor Attachment", "object/tangible/gem/armor.iff",
+				"Clothing Attachment", "object/tangible/gem/clothing.iff",	
+			},
 			"Armor",
 			{
-			--	"Bone Armor",
-			--	{
-			--		"Bone Left Bicep", "object/tangible/wearables/armor/bone/armor_bone_s01_bicep_l.iff",
-			--		"Bone Right Bicep", "object/tangible/wearables/armor/bone/armor_bone_s01_bicep_r.iff",
-			--		"Bone Boots", "object/tangible/wearables/armor/bone/armor_bone_s01_boots.iff",
-			--		"Bone Left Bracer", "object/tangible/wearables/armor/bone/armor_bone_s01_bracer_l.iff",
-			--		"Bone Right Bracer", "object/tangible/wearables/armor/bone/armor_bone_s01_bracer_r.iff",
-			--		"Bone Chest Plate", "object/tangible/wearables/armor/bone/armor_bone_s01_chest_plate.iff",
-			--		"Bone Gloves", "object/tangible/wearables/armor/bone/armor_bone_s01_gloves.iff",
-			--		"Bone Helmet", "object/tangible/wearables/armor/bone/armor_bone_s01_helmet.iff",
-			--		"Bone Leggings", "object/tangible/wearables/armor/bone/armor_bone_s01_leggings.iff"
-			--	},
+				"Bone Armor",
+				{
+					"Bone Left Bicep", "object/tangible/wearables/armor/bone/armor_bone_s01_bicep_l.iff",
+					"Bone Right Bicep", "object/tangible/wearables/armor/bone/armor_bone_s01_bicep_r.iff",
+					"Bone Boots", "object/tangible/wearables/armor/bone/armor_bone_s01_boots.iff",
+					"Bone Left Bracer", "object/tangible/wearables/armor/bone/armor_bone_s01_bracer_l.iff",
+					"Bone Right Bracer", "object/tangible/wearables/armor/bone/armor_bone_s01_bracer_r.iff",
+					"Bone Chest Plate", "object/tangible/wearables/armor/bone/armor_bone_s01_chest_plate.iff",
+					"Bone Gloves", "object/tangible/wearables/armor/bone/armor_bone_s01_gloves.iff",
+					"Bone Helmet", "object/tangible/wearables/armor/bone/armor_bone_s01_helmet.iff",
+					"Bone Leggings", "object/tangible/wearables/armor/bone/armor_bone_s01_leggings.iff"
+				},
 				"Ithorian Armor",
 				{
 					"Ithorian Sentinel",
