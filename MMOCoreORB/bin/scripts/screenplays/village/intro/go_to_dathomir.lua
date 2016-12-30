@@ -7,7 +7,7 @@ GoToDathomir = GoToLocation:new {
 	taskName = "GoToDathomir",
 	-- GoToLocation properties
 	waypointDescription = "@quest/force_sensitive/intro:goto_dath_sum",
-	spawnPoint = { x = 5306, y = -4145 },
+	spawnPoint = { x = 6094, y = -4145 },
 	spawnPlanet = "dathomir",
 	spawnRadius = 128,
 	onFailedSpawn = nil,
@@ -17,38 +17,34 @@ GoToDathomir = GoToLocation:new {
 
 -- Event handler for the enter active area event.
 -- The event will complete the task.
--- @param pPlayer pointer to the creature object of the player.
-function GoToDathomir:onEnteredActiveArea(pPlayer)
-	if (pPlayer == nil) then
+-- @param pCreatureObject pointer to the creature object of the player.
+function GoToDathomir:onEnteredActiveArea(pCreatureObject)
+	if (pCreatureObject == nil) then
 		return
 	end
 
-	QuestManager.completeQuest(pPlayer, QuestManager.quests.FS_VILLAGE_ELDER)
-	self:finish(pPlayer)
+	QuestManager.completeQuest(pCreatureObject, QuestManager.quests.FS_VILLAGE_ELDER)
+	self:finish(pCreatureObject)
 end
 
 -- Event handler for the onSuccessfulSpawn.
 -- The event will activate the quest.
--- @param pPlayer pointer to the creature object of the player.
-function GoToDathomir:onSuccessfulSpawn(pPlayer)
-	if (pPlayer == nil) then
+-- @param pCreatureObject pointer to the creature object of the player.
+function GoToDathomir:onSuccessfulSpawn(pCreatureObject)
+	if (pCreatureObject == nil) then
 		return
 	end
 
-	local pGhost = CreatureObject(pPlayer):getPlayerObject()
+	QuestManager.activateQuest(pCreatureObject, QuestManager.quests.FS_VILLAGE_ELDER)
+	CreatureObject(pCreatureObject):sendSystemMessage("@quest/force_sensitive/intro:force_sensitive")
+	
+	ObjectManager.withCreaturePlayerObject(pCreatureObject, function(playerObject)
+		if (not playerObject:isJedi()) then
+			playerObject:setJediState(1)
+		end
+	end)
 
-	if (pGhost == nil) then
-		return
-	end
-
-	QuestManager.activateQuest(pPlayer, QuestManager.quests.FS_VILLAGE_ELDER)
-	CreatureObject(pPlayer):sendSystemMessage("@quest/force_sensitive/intro:force_sensitive")
-
-	if (not PlayerObject(pGhost):isJedi()) then
-		PlayerObject(pGhost):setJediState(1)
-	end
-
-	awardSkill(pPlayer, "force_title_jedi_novice")
+	awardSkill(pCreatureObject, "force_title_jedi_novice")
 end
 
 return GoToDathomir
