@@ -589,3 +589,8 @@ includeFile("record_keepers/record_keepers.lua")
 --Tests
 includeFile("tests/tests.lua")
 
+--Buff Terminals Around Cities, etc.
+includeFile("buffterminals/buff_terms.lua")
+
+
+
