@@ -1,7 +1,7 @@
 qa = {
 	level = 13,
 	name = "qa",
-	tag = "SWG-Resurrection-QA",
+	tag = "SWG Resurrection QA",
 	skills = {
 		"admin_base",
 		"admin_debug_01",
