@@ -1535,13 +1535,13 @@ object_tangible_terminal_terminal_character_builder = object_tangible_terminal_s
 				"Robe S05_h1", "object/tangible/wearables/robe/robe_s05_h1.iff",
 				"Robe s12", "object/tangible/wearables/robe/robe_s12.iff",
 				"Robe S18", "object/tangible/wearables/robe/robe_s18.iff",
-				"Robe S27", "object/tangible/wearables/robe/robe_s27.iff",
+				"Robe S27", "object/tangible/wearables/robe/robe_s27.iff"
 			
-			}
+			},
 			"Attachments",
 			{
 				"Armor Attachment", "object/tangible/gem/armor.iff",
-				"Clothing Attachment", "object/tangible/gem/clothing.iff",	
+				"Clothing Attachment", "object/tangible/gem/clothing.iff"	
 			},
 			"Armor",
 			{
