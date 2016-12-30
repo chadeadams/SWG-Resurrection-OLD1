@@ -52,7 +52,7 @@ object_draft_schematic_vehicle_civilian_speeder_bike = object_draft_schematic_ve
    size = 1, 
 
    xpType = "crafting_general", 
-   xp = 1600, 
+   xp = 1000, 
 
    assemblySkill = "general_assembly", 
    experimentingSkill = "general_experimentation", 
@@ -66,7 +66,8 @@ object_draft_schematic_vehicle_civilian_speeder_bike = object_draft_schematic_ve
    ingredientTitleNames = {"vehicle_body", "structural_frame"},
    ingredientSlotType = {0, 0},
    resourceTypes = {"metal_nonferrous", "metal_ferrous"},
-   resourceQuantities = {1200, 4800},
+   --resourceQuantities = {600, 2200},
+   resourceQuantities = {300, 1600},
    contribution = {100, 100},
 
 

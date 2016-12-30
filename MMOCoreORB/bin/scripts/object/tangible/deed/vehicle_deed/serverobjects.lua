@@ -55,3 +55,13 @@ includeFile("tangible/deed/vehicle_deed/speederbike_swoop_deed.lua")
 includeFile("tangible/deed/vehicle_deed/vehicle_deed_base.lua")
 includeFile("tangible/deed/vehicle_deed/vehicular_prototype_bike_deed.lua")
 includeFile("tangible/deed/vehicle_deed/vehicular_prototype_deed.lua")
+
+--Added vehicles
+includeFile("tangible/deed/vehicle_deed/sith_speeder.lua")
+includeFile("tangible/deed/vehicle_deed/barc_speeder_deed.lua")
+includeFile("tangible/deed/vehicle_deed/barc_speeder_imperial_deed.lua")
+includeFile("tangible/deed/vehicle_deed/barc_speeder_rebel_deed.lua")
+includeFile("tangible/deed/vehicle_deed/pod_racer_one_deed.lua")
+includeFile("tangible/deed/vehicle_deed/pod_racer_two_deed.lua")
+
+

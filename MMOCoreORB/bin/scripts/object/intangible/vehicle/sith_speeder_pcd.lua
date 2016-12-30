@@ -41,40 +41,8 @@
 --this exception also makes it possible to release a modified version 
 
 
-object_draft_schematic_vehicle_civilian_speeder_bike_swoop = object_draft_schematic_vehicle_civilian_shared_speeder_bike_swoop:new {
-
-   templateType = DRAFTSCHEMATIC,
-
-   customObjectName = "Swoop",
-
-   craftingToolTab = 16, -- (See DraftSchematicObjectTemplate.h)
-   complexity = 20, 
-   size = 1, 
-
-   xpType = "crafting_general", 
-   xp = 1100, 
-
-   assemblySkill = "general_assembly", 
-   experimentingSkill = "general_experimentation", 
-   customizationSkill = "clothing_customization", 
-
-   customizationOptions = {},
-   customizationStringNames = {},
-   customizationDefaults = {},
-
-   ingredientTemplateNames = {"craft_vehicle_ingredients_n", "craft_vehicle_ingredients_n"},
-   ingredientTitleNames = {"vehicle_body", "structural_frame"},
-   ingredientSlotType = {0, 0},
-   resourceTypes = {"metal_nonferrous", "metal_ferrous"},
-   --resourceQuantities = {1600, 6400},
-   resourceQuantities = {800, 3400},
-   contribution = {100, 100},
-
-
-   targetTemplate = "object/tangible/deed/vehicle_deed/speederbike_swoop_deed.iff",
-
-   additionalTemplates = {
-             }
-
+object_intangible_vehicle_sith_speeder_pcd = object_intangible_vehicle_shared_sith_speeder_pcd:new {
+	customName = "Sith Speeder",
 }
-ObjectTemplates:addTemplate(object_draft_schematic_vehicle_civilian_speeder_bike_swoop, "object/draft_schematic/vehicle/civilian/speeder_bike_swoop.iff")
+
+ObjectTemplates:addTemplate(object_intangible_vehicle_sith_speeder_pcd, "object/intangible/vehicle/sith_speeder_pcd.iff")
