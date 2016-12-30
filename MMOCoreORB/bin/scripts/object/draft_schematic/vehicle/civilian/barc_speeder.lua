@@ -41,18 +41,18 @@
 --this exception also makes it possible to release a modified version 
 
 
-object_draft_schematic_vehicle_civilian_speeder_bike_swoop = object_draft_schematic_vehicle_civilian_shared_speeder_bike_swoop:new {
+object_draft_schematic_vehicle_civilian_barc_speeder = object_draft_schematic_vehicle_civilian_shared_barc_speeder:new {
 
    templateType = DRAFTSCHEMATIC,
 
-   customObjectName = "Swoop",
+   customObjectName = "BARC Speeder",
 
-   craftingToolTab = 16, -- (See DraftSchematicObjectTemplate.h)
-   complexity = 20, 
+   craftingToolTab = 16, -- (See DraftSchemticImplementation.h)
+   complexity = 25, 
    size = 1, 
 
    xpType = "crafting_general", 
-   xp = 1100, 
+   xp = 1800, 
 
    assemblySkill = "general_assembly", 
    experimentingSkill = "general_experimentation", 
@@ -62,19 +62,19 @@ object_draft_schematic_vehicle_civilian_speeder_bike_swoop = object_draft_schema
    customizationStringNames = {},
    customizationDefaults = {},
 
-   ingredientTemplateNames = {"craft_vehicle_ingredients_n", "craft_vehicle_ingredients_n"},
-   ingredientTitleNames = {"vehicle_body", "structural_frame"},
-   ingredientSlotType = {0, 0},
-   resourceTypes = {"metal_nonferrous", "metal_ferrous"},
-   --resourceQuantities = {1600, 6400},
-   resourceQuantities = {800, 3400},
-   contribution = {100, 100},
+   ingredientTemplateNames = {"craft_vehicle_ingredients_n", "craft_vehicle_ingredients_n", "craft_item_ingredients_n"},
+   ingredientTitleNames = {"vehicle_body", "structural_frame", "power_motor"},
+   ingredientSlotType = {0, 0, 1},
+   resourceTypes = {"metal_nonferrous", "metal_ferrous", "object/tangible/loot/simple_kit/shared_motor_small_blue.iff"},
+   resourceQuantities = {22000, 34000, 1},
+   contribution = {100, 100, 100},
 
 
-   targetTemplate = "object/tangible/deed/vehicle_deed/speederbike_swoop_deed.iff",
+   targetTemplate = "object/tangible/deed/vehicle_deed/barc_speeder_deed.iff",
 
    additionalTemplates = {
+	      "object/tangible/deed/vehicle_deed/shared_barc_speeder_deed.iff",
              }
 
 }
-ObjectTemplates:addTemplate(object_draft_schematic_vehicle_civilian_speeder_bike_swoop, "object/draft_schematic/vehicle/civilian/speeder_bike_swoop.iff")
+ObjectTemplates:addTemplate(object_draft_schematic_vehicle_civilian_barc_speeder, "object/draft_schematic/vehicle/civilian/barc_speeder.iff")
