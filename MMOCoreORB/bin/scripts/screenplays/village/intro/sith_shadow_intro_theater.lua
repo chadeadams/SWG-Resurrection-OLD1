@@ -40,15 +40,10 @@ SithShadowIntroTheater = GoToTheater:new {
 	waypointDescription = "@quest/force_sensitive/intro:theater_sum",
 	mobileList = {
 		{ template = "sith_shadow_outlaw_mission", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 },
-		{ template = "sith_shadow_outlaw_mission", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 },
-		{ template = "sith_shadow_outlaw_mission", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 },
-		{ template = "sith_shadow_outlaw_mission", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 },
-		{ template = "sith_shadow_outlaw_mission", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 },
-		{ template = "mellichae", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 }
+		{ template = "sith_shadow_outlaw_mission", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 }
 	},
-
 	despawnTime = 2 * 60* 60* 1000, -- 2 hours
-	activeAreaRadius = 85,
+	activeAreaRadius = 64,
 	onFailedSpawn = nil,
 	onSuccessfulSpawn = nil,
 	onEnteredActiveArea = nil
@@ -134,6 +129,31 @@ function SithShadowIntroTheater:onSuccessfulSpawn(pCreatureObject, spawnedSithSh
 	createObserver(OBJECTDESTRUCTION, self.taskName, "onPlayerKilled", pCreatureObject)
 end
 
+-- Handle the event PLAYERKILLED.
+-- @param pCreatureObject pointer to the creature object of the killed player.
+-- @param pKiller pointer to the creature object of the killer.
+-- @param noting unused variable for the default footprint of event handlers.
+-- @return 1 if the player was killed by one of the sith shadows, otherwise 0 to keep the observer.
+function SithShadowIntroTheater:onPlayerKilled(pCreatureObject, pKiller, nothing)
+	if (pCreatureObject == nil or pKiller == nil) then
+		return 0
+	end
+
+	Logger:log("Player was killed.", LT_INFO)
+	if SpawnMobiles.isFromSpawn(pCreatureObject, SithShadowIntroTheater.taskName, pKiller) then
+		OldManIntroEncounter:removeForceCrystalFromPlayer(pCreatureObject)
+		spatialChat(pKiller, SITH_SHADOW_MILITARY_TAKE_CRYSTAL)
+		QuestManager.resetQuest(pCreatureObject, QuestManager.quests.TWO_MILITARY)
+		QuestManager.resetQuest(pCreatureObject, QuestManager.quests.LOOT_DATAPAD_1)
+		QuestManager.resetQuest(pCreatureObject, QuestManager.quests.GOT_DATAPAD)
+		QuestManager.resetQuest(pCreatureObject, QuestManager.quests.FS_THEATER_CAMP)
+		QuestManager.resetQuest(pCreatureObject, QuestManager.quests.LOOT_DATAPAD_2)
+		QuestManager.resetQuest(pCreatureObject, QuestManager.quests.GOT_DATAPAD_2)
+		return 1
+	end
+
+	return 0
+end
 
 -- Handling of the activation of the theater waypoint datapad.
 -- @param pSceneObject pointer to the datapad object.
@@ -141,25 +161,10 @@ end
 function SithShadowIntroTheater:useTheaterDatapad(pSceneObject, pCreatureObject)
 	Logger:log("Player used the looted theater datapad.", LT_INFO)
 	if QuestManager.hasCompletedQuest(pCreatureObject, QuestManager.quests.GOT_DATAPAD_2) then
-
 		CreatureObject(pCreatureObject):sendSystemMessage(READ_DISK_2_STRING)
 
 		SceneObject(pSceneObject):destroyObjectFromWorld()
 		SceneObject(pSceneObject):destroyObjectFromDatabase()
-  
-ObjectManager.withCreatureObject(pCreatureObject, function(creatureObject)
-			creatureObject:sendSystemMessage(READ_DISK_2_STRING)
-			OldManEncounter:removeForceCrystalFromPlayer(pCreatureObject)
-			
-		awardSkill(pCreatureObject, "force_title_jedi_novice")	
-		end)
-			ObjectManager.withInventoryPointer(pCreatureObject, function(pInventory)
-			createLoot(pInventory, "color_crystals_rare", 0, true)
-		end)
-		ObjectManager.withSceneObject(pSceneObject, function(sceneObject)
-			sceneObject:destroyObjectFromWorld()
-			sceneObject:destroyObjectFromDatabase()
-		end)
 
 		QuestManager.completeQuest(pCreatureObject, QuestManager.quests.LOOT_DATAPAD_2)
 		GoToDathomir:start(pCreatureObject)
@@ -183,4 +188,3 @@ function SithShadowIntroTheater:onLoggedIn(pCreatureObject)
 end
 
 return SithShadowIntroTheater
-
