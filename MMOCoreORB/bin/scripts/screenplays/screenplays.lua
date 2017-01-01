@@ -595,5 +595,9 @@ includeFile("buffterminals/buff_terms.lua")
 --Jedi Trainers at Jedi Temple
 includeFile("jedi_trainers/jedi_trainers.lua")
 
+--Black Market Merchants
+includeFile("black_market/sp_cornet_bm.lua")
+includeFile("black_market/sp_theed_bm.lua")
+
 
 
