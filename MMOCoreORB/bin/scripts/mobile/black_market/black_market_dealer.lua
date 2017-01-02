@@ -1,6 +1,6 @@
 black_market_dealer = Creature:new {
 	objectName = "@mob/creature_names:commoner",
-	customName = "Black Market Dealer",
+	customName = "Shady Black Market Dealer",
 	socialGroup = "townsperson",
 	pvpFaction = "townsperson",
 	faction = "townsperson",
