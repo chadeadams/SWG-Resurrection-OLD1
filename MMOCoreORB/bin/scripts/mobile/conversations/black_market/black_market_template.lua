@@ -68,7 +68,7 @@ bm_merch_impbarc = ConvoScreen:new {
 bm_merch_rebbarc = ConvoScreen:new {
 	id = "RebBarc",
 	leftDialog = "",
-	customDialogText = "Rebel Labeled BARC Speeder. We stole this, er bought, it from the Rebel Base on Dantooine. Might avoid the Rebel inventory keepers, though.",
+	customDialogText = "Rebel Labeled BARC Speeder. We stole this, er bought this, from the Rebel Base on Dantooine. You might outta' avoid the Rebel inventory keepers, though.",
 	stopConversation = "true",
 	options = {	
 	}
@@ -107,7 +107,7 @@ black_market_template:addScreen(bm_merch_deny_quest);
 bm_merch_insufficient_funds = ConvoScreen:new {
 	id = "insufficient_funds",
 	leftDialog = "",
-	customDialogText = "You're Mind tricks won't work here... bring me some money!",
+	customDialogText = "Your mind tricks won't work here... bring me some money!",
 	stopConversation = "true",
 	options = {	
 	}
