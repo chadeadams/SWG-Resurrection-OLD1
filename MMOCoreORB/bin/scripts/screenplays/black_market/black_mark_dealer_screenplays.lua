@@ -5,7 +5,7 @@ sp_black_market_dealers = ScreenPlay:new {
 	states = {}, 
 }
 
-registerScreenPlay("sp_bm_dealers", true)
+registerScreenPlay("sp_black_market_dealers", true)
 
 function sp_black_market_dealers:start() 
 	-- Spawn our characters for dealers and their locations with pointers.
