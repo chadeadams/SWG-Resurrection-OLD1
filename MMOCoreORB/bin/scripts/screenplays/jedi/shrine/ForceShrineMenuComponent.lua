@@ -92,17 +92,17 @@ function ForceShrineMenuComponent:doMeditate(pObject, pPlayer)
         --Unlock Padawan / check to see if they have iniate rank from killing mellachie
         if (CreatureObject(pPlayer):hasSkill("force_title_jedi_rank_01")) then
              --[  awardSkill(pPlayer, "force_title_jedi_rank_02")
-               CreatureObject(pPlayer):playEffect("clienteffect/trap_electric_01.cef", "")
-	           CreatureObject(pPlayer):playMusicMessage("sound/music_become_jedi.snd")
-               CreatureObject(pPlayer):sendSystemMessage("@quest/force_sensitive/intro:completed_padawan") 
+              -- CreatureObject(pPlayer):playEffect("clienteffect/trap_electric_01.cef", "")
+	          -- CreatureObject(pPlayer):playMusicMessage("sound/music_become_jedi.snd")
+              -- CreatureObject(pPlayer):sendSystemMessage("@quest/force_sensitive/intro:completed_padawan") 
               
                 --Give Jedi Padawan Robes
-                if not (self:hasFullInventory(pPlayer)) then
-		        local pInventory = CreatureObject(pPlayer):getSlottedObject("inventory")
-		        local pItem = giveItem(pInventory, self.jediPadawanRobe, -1)
-	            else
-		            CreatureObject(pPlayer):sendSystemMessage("@jedi_spam:inventory_full_jedi_robe")
-	            end
+               -- if not (self:hasFullInventory(pPlayer)) then
+		       -- local pInventory = CreatureObject(pPlayer):getSlottedObject("inventory")
+		       -- local pItem = giveItem(pInventory, self.jediPadawanRobe, -1)
+	           -- else
+		          --  CreatureObject(pPlayer):sendSystemMessage("@jedi_spam:inventory_full_jedi_robe")
+	            --end
                --]
                 --Unlock Jedi now                
                 unlockJediPadawan(pPlayer)
