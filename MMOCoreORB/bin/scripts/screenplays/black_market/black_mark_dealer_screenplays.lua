@@ -11,8 +11,9 @@ function sp_black_market_dealers:start()
 	-- Spawn our characters for dealers and their locations with pointers.
 	local pLarry1 = spawnMobile("corellia", "black_market_dealer", 1, -121, 28, -4696, -1, 0 )
 	local pLarry2 = spawnMobile("naboo", "black_market_dealer", 1, -4805, 6, 4141, -1, 0 )
+    -- Add New Characters Above Here
+end 
 
- 
 black_market_convo_handler = Object:new {
 	tstring = "myconversation"
  }
