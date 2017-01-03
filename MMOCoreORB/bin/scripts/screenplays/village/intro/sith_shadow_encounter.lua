@@ -167,7 +167,11 @@ function SithShadowEncounter:taskFinish(pPlayer)
 	end
 
 	if (QuestManager.hasCompletedQuest(pPlayer, QuestManager.quests.GOT_DATAPAD) and FsIntro:getCurrentStep(pPlayer) == 4) then
-		FsIntro:setCurrentStep(pPlayer, 5)
+            --Additions for Custom Jedi - Nugax 1/3/17
+        local pGhost = CreatureObject(pPlayer):getPlayerObject()
+        PlayerObject(pGhost):setJediState(1)
+        awardSkill(pPlayer, "force_title_jedi_novice")		
+        FsIntro:setCurrentStep(pPlayer, 5)
 	elseif not OldManIntroEncounter:hasForceCrystal(pPlayer) then
 		FsIntro:startStepDelay(pPlayer, 1)
 	end
