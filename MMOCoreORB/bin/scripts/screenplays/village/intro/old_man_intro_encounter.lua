@@ -158,7 +158,10 @@ function OldManIntroEncounter:taskFinish(pPlayer)
 	end
 	
 	local oldManVisits = readScreenPlayData(pPlayer, "VillageJediProgression", "FsIntroOldManVisits")
-	
+
+	--Award novice Jedi Box
+    awardSkill(pPlayer, "force_title_jedi_novice")	
+
 	if (oldManVisits == "") then
 		oldManVisits = 1
 	else
