@@ -92,9 +92,11 @@ function ForceShrineMenuComponent:doMeditate(pObject, pPlayer)
         --Unlock Padawan / check to see if they have iniate rank from killing mellachie
         if (CreatureObject(pPlayer):hasSkill("force_title_jedi_rank_01")) then
                awardSkill(pPlayer, "force_title_jedi_rank_02")
+               PlayerObject(pGhost):setJediState(1)
                CreatureObject(pPlayer):playEffect("clienteffect/trap_electric_01.cef", "")
 	           CreatureObject(pPlayer):playMusicMessage("sound/music_become_jedi.snd")
                PlayerObject(pGhost):setJediState(2)
+               CreatureObject(pPlayer):sendSystemMessage("@quest/force_sensitive/intro:completed_padawan") 
               
                 --Give Jedi Padawan Robes
                 if not (self:hasFullInventory(pPlayer)) then
@@ -103,7 +105,7 @@ function ForceShrineMenuComponent:doMeditate(pObject, pPlayer)
 	            else
 		            CreatureObject(pPlayer):sendSystemMessage("@jedi_spam:inventory_full_jedi_robe")
 	            end
-               CreatureObject(pPlayer):sendSystemMessage("You have unlocked your Jedi and received Jedi Padawan Robes! Please find the Jedi trainers located around the Jedi Temple to continue your training!")
+               
                else
                 CreatureObject(pPlayer):sendSystemMessage(genericMessage)
               end

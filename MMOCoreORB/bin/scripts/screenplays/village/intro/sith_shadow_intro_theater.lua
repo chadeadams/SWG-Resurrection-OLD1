@@ -40,7 +40,13 @@ SithShadowIntroTheater = GoToTheater:new {
 	waypointDescription = "@quest/force_sensitive/intro:theater_sum",
 	mobileList = {
 		{ template = "sith_shadow_outlaw_mission", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 },
-		{ template = "sith_shadow_outlaw_mission", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 }
+		{ template = "sith_shadow_outlaw_mission", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 },
+        { template = "sith_shadow_outlaw_mission", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 },
+		{ template = "sith_shadow_outlaw_mission", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 },
+		{ template = "sith_shadow_outlaw_mission", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 },
+		{ template = "sith_shadow_outlaw_mission", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 },
+		{ template = "sith_shadow_outlaw_mission", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 },
+		{ template = "mellichae", minimumDistance = 12, maximumDistance = 24, referencePoint = 0 }
 	},
 	despawnTime = 2 * 60* 60* 1000, -- 2 hours
 	activeAreaRadius = 64,
@@ -135,14 +141,20 @@ end
 function SithShadowIntroTheater:useTheaterDatapad(pSceneObject, pPlayer)
 	Logger:log("Player used the looted theater datapad.", LT_INFO)
 	if QuestManager.hasCompletedQuest(pPlayer, QuestManager.quests.GOT_DATAPAD_2) then
-		CreatureObject(pPlayer):sendSystemMessage(READ_DISK_2_STRING)
+		--CreatureObject(pPlayer):sendSystemMessage(READ_DISK_2_STRING)
 
 		SceneObject(pSceneObject):destroyObjectFromWorld()
 		SceneObject(pSceneObject):destroyObjectFromDatabase()
 
 		QuestManager.completeQuest(pPlayer, QuestManager.quests.LOOT_DATAPAD_2)
 		FsIntro:setCurrentStep(pPlayer, 8)
-		GoToDathomir:start(pPlayer)
+        --Award Jedi Initate - then send them to a shine to continue Jedi Training
+        --Added 1-3-17 by Nugax
+        --Custom Jedi Progression		
+        --GoToDathomir:start(pPlayer)
+         awardSkill(pPlayer, "force_title_jedi_rank_01")
+         CreatureObject(pPlayer):sendSystemMessage("@quest/force_sensitive/intro:find_shrine")
+        
 	else
 		CreatureObject(pPlayer):sendSystemMessage(READ_DISK_ERROR_STRING)
 	end
