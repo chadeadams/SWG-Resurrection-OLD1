@@ -106,7 +106,8 @@ function ForceShrineMenuComponent:doMeditate(pObject, pPlayer)
                CreatureObject(pPlayer):sendSystemMessage("You have unlocked your Jedi and received Jedi Padawan Robes! Please find the Jedi trainers located around the Jedi Temple to continue your training!")
         else
                 CreatureObject(pPlayer):sendSystemMessage(genericMessage)
-       
+       end
+
     end
 end
 
