@@ -136,7 +136,7 @@ function ForceShrineMenuComponent:doMeditate(pObject, pPlayer)
 
 	            -- Find Trainer.
 	            PlayerObject(pGhost):findJediTrainer(pPlayer)
-           
+          end
                --Send Generic Shrine Message
               else
                 CreatureObject(pPlayer):sendSystemMessage(genericMessage)
