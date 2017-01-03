@@ -152,6 +152,8 @@ function SithShadowIntroTheater:useTheaterDatapad(pSceneObject, pPlayer)
         --Added 1-3-17 by Nugax
         --Custom Jedi Progression		
         --GoToDathomir:start(pPlayer)
+        --Set Jedi State and award Novice Beginner Jedi
+         PlayerObject(pGhost):setJediState(2)
          awardSkill(pPlayer, "force_title_jedi_rank_01")
          CreatureObject(pPlayer):sendSystemMessage("@quest/force_sensitive/intro:find_shrine")
         

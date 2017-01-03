@@ -92,7 +92,6 @@ function ForceShrineMenuComponent:doMeditate(pObject, pPlayer)
         --Unlock Padawan / check to see if they have iniate rank from killing mellachie
         if (CreatureObject(pPlayer):hasSkill("force_title_jedi_rank_01")) then
                awardSkill(pPlayer, "force_title_jedi_rank_02")
-               PlayerObject(pGhost):setJediState(1)
                CreatureObject(pPlayer):playEffect("clienteffect/trap_electric_01.cef", "")
 	           CreatureObject(pPlayer):playMusicMessage("sound/music_become_jedi.snd")
                PlayerObject(pGhost):setJediState(2)
