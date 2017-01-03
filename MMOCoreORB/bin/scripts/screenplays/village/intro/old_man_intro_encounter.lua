@@ -88,7 +88,7 @@ function OldManIntroEncounter:giveForceCrystalToPlayer(pPlayer)
 		CreatureObject(pPlayer):sendSystemMessage("@quest/force_sensitive/intro:crystal_message")
 		writeScreenPlayData(pPlayer, "VillageJediProgression", "FsIntroOldManVisits", 0)
           --Additions for Custom Jedi - Nugax 1/3/17
-        PlayerObject(pGhost):setJediState(1)
+        PlayerObject(pPlayer):setJediState(1)
         awardSkill(pPlayer, "force_title_jedi_novice")
     
 
