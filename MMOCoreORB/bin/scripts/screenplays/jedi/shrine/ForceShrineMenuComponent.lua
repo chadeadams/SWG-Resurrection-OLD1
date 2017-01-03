@@ -94,7 +94,6 @@ function ForceShrineMenuComponent:doMeditate(pObject, pPlayer)
                awardSkill(pPlayer, "force_title_jedi_rank_02")
                CreatureObject(pPlayer):playEffect("clienteffect/trap_electric_01.cef", "")
 	           CreatureObject(pPlayer):playMusicMessage("sound/music_become_jedi.snd")
-               PlayerObject(pGhost):setJediState(2)
                CreatureObject(pPlayer):sendSystemMessage("@quest/force_sensitive/intro:completed_padawan") 
               
                 --Give Jedi Padawan Robes

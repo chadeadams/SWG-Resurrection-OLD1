@@ -37,6 +37,7 @@ function OldManIntroEncounter:onEncounterInRange(pPlayer, oldManPointerList)
 
 	FsIntro:setCurrentStep(pPlayer, 2)
 	QuestManager.activateQuest(pPlayer, QuestManager.quests.OLD_MAN_INITIAL)
+  
 end
 
 -- Event handler for the scheduled despawn of the old man when the player has finished the conversation.
@@ -86,6 +87,11 @@ function OldManIntroEncounter:giveForceCrystalToPlayer(pPlayer)
 		QuestManager.completeQuest(pPlayer, QuestManager.quests.OLD_MAN_FORCE_CRYSTAL)
 		CreatureObject(pPlayer):sendSystemMessage("@quest/force_sensitive/intro:crystal_message")
 		writeScreenPlayData(pPlayer, "VillageJediProgression", "FsIntroOldManVisits", 0)
+          --Additions for Custom Jedi - Nugax 1/3/17
+        PlayerObject(pGhost):setJediState(1)
+        awardSkill(pPlayer, "force_title_jedi_novice")
+    
+
 	end
 end
 
