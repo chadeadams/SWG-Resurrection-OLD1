@@ -104,13 +104,44 @@ function ForceShrineMenuComponent:doMeditate(pObject, pPlayer)
 		          --  CreatureObject(pPlayer):sendSystemMessage("@jedi_spam:inventory_full_jedi_robe")
 	            --end
                --]
-                --Unlock Jedi now                
-                unlockJediPadawan(pPlayer)
-            
-               else
+              	if (pPlayer == nil) then
+		           return
+	            end
+
+	            local pGhost = CreatureObject(pPlayer):getPlayerObject()
+
+            	if (pGhost == nil) then
+            		return
+            	end
+
+            	local sui = SuiMessageBox.new("ForceShrineMenuComponent", "emptyCallback") -- No callback
+            	sui.setTitle("@jedi_trials:padawan_trials_title")
+            	sui.setPrompt("@jedi_trials:padawan_trials_completed")
+            	sui.sendTo(pPlayer)
+
+            	awardSkill(pPlayer, "force_title_jedi_rank_02")
+
+            	CreatureObject(pPlayer):playEffect("clienteffect/trap_electric_01.cef", "")
+            	CreatureObject(pPlayer):playMusicMessage("sound/music_become_jedi.snd")
+
+            	PlayerObject(pGhost):setJediState(2)
+
+
+            	if not (self:hasFullInventory(pPlayer)) then
+        		local pInventory = CreatureObject(pPlayer):getSlottedObject("inventory")
+        		local pItem = giveItem(pInventory, self.jediPadawanRobe, -1)
+               	else
+	            	CreatureObject(pPlayer):sendSystemMessage("@jedi_spam:inventory_full_jedi_robe")
+	            end
+
+	            -- Find Trainer.
+	            PlayerObject(pGhost):findJediTrainer(pPlayer)
+           
+               --Send Generic Shrine Message
+              else
                 CreatureObject(pPlayer):sendSystemMessage(genericMessage)
               end
-      end
+      
 end
 
 function ForceShrineMenuComponent:startJediPadawanTrials(pObject, pPlayer)
