@@ -147,13 +147,13 @@ function SithShadowIntroTheater:useTheaterDatapad(pSceneObject, pPlayer)
 		SceneObject(pSceneObject):destroyObjectFromDatabase()
 
 		QuestManager.completeQuest(pPlayer, QuestManager.quests.LOOT_DATAPAD_2)
+        --Set Jedi State and award Novice Beginner Jedi
+        awardSkill(pPlayer, "force_title_jedi_rank_01")
 		FsIntro:setCurrentStep(pPlayer, 8)
         --Award Jedi Initate - then send them to a shine to continue Jedi Training
         --Added 1-3-17 by Nugax
         --Custom Jedi Progression		
         --GoToDathomir:start(pPlayer)
-        --Set Jedi State and award Novice Beginner Jedi
-         awardSkill(pPlayer, "force_title_jedi_rank_01")
          CreatureObject(pPlayer):sendSystemMessage("@quest/force_sensitive/intro:find_shrine")
         
 	else
