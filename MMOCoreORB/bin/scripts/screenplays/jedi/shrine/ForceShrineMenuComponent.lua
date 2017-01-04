@@ -107,15 +107,15 @@ function ForceShrineMenuComponent:doMeditate(pObject, pPlayer)
             	sui.setTitle("@jedi_trials:padawan_trials_title")
             	sui.setPrompt("@jedi_trials:padawan_trials_completed")
             	sui.sendTo(pPlayer)
-
+                --Give Player Jedi Padawan
             	awardSkill(pPlayer, "force_title_jedi_rank_02")
-
+                PlayerObject(pGhost):setJediState(2)
+                --Play Music and do fancy stuff for them becoming a Jedi. 
             	CreatureObject(pPlayer):playEffect("clienteffect/trap_electric_01.cef", "")
             	CreatureObject(pPlayer):playMusicMessage("sound/music_become_jedi.snd")
-
-            	PlayerObject(pGhost):setJediState(2)
-
-
+                --Send System Message Telling Them Next Steps
+                CreatureObject(pPlayer):sendSystemMessage("You must now seek out the trainers and begin your training. I would look places Jedi/Sith go for them.")
+            
             	if not (self:hasFullInventory(pPlayer)) then
         		local pInventory = CreatureObject(pPlayer):getSlottedObject("inventory")
         		local pItem = giveItem(pInventory, self.jediPadawanRobe, -1)
