@@ -148,6 +148,8 @@ function SithShadowIntroTheater:useTheaterDatapad(pSceneObject, pPlayer)
 
 		QuestManager.completeQuest(pPlayer, QuestManager.quests.LOOT_DATAPAD_2)
         --Set Jedi State and award Novice Beginner Jedi
+        local pGhost = CreatureObject(pPlayer):getPlayerObject()
+        PlayerObject(pPlayer):setJediState(1)
         awardSkill(pPlayer, "force_title_jedi_rank_01")
 		FsIntro:setCurrentStep(pPlayer, 8)
         --Award Jedi Initate - then send them to a shine to continue Jedi Training
