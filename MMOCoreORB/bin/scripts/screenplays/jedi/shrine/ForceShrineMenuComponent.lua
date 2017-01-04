@@ -114,7 +114,7 @@ function ForceShrineMenuComponent:doMeditate(pObject, pPlayer)
             	CreatureObject(pPlayer):playEffect("clienteffect/trap_electric_01.cef", "")
             	CreatureObject(pPlayer):playMusicMessage("sound/music_become_jedi.snd")
                 --Send System Message Telling Them Next Steps
-                CreatureObject(pPlayer):sendSystemMessage("You must now seek out the trainers and begin your training. I would look places Jedi/Sith go for them.")
+                CreatureObject(pPlayer):sendSystemMessage("You must now seek out the trainers and begin your training. I would look at places Jedi/Sith go for them.")
             
             	if not (self:hasFullInventory(pPlayer)) then
         		local pInventory = CreatureObject(pPlayer):getSlottedObject("inventory")
