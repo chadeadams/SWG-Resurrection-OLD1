@@ -17,8 +17,8 @@ FsIntro = ScreenPlay:new {
 	     --[1] = { 300, 600 }, -- Old man visit, 5-10 mins for testing
     	 --[3] = { 300, 600 } -- Sith shadow attack, 5-10 mins for testing
           --Testing Code For Times     
-           [1]= { 60,120} - Old Man,
-           [3] = { 60, 120} - Sith 
+           [1] = { 60, 120}, -- Old Man
+           [3] = { 60, 120}  -- Sith 
 	}
 }
 
