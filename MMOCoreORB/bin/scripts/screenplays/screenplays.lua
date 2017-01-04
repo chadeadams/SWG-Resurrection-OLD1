@@ -591,6 +591,7 @@ includeFile("tests/tests.lua")
 
 --Buff Terminals Around Cities, etc.
 includeFile("buffterminals/buff_terms.lua")
+includeFile("buffterminals/advanced_buff_terms.lua")
 
 --Jedi Trainers at Jedi Temple
 includeFile("jedi_trainers/jedi_trainers.lua")
