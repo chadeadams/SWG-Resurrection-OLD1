@@ -236,6 +236,9 @@ function ForceShrineMenuComponent:unlockJediPadawan(pPlayer)
 
 	-- Find Trainer.
 	PlayerObject(pGhost):findJediTrainer(pPlayer)
+
+    --Send Trainer  / Completed Padawan Info
+     CreatureObject(pCreatureObject):sendSystemMessage("@quest/force_sensitive/intro:completed_padawan"
 end
 
 function ForceShrineMenuComponent:recoverRobe(pPlayer)
