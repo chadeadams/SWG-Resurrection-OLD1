@@ -6,7 +6,7 @@ numberOfActs = 1,
 
 }
 
-function GiveNoviceJedi:start(pCreatureObject)
+function GiveNoviceJedi:start(pCreatureObject,pPlayer)
 	--Set Jedi State and award Novice Beginner Jedi
         --Award Jedi Initate - then send them to a shine to continue Jedi Training
         --Added 1-3-17 by Nugax
