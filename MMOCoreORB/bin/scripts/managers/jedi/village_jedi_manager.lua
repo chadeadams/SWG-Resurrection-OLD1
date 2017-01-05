@@ -112,9 +112,9 @@ function VillageJediManager:canLearnSkill(pPlayer, skillName)
 		return false
 	end
 
-	if skillName == "force_title_jedi_rank_03" and not CreatureObject(pPlayer):villageKnightPrereqsMet("") then
-		return false
-	end
+--	if skillName == "force_title_jedi_rank_03" and not CreatureObject(pPlayer):villageKnightPrereqsMet("") then
+--		return false
+--	end
 
 	return true
 end
