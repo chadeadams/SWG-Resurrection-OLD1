@@ -29,6 +29,7 @@ function GiveNoviceJedi:start(pCreatureObject)
 
     --Send System Message to player to find a Shrine
     CreatureObject(pCreatureObject):sendSystemMessage("@quest/force_sensitive/intro:find_shrine")
+ 
 
 end
 
