@@ -156,7 +156,7 @@ function SithShadowIntroTheater:useTheaterDatapad(pSceneObject, pPlayer)
 		CreatureObject(pPlayer):sendSystemMessage(READ_DISK_ERROR_STRING)
 	end
 end
---[
+--[[
 function SithShadowIntroTheater:onSuccessfulSpawn(pCreatureObject)
 	if (pCreatureObject == nil) then
 		return
@@ -175,6 +175,6 @@ function SithShadowIntroTheater:onSuccessfulSpawn(pCreatureObject)
 	awardSkill(pCreatureObject, "force_title_jedi_rank_01")
 	
 end
-]--
+--]]
 
 return SithShadowIntroTheater
