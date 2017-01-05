@@ -28,7 +28,7 @@ function GiveNoviceJedi:start(pCreatureObject)
 	awardSkill(pCreatureObject, "force_title_jedi_rank_01")
 
     --Send System Message to player to find a Shrine
-    CreatureObject(pCreatureObject):sendSystemMessage("@quest/force_sensitive/intro:find_shrine")
+    CreatureObject(pPlayer):sendSystemMessage("@quest/force_sensitive/intro:find_shrine")
 
 end
 
