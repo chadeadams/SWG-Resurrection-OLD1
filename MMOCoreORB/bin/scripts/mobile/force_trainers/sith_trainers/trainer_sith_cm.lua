@@ -1,6 +1,6 @@
 trainer_cm = Creature:new {
-	customName = "Skrat Pepe - [Crafting Mastery]",
-	faction = "",
+	customName = "Jobee Resuren - [Crafting Mastery]",
+ 	faction = "",
 	level = 100,
 	chanceHit = 0.390000,
 	damageMin = 290,
@@ -22,7 +22,7 @@ trainer_cm = Creature:new {
 	pvpBitmask = NONE,
 	creatureBitmask = NONE,
 	diet = HERBIVORE,
-	templates = {"object/mobile/dressed_jedi_trainer_twilek_female_01.iff"},
+	templates = {"object/mobile/dressed_sith_shadow_hum_f_01.iff"},
 	conversationTemplate = "trainer_craftingmastery_convotemplate",
 	optionsBitmask = 264
 }

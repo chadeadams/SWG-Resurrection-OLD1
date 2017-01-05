@@ -1,5 +1,5 @@
 trainer_ls = Creature:new {
-	customName = "Archay  Pollard - [Lightsaber Master]",
+	customName = "Darth Cptwenky - [Lightsaber Master]",
 	faction = "",
 	level = 100,
 	chanceHit = 0.390000,
@@ -22,7 +22,7 @@ trainer_ls = Creature:new {
 	pvpBitmask = NONE,
 	creatureBitmask = NONE,
 	diet = HERBIVORE,
-	templates = {"object/mobile/dressed_dark_jedi_human_female_01.iff"},
+	templates = {"object/mobile/dressed_dark_jedi_human_male_01.iff"},
 	conversationTemplate = "trainer_lightsaber_convotemplate",
 	optionsBitmask = 264
 }

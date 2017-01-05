@@ -1,5 +1,5 @@
 trainer_cp = Creature:new {
-	customName = "Varino Candroon - [Combat Prowess]",
+	customName = "Exern Copla - [Combat Prowess]",
 	faction = "",
 	level = 100,
 	chanceHit = 0.390000,
@@ -22,7 +22,7 @@ trainer_cp = Creature:new {
 	pvpBitmask = NONE,
 	creatureBitmask = NONE,
 	diet = HERBIVORE,
-	templates = {"object/mobile/dressed_dark_jedi_human_male_01.iff"},
+	templates = {"object/mobile/dressed_dark_jedi_human_male_02.iff"},
 	conversationTemplate = "trainer_enhancedreflexes_convotemplate",
 	optionsBitmask = 264
 }
