@@ -156,5 +156,24 @@ function SithShadowIntroTheater:useTheaterDatapad(pSceneObject, pPlayer)
 		CreatureObject(pPlayer):sendSystemMessage(READ_DISK_ERROR_STRING)
 	end
 end
+function SithShadowIntroTheater:onSuccessfulSpawn(pCreatureObject)
+	if (pCreatureObject == nil) then
+		return
+	end
+
+	QuestManager.activateQuest(pCreatureObject, QuestManager.quests.FS_VILLAGE_ELDER)
+	CreatureObject(pCreatureObject):sendSystemMessage("@quest/force_sensitive/intro:force_sensitive")
+	
+	ObjectManager.withCreaturePlayerObject(pCreatureObject, function(playerObject)
+		if (not playerObject:isJedi()) then
+			playerObject:setJediState(2)
+		end
+	end)
+
+	awardSkill(pCreatureObject, "force_title_jedi_novice")
+	awardSkill(pCreatureObject, "force_title_jedi_rank_01")
+	
+end
+
 
 return SithShadowIntroTheater
