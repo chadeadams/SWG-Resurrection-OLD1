@@ -125,6 +125,8 @@ includeFile("village/village_spawn_table.lua")
 includeFile("village/intro/fs_intro.lua")
 includeFile("village/intro/glowing.lua")
 includeFile("village/intro/go_to_dathomir.lua")
+--Added for Custom Jedi - Nugax - 1-4-2017
+includeFile("village/intro/give_novice_jedi.lua")
 includeFile("village/intro/old_man_intro_encounter.lua")
 includeFile("village/intro/sith_shadow_encounter.lua")
 includeFile("village/intro/sith_shadow_intro_theater.lua")
