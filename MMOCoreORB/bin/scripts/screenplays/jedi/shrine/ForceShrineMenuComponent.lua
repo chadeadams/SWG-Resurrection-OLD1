@@ -1,4 +1,5 @@
 local QuestManager = require("managers.quest.quest_manager")
+local ObjectManager = require("managers.object.object_manager")
 
 ForceShrineMenuComponent = {
 	-- Enabled Quests.
@@ -118,7 +119,7 @@ function ForceShrineMenuComponent:doMeditate(pObject, pPlayer)
             	CreatureObject(pPlayer):playEffect("clienteffect/trap_electric_01.cef", "")
             	CreatureObject(pPlayer):playMusicMessage("sound/music_become_jedi.snd")
                 --Send System Message Telling Them Next Steps
-                CreatureObject(pPlayer):sendSystemMessage("You hear a familar voice... you must now seek out the Force trainers and begin your Padawan training. Go to the Temple of The Greatest Dark Sith or The Old Jedi Ruins. There  The voice fades...")
+                CreatureObject(pPlayer):sendSystemMessage("You hear a familar voice... you must now seek out the Force trainers and begin your Padawan training. Go to the Temple of The Greatest Dark Sith or The Old Jedi Ruins. The voice fades...")
                 --Complete Final Padawan Quest
                 QuestManager.completeQuest(pPlayer, QuestManager.quests.FS_VILLAGE_ELDER)   
             
