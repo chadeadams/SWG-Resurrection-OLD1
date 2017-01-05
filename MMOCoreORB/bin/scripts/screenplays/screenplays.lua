@@ -595,8 +595,12 @@ includeFile("tests/tests.lua")
 includeFile("buffterminals/buff_terms.lua")
 includeFile("buffterminals/advanced_buff_terms.lua")
 
---Jedi Trainers at Jedi Temple
-includeFile("jedi_trainers/jedi_trainers.lua")
+--Jedi & Sith Trainers
+includeFile("force_trainers/jedi_trainers.lua")
+includeFile("force_trainers/sith_trainers.lua")
+
+--Sith Trainers Temple of Exar Kun
+includeFile("jedi_trainers/sith_trainers.lua")
 
 --Black Market Merchants
 includeFile("black_market/black_mark_dealer_screenplays.lua")
