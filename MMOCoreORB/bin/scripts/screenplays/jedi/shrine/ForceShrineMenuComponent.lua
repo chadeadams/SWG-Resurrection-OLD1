@@ -28,9 +28,10 @@ ForceShrineMenuComponent = {
 -- 0 (Not started)
 -- 1 (Started)
 
-function ForceShrineMenuComponent:fillObjectMenuResponse(pSceneObject, pMenuResponse, pPlayer)
+--function ForceShrineMenuComponent:fillObjectMenuResponse(pSceneObject, pMenuResponse, pPlayer)
+function ForceShrineMenuComponent:fillObjectMenuResponse(pSceneObject, pMenuResponse, pCreatureObject)
 	local menuResponse = LuaObjectMenuResponse(pMenuResponse)
-
+[[--
 	if (CreatureObject(pPlayer):hasSkill("force_title_jedi_novice")) then
 		menuResponse:addRadialMenuItem(120, 3, "@jedi_trials:meditate") -- Meditate
 	end
@@ -38,6 +39,16 @@ function ForceShrineMenuComponent:fillObjectMenuResponse(pSceneObject, pMenuResp
 	if (CreatureObject(pPlayer):hasSkill("force_title_jedi_rank_02")) then
 		menuResponse:addRadialMenuItem(121, 3, "@force_rank:recover_jedi_items") -- Recover Jedi Items
 	end
+
+--]]
+if (CreatureObject(pCreatureObject):hasSkill("force_title_jedi_novice")) then
+		menuResponse:addRadialMenuItem(120, 3, "@jedi_trials:meditate") -- Meditate
+	end
+
+	if (CreatureObject(pCreatureObject):hasSkill("force_title_jedi_rank_02")) then
+		menuResponse:addRadialMenuItem(121, 3, "@force_rank:recover_jedi_items") -- Recover Jedi Items
+	end
+
 
 end
 
