@@ -246,5 +246,16 @@ createTrainerConversationTemplate("trainer_weaponsmith", "crafting_weaponsmith_m
 -- Need a non-valid master skill...
 createTrainerConversationTemplate("trainer_fs", "trainer_fs", "trainer_fs_convotemplate")
 
+--Create Jedi Conversation Templates
+
+createTrainerConversationTemplate("trainer_ls", "force_discipline_light_saber_master", "trainer_lightsaber_convotemplate")
+createTrainerConversationTemplate("trainer_mp", "force_discipline_powers_master", "trainer_forcepowers_convotemplate")
+createTrainerConversationTemplate("trainer_md", "force_discipline_defender_master", "trainer_forcedefender_convotemplate")
+createTrainerConversationTemplate("trainer_me", "force_discipline_enhancements_master", "trainer_forceenhancements_convotemplate")
+createTrainerConversationTemplate("trainer_mh", "force_discipline_healing_master", "trainer_forcehealing_convotemplate")
+createTrainerConversationTemplate("trainer_cp", "force_sensitive_combat_prowess_master", "trainer_combatprowess_convotemplate")
+createTrainerConversationTemplate("trainer_cm", "force_sensitive_crafting_mastery_master", "trainer_craftingmastery_convotemplate")
+createTrainerConversationTemplate("trainer_hs", "force_sensitive_heightened_senses_master", "trainer_heightenedsenses_convotemplate")
+createTrainerConversationTemplate("trainer_er", "force_sensitive_enhanced_reflexes_master", "trainer_enhancedreflexes_convotemplate")
 
 
