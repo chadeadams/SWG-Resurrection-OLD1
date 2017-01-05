@@ -28,8 +28,9 @@ function GiveNoviceJedi:start(pCreatureObject)
 	awardSkill(pCreatureObject, "force_title_jedi_rank_01")
 
     --Send System Message to player to find a Shrine
-    CreatureObject(pCreatureObject):sendSystemMessage("@quest/force_sensitive/intro:find_shrine")
- 
+   -- CreatureObject(pCreatureObject):sendSystemMessage("@quest/force_sensitive/intro:find_shrine")
+      CreatureObject(pCreatureObject):sendSystemMessage("You have received Jedi Padawan! It is now time to decide which path you will take. Light or Dark. Seek out your trainer using findmytrainer or visit the Temple of Exar Kun to train with existing Force Masters in the ways of the Force. May the force be with you!")
+  
 
 end
 
