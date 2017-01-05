@@ -44,7 +44,10 @@ includeFile("lair/serverobjects.lua")
 includeFile("outfits/serverobjects.lua")
 
 --Force Trainers Customized (12/30/16)
-includeFile("force_trainers/serverobjects.lua")
+--includeFile("force_trainers/serverobjects.lua")
+includeFile("force_trainers/jedi_trainers/serverobjects.lua")
+includeFile("force_trainers/sith_trainers/serverobjects.lua")
+
 
 -- Black Market Dealer (1/1/17)
 includeFile("black_market/black_market_dealer.lua")
