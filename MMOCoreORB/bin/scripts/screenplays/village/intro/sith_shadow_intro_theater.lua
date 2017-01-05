@@ -147,9 +147,9 @@ function SithShadowIntroTheater:useTheaterDatapad(pSceneObject, pPlayer)
 		QuestManager.completeQuest(pPlayer, QuestManager.quests.LOOT_DATAPAD_2)
         FsIntro:setCurrentStep(pPlayer, 8)
        		
-        --GoToDathomir:start(pPlayer)
+        GoToDathomir:start(pPlayer)
        --Provide Jedi To Player
-       GiveNoviceJedi:start(pPlayer)
+       --GiveNoviceJedi:start(pPlayer)
        )
         
 	else
