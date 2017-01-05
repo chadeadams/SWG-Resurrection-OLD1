@@ -1,5 +1,5 @@
 trainer_md = Creature:new {
-	customName = "Jubei Shodon - [Defense Master]",
+	customName = "Koraen Briaton - [Defense Master]",
 	faction = "",
 	level = 100,
 	chanceHit = 0.390000,

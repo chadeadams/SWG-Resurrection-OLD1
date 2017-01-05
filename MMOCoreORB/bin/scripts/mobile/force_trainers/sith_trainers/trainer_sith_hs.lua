@@ -1,5 +1,5 @@
 trainer_hs = Creature:new {
-	customName = "Kenka Isoder - [Heightened Senses]",
+	customName = "Darth Rosethen - [Heightened Senses]",
 	faction = "",
 	level = 100,
 	chanceHit = 0.390000,
@@ -22,7 +22,7 @@ trainer_hs = Creature:new {
 	pvpBitmask = NONE,
 	creatureBitmask = NONE,
 	diet = HERBIVORE,
-	templates = {"object/mobile/dressed_dark_jedi_human_male_01.iff"},
+	templates = {"object/mobile/dressed_sith_shadow_zab_f_02.iff"},
 	conversationTemplate = "trainer_heightenedsenses_convotemplate",
 	optionsBitmask = 264
 }

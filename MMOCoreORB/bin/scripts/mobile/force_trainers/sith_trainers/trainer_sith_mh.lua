@@ -1,5 +1,5 @@
 trainer_mh = Creature:new {
-	customName = "Kya Edo - [Healing Master]",
+	customName = " Disgraced Joopa - [Healing Master]",
 	faction = "",
 	level = 100,
 	chanceHit = 0.390000,

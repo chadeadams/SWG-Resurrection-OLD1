@@ -1,5 +1,5 @@
 trainer_me = Creature:new {
-	customName = "Korvas Ren - [Enhancements Master]",
+	customName = "Darth Korvalas Ren - [Enhancements Master]",
 	faction = "",
 	level = 100,
 	chanceHit = 0.390000,
@@ -22,7 +22,7 @@ trainer_me = Creature:new {
 	pvpBitmask = NONE,
 	creatureBitmask = NONE,
 	diet = HERBIVORE,
-	templates = {"object/mobile/dressed_jedi_trainer_old_human_male_01.iff"},
+	templates = {"object/mobile/dressed_sith_shadow_trn_m_01.iff"},
 	conversationTemplate = "trainer_forceenhancements_convotemplate",
 	optionsBitmask = 264
 }

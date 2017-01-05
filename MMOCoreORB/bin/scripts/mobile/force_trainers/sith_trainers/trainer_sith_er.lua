@@ -1,5 +1,5 @@
 trainer_er = Creature:new {
-	customName = "Azmo Jade - [Enhanced Reflexes]",
+	customName = "Vothe - [Enhanced Reflexes]",
 	faction = "",
 	level = 100,
 	chanceHit = 0.390000,
@@ -22,7 +22,7 @@ trainer_er = Creature:new {
 	pvpBitmask = NONE,
 	creatureBitmask = NONE,
 	diet = HERBIVORE,
-	templates = {"object/mobile/dressed_dark_jedi_human_male_01.iff"},
+	templates = {"object/mobile/dressed_sith_shadow_nikto_m_01.iff"},
 	conversationTemplate = "trainer_enhancedreflexes_convotemplate",
 	optionsBitmask = 264
 }

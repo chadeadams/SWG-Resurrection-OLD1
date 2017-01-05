@@ -1,5 +1,5 @@
 trainer_mp = Creature:new {
-	customName = "Bernona Monoceros - [Powers Master]",
+	customName = "Darth Relos - [Powers Master]",
 	faction = "",
 	level = 100,
 	chanceHit = 0.390000,
@@ -22,7 +22,7 @@ trainer_mp = Creature:new {
 	pvpBitmask = NONE,
 	creatureBitmask = NONE,
 	diet = HERBIVORE,
-	templates = {"object/mobile/dressed_jedi_trainer_twilek_female_01.iff"},
+	templates = {"object/mobile/dressed_sith_shadow_zab_m_03.iff"},
 	conversationTemplate = "trainer_forcepowers_convotemplate",
 	optionsBitmask = 264
 }
