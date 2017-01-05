@@ -6,17 +6,29 @@ numberOfActs = 1,
 
 }
 
-function GiveNoviceJedi:start(pPlayer)
+function GiveNoviceJedi:start(pCreatureObject)
 	--Set Jedi State and award Novice Beginner Jedi
         --Award Jedi Initate - then send them to a shine to continue Jedi Training
         --Added 1-3-17 by Nugax
         --Custom Jedi Progression
-        local pGhost = CreatureObject(pPlayer):getPlayerObject()
-        PlayerObject(pGhost):setJediState(1)
-        awardSkill(pPlayer, "force_title_jedi_rank_01")
+        if (pCreatureObject == nil) then
+		    return
+	    end
 
-        --Send System Message to player to find a Shrine
-        CreatureObject(pPlayer):sendSystemMessage("@quest/force_sensitive/intro:find_shrine")
+	QuestManager.activateQuest(pCreatureObject, QuestManager.quests.FS_VILLAGE_ELDER)
+	CreatureObject(pCreatureObject):sendSystemMessage("@quest/force_sensitive/intro:force_sensitive")
+	
+	ObjectManager.withCreaturePlayerObject(pCreatureObject, function(playerObject)
+		if (not playerObject:isJedi()) then
+			playerObject:setJediState(2)
+		end
+	end)
+
+	awardSkill(pCreatureObject, "force_title_jedi_novice")
+	awardSkill(pCreatureObject, "force_title_jedi_rank_01")
+
+    --Send System Message to player to find a Shrine
+    CreatureObject(pPlayer):sendSystemMessage("@quest/force_sensitive/intro:find_shrine")
 
 end
 
