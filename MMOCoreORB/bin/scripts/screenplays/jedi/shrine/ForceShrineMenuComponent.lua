@@ -131,6 +131,7 @@ function ForceShrineMenuComponent:doMeditate(pObject, pPlayer)
 
 	            -- Find Trainer.
 	            PlayerObject(pGhost):findJediTrainer(pPlayer)
+                CreatureObject(pPlayer):sendSystemMessage("You have achieved Padawan! Seek out the Jedi trainers at the Temple of the Greatest Sith Lord, or use findmytrainer to find your personal trainer. May the force be with you!")
           end
                --Send Generic Shrine Message
               else
