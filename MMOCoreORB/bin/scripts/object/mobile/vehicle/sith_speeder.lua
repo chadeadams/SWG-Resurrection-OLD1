@@ -44,6 +44,9 @@
 object_mobile_vehicle_sith_speeder = object_mobile_vehicle_shared_sith_speeder:new {
 	
 customName = "Sith Speeder",
+    templateType = VEHICLE,
+    decayRate = 20, -- Damage tick per decay cycle
+	decayCycle = 600 -- Time in seconds per cycle
 
 }
 
