@@ -63,17 +63,17 @@ groupExpMultiplier = 4.0
 --globalExpMultiplier = 1.0
 
 --Double XP
-globalExpMultiplier = 2.0
+--globalExpMultiplier = 2.0
 
 --Triple XP
---globalExpMultiplier = 3.0
+globalExpMultiplier = 3.0
 
 --Sets the base number of control devices of each type that a player can have in their datapad at once
 --For creature pets, A Creature Handler will have the base number + their stored pets skill mod as limit
 baseStoredCreaturePets = 2
 baseStoredFactionPets = 3
 baseStoredDroids = 5
-baseStoredVehicles = 3
+baseStoredVehicles = 4
 baseStoredShips = 3
 
 -----------------------------------
