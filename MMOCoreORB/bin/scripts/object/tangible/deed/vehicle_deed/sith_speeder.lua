@@ -1,7 +1,7 @@
 --Copyright (C) 2010 <SWGEmu>
 
 
-object_tangible_deed_vehicle_deed_sith_speeder = object_tangible_deed_vehicle_deed_shared_vehicle_deed_sith_speeder:new {
+object_tangible_deed_vehicle_deed_vehicle_deed_sith_speeder = object_tangible_deed_vehicle_deed_shared_vehicle_deed_sith_speeder:new {
 
 	templateType = VEHICLEDEED,
 
@@ -19,4 +19,4 @@ object_tangible_deed_vehicle_deed_sith_speeder = object_tangible_deed_vehicle_de
 	experimentalCombineType = {0, 0, 1},
 }
 
-ObjectTemplates:addTemplate(object_tangible_deed_vehicle_deed_sith_speeder, "object/tangible/deed/vehicle_deed/sith_speeder.iff")
+ObjectTemplates:addTemplate(object_tangible_deed_vehicle_deed_vehicle_deed_sith_speeder, "object/tangible/deed/vehicle_deed/sith_speeder.iff")
