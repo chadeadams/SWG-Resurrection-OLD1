@@ -45,7 +45,7 @@ object_mobile_vehicle_speederbike_old = object_mobile_vehicle_shared_speederbike
 	templateType = VEHICLE,
 	--decayRate = 25, -- Damage tick per decay cycle
 	decayRate = 30, -- Damage tick per decay cycle
-	decayCycle = 600 -- Time in seconds per cycle
+	decayCycle = 600 -- Time in seconds per cycles
 }
 
 ObjectTemplates:addTemplate(object_mobile_vehicle_speederbike_old, "object/mobile/vehicle/speederbike_old.iff")
