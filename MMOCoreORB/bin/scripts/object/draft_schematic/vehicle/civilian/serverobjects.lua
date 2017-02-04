@@ -58,7 +58,7 @@ includeFile("draft_schematic/vehicle/civilian/speeder_bike.lua")
 includeFile("draft_schematic/vehicle/civilian/speeder_bike_swoop.lua")
 
 --Custom
-includeFile("draft_schematic/vehicle/civilian/speeder_bike_old.lua")
+includeFile("draft_schematic/vehicle/civilian/speederbike_old.lua")
 
 --NGE Vehicles
 includeFile("draft_schematic/vehicle/civilian/barc_speeder.lua")

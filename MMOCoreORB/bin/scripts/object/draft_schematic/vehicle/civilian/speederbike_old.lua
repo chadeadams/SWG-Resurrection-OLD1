@@ -41,7 +41,7 @@
 --this exception also makes it possible to release a modified version 
 
 
-object_draft_schematic_vehicle_civilian_speeder_bike_old = object_draft_schematic_vehicle_civilian_shared_speeder_bike_old:new {
+object_draft_schematic_vehicle_civilian_speederbike_old = object_draft_schematic_vehicle_civilian_shared_speederbike_old:new {
 
    templateType = DRAFTSCHEMATIC,
 
@@ -76,4 +76,4 @@ object_draft_schematic_vehicle_civilian_speeder_bike_old = object_draft_schemati
              }
 
 }
-ObjectTemplates:addTemplate(object_draft_schematic_vehicle_civilian_speeder_bike_old, "object/draft_schematic/vehicle/civilian/speeder_bike_old.iff")
+ObjectTemplates:addTemplate(object_draft_schematic_vehicle_civilian_speederbike_old, "object/draft_schematic/vehicle/civilian/speederbike_old.iff")

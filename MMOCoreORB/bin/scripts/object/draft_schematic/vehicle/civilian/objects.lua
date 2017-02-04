@@ -604,11 +604,11 @@ ObjectTemplates:addClientTemplate(object_draft_schematic_vehicle_civilian_shared
 
 --*******************************************************************************************
 --Speederbike Old
-object_draft_schematic_vehicle_civilian_shared_speeder_bike_old = SharedDraftSchematicObjectTemplate:new {
-	clientTemplateFileName = "object/draft_schematic/vehicle/civilian/shared_speeder_bike_old.iff"
+object_draft_schematic_vehicle_civilian_shared_speederbike_old = SharedDraftSchematicObjectTemplate:new {
+	clientTemplateFileName = "object/draft_schematic/vehicle/civilian/shared_speederbike_old.iff"
 
 }
 
-ObjectTemplates:addClientTemplate(object_draft_schematic_vehicle_civilian_shared_speeder_bike_old, "object/draft_schematic/vehicle/civilian/shared_speeder_bike_old.iff")
+ObjectTemplates:addClientTemplate(object_draft_schematic_vehicle_civilian_shared_speederbike_old, "object/draft_schematic/vehicle/civilian/shared_speederbike_old.iff")
 
 
