@@ -1813,4 +1813,5 @@ schematics = {
     {path="object/draft_schematic/vehicle/civilian/speederbike_old.iff"},
     --Added for new object - Nugax   
     {path="object/draft_schematic/vehicle/civilian/sith_speeder.iff"},
+    {path="object/draft_schematic/vehicle/civilian/barc_speeder.iff"},
 };
