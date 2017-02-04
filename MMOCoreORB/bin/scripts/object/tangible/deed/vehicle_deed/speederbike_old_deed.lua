@@ -45,8 +45,8 @@ object_tangible_deed_vehicle_deed_speederbike_old_deed = object_tangible_deed_ve
 
 	templateType = VEHICLEDEED,
 
-	controlDeviceObjectTemplate = "object/intangible/vehicle/speederbike_old_pcd.iff",
-	generatedObjectTemplate = "object/mobile/vehicle/speederbike_old.iff",
+	controlDeviceObjectTemplate = "object/intangible/vehicle/speederbike_pcd.iff",
+	generatedObjectTemplate = "object/mobile/vehicle/speederbike.iff",
 
 	numberExperimentalProperties = {1, 1, 1},
 	experimentalProperties = {"XX", "XX", "SR"},

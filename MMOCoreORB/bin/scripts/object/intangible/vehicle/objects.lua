@@ -490,16 +490,4 @@ ObjectTemplates:addClientTemplate(object_intangible_vehicle_shared_barc_speeder_
 
 
 --********************************************************************
---*************************************************************
---Old Speederbike
-
-object_intangible_vehicle_shared_speederbike_old_pcd = SharedIntangibleObjectTemplate:new {
-clientTemplateFileName = "object/intangible/vehicle/shared_speederbike_old_pcd.iff"
-}
-
-ObjectTemplates:addClientTemplate(object_intangible_vehicle_shared_speederbike_old_pcd, "object/intangible/vehicle/shared_speederbike_old_pcd.iff")
-
-
---********************************************************************
-
 
