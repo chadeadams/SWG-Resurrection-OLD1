@@ -42,6 +42,7 @@
 
 
 object_mobile_vehicle_speederbike_old = object_mobile_vehicle_shared_speederbike_old:new {
+    customName = "Old Speederbike",
 	templateType = VEHICLE,
 	--decayRate = 25, -- Damage tick per decay cycle
 	decayRate = 30, -- Damage tick per decay cycle
