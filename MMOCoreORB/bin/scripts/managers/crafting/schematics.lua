@@ -1810,6 +1810,7 @@ schematics = {
 	{path="object/draft_schematic/furniture/bestine/painting_bestine_ronka.iff"},
 	{path="object/draft_schematic/item/theme_park/alderaan/act2/dead_eye_decoder.iff"},
 	{path="object/draft_schematic/item/quest_item/fs_medic_puzzle_heal_pack.iff"},
+    {path="object/draft_schematic/vehicle/civilian/speeder_bike_old.iff"},
     --Added for new object - Nugax   
-    --{path="object/draft_schematic/vehicle/civilian/sith_speeder.iff"},
+    {path="object/draft_schematic/vehicle/civilian/sith_speeder.iff"},
 };

@@ -600,3 +600,15 @@ object_draft_schematic_vehicle_civilian_shared_sith_speeder = SharedDraftSchemat
 }
 
 ObjectTemplates:addClientTemplate(object_draft_schematic_vehicle_civilian_shared_sith_speeder, "object/draft_schematic/vehicle/civilian/shared_sith_speeder.iff")
+
+
+--*******************************************************************************************
+--Speederbike Old
+object_draft_schematic_vehicle_civilian_shared_speeder_bike_old = SharedDraftSchematicObjectTemplate:new {
+	clientTemplateFileName = "object/draft_schematic/vehicle/civilian/shared_speeder_bike_old.iff"
+
+}
+
+ObjectTemplates:addClientTemplate(object_draft_schematic_vehicle_civilian_shared_speeder_bike_old, "object/draft_schematic/vehicle/civilian/shared_speeder_bike_old.iff")
+
+
