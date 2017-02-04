@@ -70,7 +70,7 @@ object_draft_schematic_vehicle_civilian_sith_speeder = object_draft_schematic_ve
    contribution = {100, 100, 100},
 
 
-   targetTemplate = "object/tangible/deed/vehicle_deed/vehicle_deed_sith_speeder.iff",
+   targetTemplate = "object/tangible/deed/vehicle_deed/sith_speeder.iff",
 
    additionalTemplates = {
 	      "object/tangible/deed/vehicle_deed/shared_vehicle_deed_sith_speeder.iff",
