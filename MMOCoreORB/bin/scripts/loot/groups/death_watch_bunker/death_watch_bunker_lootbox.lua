@@ -6,7 +6,7 @@ death_watch_bunker_lootbox = {
 	maximumLevel = 0,
 	lootItems = {
 		{itemTemplate = "alum_gel_packet", weight = 1100000},
-		{itemTemplate = "art_crate", weight = 4400000},
+		{itemTemplate = "small_motor", weight = 4400000},
 		{itemTemplate = "ducted_fan", weight = 500000},
 		{itemTemplate = "executioners_hack_schematic", weight = 1000000},
 		{itemTemplate = "fuel_dispersion_unit", weight = 500000},
