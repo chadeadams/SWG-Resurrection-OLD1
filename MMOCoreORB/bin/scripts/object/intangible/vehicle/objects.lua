@@ -491,5 +491,3 @@ ObjectTemplates:addClientTemplate(object_intangible_vehicle_shared_barc_speeder_
 
 --********************************************************************
 
-
-
