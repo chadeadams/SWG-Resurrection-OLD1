@@ -1816,8 +1816,7 @@ object_tangible_terminal_terminal_character_builder = object_tangible_terminal_s
 					--"Jetpack", "object/tangible/deed/vehicle_deed/jetpack_deed.iff",
 					"Speederbike", "object/tangible/deed/vehicle_deed/speederbike_deed.iff",
 					--"Speederbike Flash", "object/tangible/deed/vehicle_deed/speederbike_flash_deed.iff",
-					"Landspeeder x34", "object/tangible/deed/vehicle_deed/landspeeder_x34_deed.iff",		
-                    "Speederbike Old", "object/tangible/deed/vehicle_deed/speederbike_old_deed.iff"								
+					"Landspeeder x34", "object/tangible/deed/vehicle_deed/landspeeder_x34_deed.iff"										
 				},
 				"Structure Deeds",
 				{

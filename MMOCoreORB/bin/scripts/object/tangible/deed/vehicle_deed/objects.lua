@@ -697,12 +697,4 @@ object_tangible_deed_vehicle_deed_shared_pod_racer_two_deed = SharedTangibleObje
 ObjectTemplates:addClientTemplate(object_tangible_deed_vehicle_deed_shared_pod_racer_two_deed, "object/tangible/deed/vehicle_deed/shared_pod_racer_two_deed.iff")
 
 --**************************************************************
---Speederbike Old
-
-object_tangible_deed_vehicle_deed_shared_speederbike_old_deed = SharedTangibleObjectTemplate:new {
-	clientTemplateFileName = "object/tangible/deed/vehicle_deed/shared_speederbike_old_deed.iff"
-
-}
-
-ObjectTemplates:addClientTemplate(object_tangible_deed_vehicle_deed_shared_speederbike_old_deed, "object/tangible/deed/vehicle_deed/shared_speederbike_old_deed.iff")
 

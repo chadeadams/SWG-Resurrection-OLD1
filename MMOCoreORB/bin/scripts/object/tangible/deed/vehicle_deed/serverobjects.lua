@@ -63,5 +63,4 @@ includeFile("tangible/deed/vehicle_deed/barc_speeder_imperial_deed.lua")
 includeFile("tangible/deed/vehicle_deed/barc_speeder_rebel_deed.lua")
 includeFile("tangible/deed/vehicle_deed/pod_racer_one_deed.lua")
 includeFile("tangible/deed/vehicle_deed/pod_racer_two_deed.lua")
-includeFile("tangible/deed/vehicle_deed/speederbike_old_deed.lua")
 
