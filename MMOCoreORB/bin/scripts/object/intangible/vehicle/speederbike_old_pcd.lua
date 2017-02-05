@@ -41,23 +41,8 @@
 --this exception also makes it possible to release a modified version 
 
 
-object_tangible_deed_vehicle_deed_speederbike_old_deed = object_tangible_deed_vehicle_deed_shared_speederbike_old_deed:new {
+object_intangible_vehicle_speederbike_old_pcd = object_intangible_vehicle_shared_speederbike_old_pcd:new {
 
-	templateType = VEHICLEDEED,
-    customName = "Old Rusted Speederbike Deed",
-
-	controlDeviceObjectTemplate = "object/intangible/vehicle/speederbike_old_pcd.iff",
-	generatedObjectTemplate = "object/mobile/vehicle/speederbike_old.iff",
-
-	numberExperimentalProperties = {1, 1, 1},
-	experimentalProperties = {"XX", "XX", "SR"},
-	experimentalWeights = {1, 1, 1},
-	experimentalGroupTitles = {"null", "null", "exp_durability"},
-	experimentalSubGroupTitles = {"null", "null", "hit_points"},
-	experimentalMin = {0, 0, 800},
-	experimentalMax = {0, 0, 1200},
-	experimentalPrecision = {0, 0, 0},
-	experimentalCombineType = {0, 0, 1},
 }
 
-ObjectTemplates:addTemplate(object_tangible_deed_vehicle_deed_speederbike_old_deed, "object/tangible/deed/vehicle_deed/speederbike_old_deed.iff")
+ObjectTemplates:addTemplate(object_intangible_vehicle_speederbike_old_pcd, "object/intangible/vehicle/speederbike_old_pcd.iff")
