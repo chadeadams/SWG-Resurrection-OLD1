@@ -6,7 +6,7 @@ death_watch_bunker_overlord_shared = {
 	maximumLevel = 0,
 	lootItems = {
 		{itemTemplate = "jetpack_stabilizer", weight = 70000000},
-        {itemTemplate = "small_motor", weight = 3000000
+        {itemTemplate = "small_motor", weight = 3000000}
 	}
 }
 
