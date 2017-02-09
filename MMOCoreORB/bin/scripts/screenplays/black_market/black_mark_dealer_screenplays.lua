@@ -66,7 +66,7 @@ function black_market_convo_handler:getNextConversationScreen(conversationTempla
 				nextConversationScreen = conversation:getScreen("deny_quest")
 			elseif ( optionLink == "SithSpeeder" and credits >= 500000) then
 				creature:subtractCashCredits(500000)
-				local pItem = giveItem(pInventory, "object/tangible/deed/vehicle_deed/sith_speeder.iff", -1)
+				local pItem = giveItem(pInventory, "object/tangible/deed/vehicle_deed/sith_speeder_deed.iff", -1)
 				nextConversationScreen = conversation:getScreen("SithSpeeder")
 			elseif ( optionLink == "BarcSpeeder" and credits >= 250000) then
 				creature:subtractCashCredits(250000)
