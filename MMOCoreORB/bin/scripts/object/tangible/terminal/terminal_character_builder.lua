@@ -2176,7 +2176,7 @@ object_tangible_terminal_terminal_character_builder = object_tangible_terminal_s
 			{
 				"Landspeeder av21", "object/tangible/deed/vehicle_deed/landspeeder_av21_deed.iff",
 				"Landspeeder x31", "object/tangible/deed/vehicle_deed/landspeeder_x31_deed.iff",
-				"Sith Speeder", "object/tangible/deed/vehicle_deed/sith_speeder.iff",
+				"Sith Speeder", "object/tangible/deed/vehicle_deed/sith_speeder_deed.iff",
 				"BARC Speeder", "object/tangible/deed/vehicle_deed/barc_speeder_deed.iff",
 				"Imperial BARC Speder", "object/tangible/deed/vehicle_deed/barc_speeder_imperial_deed.iff",
 				"Rebel BARC Speeder", "object/tangible/deed/vehicle_deed/barc_speeder_rebel_deed.iff",
