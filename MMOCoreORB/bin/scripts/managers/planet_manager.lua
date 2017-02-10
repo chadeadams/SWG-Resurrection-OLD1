@@ -41,7 +41,9 @@
 --which carries forward this exception.
 
 --Time, in seconds, that a shuttle is away for
+--shuttleportAwayTime = 300
 shuttleportAwayTime = 300
+--Adjusted shuttle waittime to 2.5 mins.
 starportAwayTime = 60
 
 --Time, in seconds, that a shuttle takes to land
