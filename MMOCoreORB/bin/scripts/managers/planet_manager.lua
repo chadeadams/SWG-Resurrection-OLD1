@@ -42,7 +42,7 @@
 
 --Time, in seconds, that a shuttle is away for
 --shuttleportAwayTime = 300
-shuttleportAwayTime = 300
+shuttleportAwayTime = 150
 --Adjusted shuttle waittime to 2.5 mins.
 starportAwayTime = 60
 
