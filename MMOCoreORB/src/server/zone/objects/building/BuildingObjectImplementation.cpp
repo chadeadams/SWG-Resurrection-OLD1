@@ -823,6 +823,8 @@ uint32 BuildingObjectImplementation::getMaximumNumberOfPlayerItems() {
 	if (lots == 0)
 		return MAXPLAYERITEMS;
 
+    //Storage for houses code
+
 	return MIN(MAXPLAYERITEMS, lots * 300);
 }
 
