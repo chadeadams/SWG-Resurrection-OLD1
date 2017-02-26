@@ -60,10 +60,10 @@ groupExpMultiplier = 2.0
 
 --Sets a global experience multiplier
 --Normal XP
---globalExpMultiplier = 1.5
+globalExpMultiplier = 1.5
 
 --Double XP
-globalExpMultiplier = 2.0
+--globalExpMultiplier = 2.0
 
 --Triple XP
 --globalExpMultiplier = 3.0
