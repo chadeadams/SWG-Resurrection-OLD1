@@ -11,6 +11,12 @@ function sp_black_market_dealers:start()
 	-- Spawn our characters for dealers and their locations with pointers.
 	local pLarry1 = spawnMobile("corellia", "black_market_dealer", 1, -121, 28, -4696, -1, 0 )
 	local pLarry2 = spawnMobile("naboo", "black_market_dealer", 1, -4805, 6, 4141, -1, 0 )
+
+
+--Custom Cities, Etc.
+    --Spawn at Resurrection Mall in Terra Nova City
+    local pLarry3 = spawnMobile("corellia", "black_market_dealer", 1, -94.0, 32.7, -5720.1, -1, 0 )
+
     -- Add New Characters Above Here
 end 
 
