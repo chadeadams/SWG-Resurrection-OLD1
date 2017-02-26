@@ -603,7 +603,7 @@ includeFile("black_market/black_mark_dealer_screenplays.lua")
 
 --Customer Screenplays
 includeFile("custom_screenplays/imperial_recruiter.lua")
-
+includeFile("custom_screenplays/rebel_recruiter.lua")
 
 
 
