@@ -968,16 +968,6 @@ object_mobile_vehicle_shared_barc_speeder = SharedCreatureObjectTemplate:new {
 }
 ObjectTemplates:addClientTemplate(object_mobile_vehicle_shared_barc_speeder, "object/mobile/vehicle/shared_barc_speeder.iff")
 
---*************************************************
---Speederbike Old
-
-object_mobile_vehicle_shared_speederbike_old = SharedCreatureObjectTemplate:new {
-	clientTemplateFileName = "object/mobile/vehicle/shared_speederbike_old.iff"
-}
-
-ObjectTemplates:addClientTemplate(object_mobile_vehicle_shared_speederbike_old, "object/mobile/vehicle/shared_speederbike_old.iff")
-
---*************************************************
 --Barc Imperial
 
 object_mobile_vehicle_shared_barc_speeder_imperial = SharedCreatureObjectTemplate:new {
@@ -1013,11 +1003,4 @@ object_mobile_vehicle_shared_pod_racer_two = SharedCreatureObjectTemplate:new {
 
 ObjectTemplates:addClientTemplate(object_mobile_vehicle_shared_pod_racer_two, "object/mobile/vehicle/shared_pod_racer_two.iff")
 --*************************************************
---Old Speederbike
 
-object_mobile_vehicle_shared_speederbike_old = SharedCreatureObjectTemplate:new {
-	clientTemplateFileName = "object/mobile/vehicle/shared_speederbike_old.iff"
-
-}
-
-ObjectTemplates:addClientTemplate(object_mobile_vehicle_shared_speederbike_old, "object/mobile/vehicle/shared_speederbike_old.iff")

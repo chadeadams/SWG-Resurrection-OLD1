@@ -649,14 +649,6 @@ object_tangible_deed_vehicle_deed_shared_barc_speeder_deed = SharedTangibleObjec
 
 ObjectTemplates:addClientTemplate(object_tangible_deed_vehicle_deed_shared_barc_speeder_deed, "object/tangible/deed/vehicle_deed/shared_barc_speeder_deed.iff")
 
---Speederbike old
-
-object_tangible_deed_vehicle_deed_shared_speederbike_old_deed = SharedTangibleObjectTemplate:new {
-	clientTemplateFileName = "object/tangible/deed/vehicle_deed/shared_speederbike_old_deed.iff"
-}
-
-ObjectTemplates:addClientTemplate(object_tangible_deed_vehicle_deed_shared_speederbike_old_deed, "object/tangible/deed/vehicle_deed/shared_speederbike_old_deed.iff")
-
 --Barc Imperial
 --**************************************************************
 object_tangible_deed_vehicle_deed_shared_barc_speeder_imperial_deed = SharedTangibleObjectTemplate:new {
@@ -697,12 +689,4 @@ object_tangible_deed_vehicle_deed_shared_pod_racer_two_deed = SharedTangibleObje
 ObjectTemplates:addClientTemplate(object_tangible_deed_vehicle_deed_shared_pod_racer_two_deed, "object/tangible/deed/vehicle_deed/shared_pod_racer_two_deed.iff")
 
 --**************************************************************
---Speederbike Old
-
-object_tangible_deed_vehicle_deed_shared_speederbike_old_deed = SharedTangibleObjectTemplate:new {
-	clientTemplateFileName = "object/tangible/deed/vehicle_deed/shared_speederbike_old_deed.iff"
-
-}
-
-ObjectTemplates:addClientTemplate(object_tangible_deed_vehicle_deed_shared_speederbike_old_deed, "object/tangible/deed/vehicle_deed/shared_speederbike_old_deed.iff")
 

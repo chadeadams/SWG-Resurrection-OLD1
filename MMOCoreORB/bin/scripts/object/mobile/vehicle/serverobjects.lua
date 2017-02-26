@@ -64,5 +64,6 @@ includeFile("mobile/vehicle/barc_speeder_imperial.lua")
 includeFile("mobile/vehicle/barc_speeder_rebel.lua")
 includeFile("mobile/vehicle/pod_racer_one.lua")
 includeFile("mobile/vehicle/pod_racer_two.lua")
-includeFile("mobile/vehicle/speederbike_old.lua")
+
+
 
