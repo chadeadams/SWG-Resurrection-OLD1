@@ -27,7 +27,11 @@ black_market_dealer = Creature:new {
 	optionsBitmask = 264, --for conversation
 	diet = HERBIVORE,
 
-	templates = {"object/mobile/dressed_criminal_pirate_human_male_01.iff"},
+	templates = {"object/mobile/dressed_criminal_pirate_human_male_01.iff",
+    "object/mobile/dressed_criminal_thug_aqualish_female_01.iff",
+    "object/mobile/dressed_criminal_thug_human_male_01.iff",
+    "object/mobile/dressed_criminal_zabrak_female_01.iff"
+    },
 	lootGroups = {},
 	weapons = {},
 	conversationTemplate = "black_market_template",
