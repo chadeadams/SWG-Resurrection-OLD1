@@ -12,7 +12,7 @@ CustomImperialRecruiterScreenPlay = ScreenPlay:new {
 registerScreenPlay("CustomImperialRecruiterScreenPlay", true)
 
 function CustomImperialRecruiterScreenPlay:start()
-	  self:spawnMobiles(
+	  self:spawnMobiles()
 end
 
 function CustomImperialRecruiterScreenPlay:spawnSceneObjects()
