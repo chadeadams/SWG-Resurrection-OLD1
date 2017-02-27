@@ -1,18 +1,29 @@
-spawn_custom_reb_recruiters = ScreenPlay:new {
+--Will spawn custom placed Imperial Recruiters besides the static SWGEmu Ones
+--Added 2/27/2017
+--Nugax (nugax@swgresurrection.com
+
+
+CustomReblRecruiterScreenPlay = ScreenPlay:new {
 	numberOfActs = 1,
+
+	screenplayName = "CustomReblRecruiterScreenPlay"
 }
 
---True here tells the server to load this screenplay at server load. False tells it to wait until explicitly started.
-registerScreenPlay("spawn_custom_reb_recruiters", true)
+registerScreenPlay("CustomReblRecruiterScreenPlay", true)
 
---This gets executed automatically when the screenplay is started
-function spawn_custom_reb_recruiters:start()
+function CustomImperialRecruiterScreenPlay:start()
+	  self:spawnMobiles()
+end
+
+function CustomImperialRecruiterScreenPlay:spawnSceneObjects()
 
 end
 
---Put all the initial spawning of mobiles in a nice method like this.
-function spawn_custom_reb_recruiters:spawnMobiles()
-    --Spawn Custom
-	spawnMobile("corellia", "rebel_recruiter", 1,-116.9, 26.4, -5589.9,-1, 0)
-   
-end
+function CustomImperialRecruiterScreenPlay:spawnMobiles()
+
+	--Spawn Rebel Recruiters
+
+    --Outside	
+	--spawnMobile("corellia","imperial_recruiter",0,-211,28,-4735,-1,0)
+
+	

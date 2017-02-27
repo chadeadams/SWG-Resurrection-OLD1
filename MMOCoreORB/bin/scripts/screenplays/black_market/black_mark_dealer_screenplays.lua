@@ -15,7 +15,7 @@ function sp_black_market_dealers:start()
 
 --Custom Cities, Etc.
     --Spawn at Resurrection Mall in Terra Nova City
-    local pLarry3 = spawnMobile("corellia", "black_market_dealer", 1, -94.0, 32.7, -5720.1, -1, 0 )
+    local pLarry3 = spawnMobile("corellia", "black_market_dealer", 1, -111, 30, -5716, -1, 0 )
 
     -- Add New Characters Above Here
 end 

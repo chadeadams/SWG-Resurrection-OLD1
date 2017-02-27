@@ -533,9 +533,11 @@ bool PlayerCreationManager::createCharacter(ClientCreateCharacterCallback* callb
 
 					if (lastCreatedCharacter.containsKey(accID)) {
 						Time lastCreatedTime = lastCreatedCharacter.get(accID);
-
-						if (lastCreatedTime.miliDifference() < 3600000) {
-							ErrorMessage* errMsg = new ErrorMessage("Create Error", "You are only permitted to create one character per hour. Repeat attempts prior to 1 hour elapsing will reset the timer.", 0x0);
+                        //Added 2/27/2017 - Nugax (nugax@swgreurrection.com
+                        //12 hour timer for creating new characters
+						//if (lastCreatedTime.miliDifference() < 3600000) {
+                          if (lastCreatedTime.miliDifference() < 43200000) {
+							ErrorMessage* errMsg = new ErrorMessage("Create Error", "You are only permitted to create one character every 12 hours per account. Repeat attempts prior to 12 hours elapsing will reset the timer.", 0x0);
 							client->sendMessage(errMsg);
 
 							playerCreature->destroyPlayerCreatureFromDatabase(true);
@@ -606,11 +608,14 @@ bool PlayerCreationManager::createCharacter(ClientCreateCharacterCallback* callb
 	chatManager->sendMail("system", "@newbie_tutorial/newbie_mail:welcome_subject", "@newbie_tutorial/newbie_mail:welcome_body", playerCreature->getFirstName());
 
 	//Join auction chat room
+    //Find text: join auction chat room nugax(nugax@swgresurrection.com)
 	ghost->addChatRoom(chatManager->getAuctionRoom()->getRoomID());
 
+    //Adjusted 12 hour timer
+    //Added 2/27/2017 - nugax (nugax@swgresurrection.com)
 	ManagedReference<SuiMessageBox*> box = new SuiMessageBox(playerCreature, SuiWindowType::NONE);
 	box->setPromptTitle("PLEASE NOTE");
-	box->setPromptText("You are limited to creating one character per hour. Attempting to create another character or deleting your character before the 1 hour timer expires will reset the timer.");
+	box->setPromptText("You are limited to creating one character every 12 hours per account. Attempting to create another character or deleting your character before the 12 hour timer expires will reset the timer.");
 
 	ghost->addSuiBox(box);
 	playerCreature->sendMessage(box->generateMessage());
