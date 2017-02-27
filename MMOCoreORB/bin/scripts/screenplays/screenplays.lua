@@ -602,8 +602,8 @@ includeFile("force_trainers/force_trainers_exar_kun_temple.lua")
 includeFile("black_market/black_mark_dealer_screenplays.lua")
 
 --Customer Screenplays
-includeFile("custom_screenplays/imperial_recruiter.lua")
-includeFile("custom_screenplays/rebel_recruiter.lua")
+--includeFile("custom_screenplays/imperial_recruiter.lua")
+--includeFile("custom_screenplays/rebel_recruiter.lua")
 
 
 
