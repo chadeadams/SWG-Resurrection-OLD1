@@ -7,7 +7,7 @@ registerScreenPlay("spawn_custom_imp_recruiters", true)
 
 --This gets executed automatically when the screenplay is started
 function spawn_custom_imp_recruiters:start()
-
+   local pImpies = spawnMobile("lok", "imperial_recruiter", 1,-215, 12, 3720, -1, 0)
 end
 
 --Put all the initial spawning of mobiles in a nice method like this.
