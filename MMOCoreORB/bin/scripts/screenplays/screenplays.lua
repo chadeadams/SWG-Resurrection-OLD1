@@ -593,15 +593,15 @@ includeFile("tests/tests.lua")
 
 --Buff Terminals Around Cities, etc.
 includeFile("buffterminals/buff_terms.lua")
-includeFile("buffterminals/advanced_buff_terms.lua")
+--includeFile("buffterminals/advanced_buff_terms.lua")
 
 --Force Trainers at Exar Kun Temple
 includeFile("force_trainers/force_trainers_exar_kun_temple.lua")
 
---Black Market Merchants
+--Black Market Merchants Added:(3/1/17) (Nugax nugax@swgresurrection.com
 includeFile("black_market/black_mark_dealer_screenplays.lua")
 
---Customer Screenplays
+--Custom Screenplays Added:(3/1/17) (Nugax nugax@swgresurrection.com)
 includeFile("custom_screenplays/imperial_recruiter.lua")
 
 

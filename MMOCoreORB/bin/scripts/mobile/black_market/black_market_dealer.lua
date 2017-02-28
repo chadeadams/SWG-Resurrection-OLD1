@@ -28,9 +28,9 @@ black_market_dealer = Creature:new {
 	diet = HERBIVORE,
 
 	templates = {"object/mobile/dressed_criminal_pirate_human_male_01.iff",
-    "object/mobile/dressed_criminal_thug_aqualish_female_01.iff",
-    "object/mobile/dressed_criminal_thug_human_male_01.iff",
-    "object/mobile/dressed_criminal_zabrak_female_01.iff"
+    "object/mobile/dressed_criminal_pirate_human_female_01.iff",
+    "object/mobile/dressed_criminal_slicer_human_male_01.iff",
+    "object/mobile/dressed_criminal_slicer_human_female_01.iff"
     },
 	lootGroups = {},
 	weapons = {},
