@@ -515,9 +515,11 @@ bool PlayerCreationManager::createCharacter(ClientCreateCharacterCallback* callb
 							uint32 sec = res->getUnsignedInt(0);
 
 							Time timeVal(sec);
-
-							if (timeVal.miliDifference() < 3600000) {
-								ErrorMessage* errMsg = new ErrorMessage("Create Error", "You are only permitted to create one character per hour. Repeat attempts prior to 1 hour elapsing will reset the timer.", 0x0);
+                        //Added 3/1/2017 - Nugax (nugax@swgreurrection.com (FIX)
+                        //12 hour timer for creating new characters
+						//	if (timeVal.miliDifference() < 3600000) {
+                            if (timeVal.miliDifference() < 43200000) {
+								ErrorMessage* errMsg = new ErrorMessage("Create Error", "You are only permitted to create one character every 12 hours per account. Repeat attempts prior to 12 hours elapsing will reset the timer.", 0x0);
 								client->sendMessage(errMsg);
 
 								playerCreature->destroyPlayerCreatureFromDatabase(true);
