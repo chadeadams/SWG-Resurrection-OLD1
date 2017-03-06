@@ -1,7 +1,7 @@
 leadadmin = {
 	level = 17,
 	name = "leadadmin",
-	tag = "SWG Resurrection Lead Admin",
+	tag = "SWG Resurrection Lead Admin/Dev",
 	skills = {
 		"admin_base",
 		"admin_debug_01",
