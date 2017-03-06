@@ -76,4 +76,6 @@ end
 
 function new_player_helper_conv_handler:runScreenHandlers(pConvTemplate, pPlayer, pNpc, selectedOption, pConvScreen)
 	return pC
+end
+
 	
