@@ -14,7 +14,7 @@ new_player_helper_first_screen = ConvoScreen:new {
 	stopConversation = "false",
 	options = {
 		{"Where am I?", "whereami"},
-		{"What should I do first?", "whatshouldido},
+		{"What should I do first?", "whatshouldido"},
 		{"Where can I find help?", "help"},
 		{"How do I move around the Galaxy?", "move"},
 		{"I chose the wrong profession. How can I change it?", "profession"},
