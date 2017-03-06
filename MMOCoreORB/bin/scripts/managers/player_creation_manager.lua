@@ -1,7 +1,7 @@
 --Should all created players start with God Mode? 1 = yes, 0 = no
 freeGodMode = 0;
 --How many cash credits new characters start with after creating a character (changed during test phase, normal value is 100)
-startingCash = 1000
+startingCash = 2000
 --startingCash = 100000
 --How many bank credits new characters start with after creating a character (changed during test phase, normal value is 1000)
 startingBank = 10000
@@ -59,4 +59,4 @@ professionSpecificItems = {
 	social_entertainer = { slitherhorn }
 }
 
-commonStartingItems = { marojMelon, survivalKnife, speederbike }
+commonStartingItems = { marojMelon, survivalKnife, speederbike, x31Speeder }
