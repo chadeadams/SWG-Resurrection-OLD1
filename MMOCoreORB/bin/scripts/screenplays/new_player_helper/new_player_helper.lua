@@ -25,8 +25,21 @@ function NewPlayerHelper:spawnMobiles()
 
 	--Spawn New Player Helper Droids
 
-    --Cornet Starport	
+    --Corellia
+    --Cornet StrP
 	spawnMobile("corellia","new_player_helper",0,-144,28,-4723,-1,0)
+
+    --Naboo
+    --Theed Starport
+    spawnMobile("naboo","new_player_helper",0,-4858,6,4163,-1,0)
+
+    --Tatooine
+    --Mos Eisley
+    spawnMobile("tatooine","new_player_helper",0,-3532,5,-4803,-1,0)
+    --Bestine
+    spawnMobile("tatooine","new_player_helper",0,-1282,12,-3591,-1,0)
+    -- Mos Espa
+    spawnMobile("tatooine","new_player_helper",0,-2901,5,2131,-1,0)
 
 end
 
