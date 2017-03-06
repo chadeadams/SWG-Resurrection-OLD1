@@ -604,6 +604,9 @@ includeFile("black_market/black_mark_dealer_screenplays.lua")
 --Custom Screenplays Added:(3/1/17) (Nugax nugax@swgresurrection.com)
 includeFile("custom_screenplays/imperial_recruiter.lua")
 
+--New Player Helper Droids at Starports Added: (3/6/2017) (Nugax nugax@swgresurrection.com)
+includeFile("new_player_helper/new_player_helper.lua")
+
 
 
 

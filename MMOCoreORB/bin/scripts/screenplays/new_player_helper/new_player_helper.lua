@@ -23,10 +23,10 @@ end
 
 function NewPlayerHelper:spawnMobiles()
 
-	--Spawn Rebel Recruiters
+	--Spawn New Player Helper Droids
 
-    --Outside	
-	--spawnMobile("corellia","imperial_recruiter",0,-211,28,-4735,-1,0)
+    --Cornet Starport	
+	spawnMobile("corellia","new_player_helper",0,-144,28,-4723,-1,0)
 
 end
 	
