@@ -33,49 +33,49 @@ end
 
 --Added Convo Hander
 
-new_player_helper_conv_handler = Object:new {
-tstring = "myconversation"
-}
+new_player_helper_convo_handler = Object:new {
+	tstring = "myconversation"
+ }
 
-function new_player_helper_conv_handler:getNextConversationScreen(pConvTemplate, pPlayer, selectedOption, pNpc)
-	local convsession = CreatureObject(pPlayer):getConversationSession()
-
-	local lastConvScreen = nil
-
-	if (convsession ~= nil) then
-		local session = LuaConversationSession(convsession)
-		lastConvScreen = session:getLastConversationScreen()
-	end
-
-	local conv = LuaConversationTemplate(pConvTemplate)
-
-	local nextConvScreen
-
-	if (lastConvScreen ~= nil) then
-		local luaLastConvScreen = LuaConversationScreen(lastConvScreen)
-
-		--Get the linked screen for the selected option.
-		local optionLink = luaLastConvScreen:getOptionLink(selectedOption)
-
-		nextConvScreen = conv:getScreen(optionLink)
-
-		if nextConvScreen == nil then
-			nextConvScreen = self:getInitialScreen(pPlayer, pNpc, pConvTemplate)
-		end
-	else
-		nextConvScreen = self:getInitialScreen(pPlayer, pNpc, pConvTemplate)
-	end
-
-	return nextConvScreen
-end
-
-function conv_handler:getInitialScreen(pPlayer, pNpc, pConvTemplate)
-	local convTemplate = LuaConversationTemplate(pConvTemplate)
-	return convTemplate:getInitialScreen()
-end
-
-function new_player_helper_conv_handler:runScreenHandlers(pConvTemplate, pPlayer, pNpc, selectedOption, pConvScreen)
-	return pC
-end
-
+function new_player_helper_convo_handler:getNextConversationScreen(conversationTemplate, conversingPlayer, selectedOption)
+-- Assign the player to variable creature for use inside this function.
+	local creature = LuaCreatureObject(conversingPlayer)
 	
+	-- Get the last conversation to determine whetehr or not we're  on the first screen
+	local convosession = creature:getConversationSession()
+	lastConversation = nil
+	local conversation = LuaConversationTemplate(conversationTemplate)
+	local nextConversationScreen 
+	
+	-- If there is a conversation open, do stuff with it
+	if ( conversation ~= nil ) then
+		-- check to see if we have a next screen
+		if ( convosession ~= nil ) then
+			 local session = LuaConversationSession(convosession)
+			 if ( session ~= nil ) then
+			 	lastConversationScreen = session:getLastConversationScreen()
+			 end
+		end
+		
+		-- Last conversation was nil, so get the first screen
+		if ( lastConversationScreen == nil ) then
+			nextConversationScreen = conversation:getInitialScreen()
+		else
+		-- Start playing the rest of the conversation based on user input
+			local luaLastConversationScreen = LuaConversationScreen(lastConversationScreen)
+			
+			-- Set variable to track what option the player picked and get the option picked
+			local optionLink = luaLastConversationScreen:getOptionLink(selectedOption)
+			nextConversationScreen = conversation:getScreen(optionLink)
+						
+		end
+	end
+	-- end of the conversation logic.
+	return nextConversationScreen
+end
+--*****************************************************************************************************************************************
+
+function new_player_helper_convo_handler:runScreenHandlers(conversationTemplate, conversingPlayer, conversingNPC, selectedOption, conversationScreen)
+	-- Plays the screens of the conversation.
+	return conversationScreen
+end
