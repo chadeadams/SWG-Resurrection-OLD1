@@ -35,7 +35,7 @@ function NewPlayerHelper:spawnMobiles()
 
     --Tatooine
     --Mos Eisley
-    spawnMobile("tatooine","new_player_helper",0,-3532,5,-4803,-1,0)
+    spawnMobile("tatooine","new_player_helper",0,3532,5,-4803,-1,0)
     --Bestine
     spawnMobile("tatooine","new_player_helper",0,-1282,12,-3591,-1,0)
     -- Mos Espa
