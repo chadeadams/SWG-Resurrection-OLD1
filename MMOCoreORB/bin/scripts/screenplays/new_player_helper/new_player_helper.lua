@@ -33,7 +33,7 @@ end
 
 --Added Convo Hander
 
-conv_handler = Object:new {
+new_player_helper_conv_handler = Object:new {
 tstring = "myconversation"
 }
 
