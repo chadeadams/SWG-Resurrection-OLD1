@@ -19,7 +19,7 @@ new_player_helper_first_screen = ConvoScreen:new {
 		{"How do I move around the Galaxy?", "move"},
 		{"I chose the wrong profession. How can I change it?", "profession"},
 		{"Where or how do I get money?", "money"},
-		{"Where is everyone else in the Galaxy?", "everyonelse"},
+		{"Where is everyone else in the Galaxy?", "everyoneelse"},
 	}
 }
 new_player_helper_template:addScreen(new_player_helper_first_screen);
