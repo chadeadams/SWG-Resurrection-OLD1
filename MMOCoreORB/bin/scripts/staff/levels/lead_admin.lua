@@ -1,7 +1,7 @@
-lead_admin = {
+leadadmin = {
 	level = 17,
-	name = "lead_admin",
-	tag = "SWG Resurrection Lead Admin/Dev",
+	name = "leadadmin",
+	tag = "SWG Resurrection Lead Admin",
 	skills = {
 		"admin_base",
 		"admin_debug_01",
@@ -24,4 +24,4 @@ lead_admin = {
 	}
 }
 
-addLevel(lead_admin)
+addLevel(leadadmin)
