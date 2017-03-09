@@ -8,8 +8,8 @@ FsReflex1Theater = GoToTheater:new {
 	-- Task properties
 	taskName = "FsReflex1Theater",
 	-- GoToTheater properties
-	minimumDistance = 64,
-	maximumDistance = 128,
+	minimumDistance = 90,
+	maximumDistance = 140,
 	theater = {
 		{ template = "object/static/structure/military/military_wall_med_imperial_style_01.iff", xDiff = 0.5, zDiff = -0.11, yDiff = 2.12, heading = -14.32 },
 		{ template = "object/static/structure/military/military_column_med_imperial_style_01.iff", xDiff = -3.84, zDiff = -0.11, yDiff = 1.098, heading = -14.32 },
@@ -17,15 +17,14 @@ FsReflex1Theater = GoToTheater:new {
 		{ template = "object/static/structure/naboo/poi_nboo_tent_small.iff", xDiff = -1.61, zDiff = 0.32, yDiff = -6.46, heading = 14.32 }
 	},
 	waypointDescription = "@quest/quest_journal/fs_quests_reflex1:s_02",
-	mobileList = {
-		{ template = "fs_reflex1_prisoner", minimumDistance = 2, maximumDistance = 4, referencePoint = 0 },
-		{ template = "sith_shadow_pirate", minimumDistance = 6, maximumDistance = 12, referencePoint = 0 },
-		{ template = "sith_shadow_thug", minimumDistance = 6, maximumDistance = 12, referencePoint = 0 }
+	mobileListWithLoc = {
+		{ template = "fs_reflex1_prisoner", x = 1.146, y = -0.849 },
+		{ template = "sith_shadow_pirate", x = 2.42, y = 1.669 },
+		{ template = "sith_shadow_thug", x = -0.127, y = -3.36 }
 	},
 	despawnTime = 20 * 60 * 1000, -- 20 minutes
 	activeAreaRadius = 32,
 	onFailedSpawn = nil,
-	onSuccessfulSpawn = nil,
 	onEnteredActiveArea = nil
 }
 
@@ -34,19 +33,26 @@ function FsReflex1Theater:onEnteredActiveArea(pPlayer, mobileList)
 		return
 	end
 
-	self:removeTheaterWaypoint(pPlayer)
-	QuestManager.completeQuest(pPlayer, QuestManager.quests.FS_REFLEX_RESCUE_QUEST_01)
-	QuestManager.activateQuest(pPlayer, QuestManager.quests.FS_REFLEX_RESCUE_QUEST_02)
+	if (not QuestManager.hasCompletedQuest(pPlayer, QuestManager.quests.FS_REFLEX_RESCUE_QUEST_01)) then
+		QuestManager.completeQuest(pPlayer, QuestManager.quests.FS_REFLEX_RESCUE_QUEST_01)
+		QuestManager.activateQuest(pPlayer, QuestManager.quests.FS_REFLEX_RESCUE_QUEST_02)
+	end
 end
 
-function FsReflex1Theater:onSuccessfulSpawn(pPlayer, mobileList)
+function FsReflex1Theater:onObjectsSpawned(pPlayer, mobileList)
 	if (pPlayer == nil) then
 		return
 	end
 
-	if (mobileList[1] ~= nil) then
+	if (SpawnMobiles.isValidMobile(mobileList[1])) then
 		writeData(SceneObject(mobileList[1]):getObjectID() .. ":ownerID", SceneObject(pPlayer):getObjectID())
 		CreatureObject(mobileList[1]):setPvpStatusBitmask(0)
+	end
+end
+
+function FsReflex1Theater:onTheaterCreated(pPlayer)
+	if (pPlayer == nil) then
+		return
 	end
 
 	createObserver(OBJECTDESTRUCTION, self.taskName, "onPlayerKilled", pPlayer)

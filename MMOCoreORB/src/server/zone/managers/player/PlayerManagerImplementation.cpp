@@ -7,10 +7,7 @@
 
 #include "server/zone/managers/player/PlayerManager.h"
 
-#include "server/login/account/AccountManager.h"
-#include "server/zone/packets/charcreation/ClientCreateCharacter.h"
 #include "server/zone/packets/charcreation/ClientCreateCharacterCallback.h"
-#include "server/zone/packets/charcreation/ClientCreateCharacterSuccess.h"
 #include "server/zone/packets/charcreation/ClientCreateCharacterFailed.h"
 #include "server/zone/ZoneServer.h"
 #include "server/zone/ZoneProcessServer.h"
@@ -19,18 +16,14 @@
 #include "server/zone/managers/object/ObjectManager.h"
 #include "server/zone/managers/faction/FactionManager.h"
 #include "server/db/ServerDatabase.h"
-#include "server/db/MantisDatabase.h"
 #include "server/chat/ChatManager.h"
-#include "conf/ConfigManager.h"
 #include "server/zone/managers/objectcontroller/ObjectController.h"
-#include "server/zone/managers/player/VeteranRewardList.h"
 #include "server/zone/managers/combat/CombatManager.h"
 #include "server/zone/managers/skill/Performance.h"
 #include "server/zone/managers/collision/CollisionManager.h"
 #include "server/zone/objects/intangible/VehicleControlDevice.h"
 #include "server/zone/objects/tangible/threat/ThreatMap.h"
 #include "server/zone/objects/creature/VehicleObject.h"
-#include "server/zone/objects/area/ActiveArea.h"
 #include "server/login/packets/ErrorMessage.h"
 #include "server/zone/packets/player/LogoutMessage.h"
 #include "server/zone/objects/player/sessions/TradeSession.h"
@@ -41,10 +34,7 @@
 #include "server/zone/managers/player/QuestInfo.h"
 
 #include "server/zone/objects/intangible/ShipControlDevice.h"
-#include "server/zone/objects/ship/ShipObject.h"
-
 #include "server/zone/objects/group/GroupObject.h"
-
 #include "server/zone/objects/building/BuildingObject.h"
 #include "templates/building/CloningBuildingObjectTemplate.h"
 #include "server/zone/objects/player/PlayerObject.h"
@@ -58,14 +48,11 @@
 #include "server/zone/objects/player/events/MeditateTask.h"
 #include "server/zone/objects/player/events/LogoutTask.h"
 #include "server/zone/objects/player/sessions/EntertainingSession.h"
-
 #include "templates/building/CloneSpawnPoint.h"
-
 #include "server/zone/objects/player/sui/messagebox/SuiMessageBox.h"
 #include "server/zone/objects/player/sui/listbox/SuiListBox.h"
 #include "server/zone/objects/cell/CellObject.h"
 #include "server/zone/managers/skill/SkillManager.h"
-
 #include "server/zone/objects/player/FactionStatus.h"
 #include "server/zone/managers/planet/PlanetManager.h"
 
@@ -73,62 +60,45 @@
 #include "server/zone/packets/trade/AcceptTransactionMessage.h"
 #include "server/zone/packets/trade/UnAcceptTransactionMessage.h"
 #include "server/zone/packets/trade/AddItemMessage.h"
-#include "server/zone/packets/trade/BeginTradeMessage.h"
-#include "server/zone/packets/trade/DenyTradeMessage.h"
 #include "server/zone/packets/trade/TradeCompleteMessage.h"
 #include "server/zone/packets/trade/GiveMoneyMessage.h"
 #include "server/zone/packets/chat/ChatSystemMessage.h"
-#include "server/zone/packets/tangible/UpdatePVPStatusMessage.h"
-
 #include "server/zone/packets/tangible/TangibleObjectDeltaMessage3.h"
 #include "server/zone/packets/player/PlayMusicMessage.h"
-#include "server/zone/packets/player/PlayerObjectDeltaMessage6.h"
 #include "server/zone/packets/object/StartingLocationListMessage.h"
 
 #include "server/zone/objects/region/CityRegion.h"
 #include "server/zone/managers/director/DirectorManager.h"
-
 #include "server/zone/objects/player/sui/callbacks/CloningRequestSuiCallback.h"
-
 #include "server/zone/objects/tangible/tool/CraftingStation.h"
 #include "server/zone/objects/tangible/tool/CraftingTool.h"
 
 #include "server/zone/Zone.h"
 #include "server/zone/managers/player/creation/PlayerCreationManager.h"
 #include "server/ServerCore.h"
-
 #include "server/login/account/Account.h"
 
 #include "server/zone/objects/player/sui/callbacks/PlayerTeachSuiCallback.h"
 #include "server/zone/objects/player/sui/callbacks/PlayerTeachConfirmSuiCallback.h"
 #include "server/zone/objects/player/sui/callbacks/ProposeUnitySuiCallback.h"
 #include "server/zone/objects/player/sui/callbacks/SelectUnityRingSuiCallback.h"
-#include "server/zone/objects/player/sui/callbacks/ConfirmDivorceSuiCallback.h"
 #include "server/zone/objects/player/sui/callbacks/SelectVeteranRewardSuiCallback.h"
 #include "server/zone/objects/player/sui/callbacks/ConfirmVeteranRewardSuiCallback.h"
+#include "server/zone/objects/player/sui/callbacks/ConfirmDivorceSuiCallback.h"
 
 #include "server/zone/managers/stringid/StringIdManager.h"
-
 #include "server/zone/objects/creature/buffs/PowerBoostBuff.h"
-
 #include "server/zone/objects/creature/ai/Creature.h"
+#include "server/zone/objects/creature/ai/NonPlayerCreatureObject.h"
 #include "server/zone/objects/creature/events/DespawnCreatureTask.h"
 #include "server/zone/objects/creature/ai/AiAgent.h"
 #include "server/zone/managers/gcw/GCWManager.h"
-
-#include "server/zone/managers/creature/LairObserver.h"
 #include "server/zone/objects/intangible/PetControlDevice.h"
 #include "server/zone/managers/creature/PetManager.h"
-
 #include "server/zone/objects/creature/events/BurstRunNotifyAvailableEvent.h"
 #include "server/zone/objects/creature/ai/DroidObject.h"
 #include "server/zone/objects/tangible/components/droid/DroidPlaybackModuleDataComponent.h"
-
 #include "server/zone/objects/player/badges/Badge.h"
-
-#include "server/zone/packets/group/GroupObjectDeltaMessage6.h"
-
-#include <iostream>
 
 int PlayerManagerImplementation::MAX_CHAR_ONLINE_COUNT = 2;
 
@@ -145,6 +115,7 @@ PlayerManagerImplementation::PlayerManagerImplementation(ZoneServer* zoneServer,
 	loadStartingLocations();
 	loadQuestInfo();
 	loadPermissionLevels();
+	loadXpBonusList();
 
 	setGlobalLogging(true);
 	setLogging(false);
@@ -261,6 +232,52 @@ void PlayerManagerImplementation::loadStartingLocations() {
 	delete iffStream;
 
 	info("Loaded " + String::valueOf(startingLocationList.getTotalLocations()) + " starting locations.", true);
+}
+
+void PlayerManagerImplementation::loadXpBonusList() {
+	IffStream* iffStream = TemplateManager::instance()->openIffFile("datatables/xp/species.iff");
+
+	if (iffStream == NULL) {
+		info("Couldn't load species xp bonuses.", true);
+		return;
+	}
+
+	DataTableIff dtiff;
+	dtiff.readObject(iffStream);
+
+	delete iffStream;
+
+	for (int i = 0; i < dtiff.getTotalColumns(); i++) {
+		VectorMap<String, int> bonusList;
+		String speciesName = dtiff.getColumnNameByIndex(i);
+
+		for (int j = 0; j < dtiff.getTotalRows(); j++) {
+			DataTableRow* row = dtiff.getRow(j);
+			String columnData = "";
+			row->getCell(i)->getValue(columnData);
+
+			if (columnData != "") {
+				StringTokenizer callbackString(columnData);
+				callbackString.setDelimeter(":");
+
+				String xpType = "";
+				int bonusMod = 0;
+
+				callbackString.getStringToken(xpType);
+				bonusMod = callbackString.getIntToken();
+
+				if (xpType == "" or bonusMod == 0)
+					continue;
+
+				bonusList.put(xpType, bonusMod);
+			}
+		}
+
+		if (bonusList.size() > 0)
+			xpBonusList.put(speciesName, bonusList);
+	}
+
+	info("Loaded xp bonuses for " + String::valueOf(xpBonusList.size()) + " species.", true);
 }
 
 void PlayerManagerImplementation::loadQuestInfo() {
@@ -449,6 +466,10 @@ uint64 PlayerManagerImplementation::getObjectID(const String& name) {
 	return oid;
 }
 
+String PlayerManagerImplementation::getPlayerName(uint64 oid) {
+	return nameMap->get(oid);
+}
+
 bool PlayerManagerImplementation::checkExistentNameInDatabase(const String& name) {
 	if (name.isEmpty())
 		return false;
@@ -471,7 +492,7 @@ bool PlayerManagerImplementation::checkExistentNameInDatabase(const String& name
 }
 
 bool PlayerManagerImplementation::checkPlayerName(ClientCreateCharacterCallback* callback) {
-	ZoneClientSession* client = callback->getClient();
+	auto client = callback->getClient();
 
 	NameManager* nm = processor->getNameManager();
 	BaseMessage* msg = NULL;
@@ -719,14 +740,13 @@ void PlayerManagerImplementation::killPlayer(TangibleObject* attacker, CreatureO
 		playerRef->sendSystemMessage(stringId);
 
 		Reference<ThreatMap*> copyThreatMap = new ThreatMap(*threatMap);
-		PlayerManager* pManager = _this.getReferenceUnsafeStaticCast();
 
-		EXECUTE_TASK_3(pManager, playerRef, copyThreatMap, {
-				if (playerRef_p != NULL) {
-					Locker locker(playerRef_p);
-					pManager_p->doPvpDeathRatingUpdate(playerRef_p, copyThreatMap_p);
-				}
-		});
+		Core::getTaskManager()->executeTask([=] () {
+			if (playerRef != NULL) {
+				Locker locker(playerRef);
+				doPvpDeathRatingUpdate(playerRef, copyThreatMap);
+			}
+		}, "PvpDeathRatingUpdateLambda");
 	}
 
 	if (player->isRidingMount()) {
@@ -1061,6 +1081,11 @@ void PlayerManagerImplementation::disseminateExperience(TangibleObject* destruct
 		SynchronizedVector<ManagedReference<CreatureObject*> >* spawnedCreatures) {
 	uint32 totalDamage = threatMap->getTotalDamage();
 
+	if (totalDamage == 0) {
+		threatMap->removeAll();
+		return;
+	}
+
 	VectorMap<ManagedReference<CreatureObject*>, int> slExperience;
 	slExperience.setAllowOverwriteInsertPlan();
 	slExperience.setNullValue(0);
@@ -1244,8 +1269,6 @@ void PlayerManagerImplementation::disseminateExperience(TangibleObject* destruct
 
 	threatMap->removeAll();
 }
-
-
 
 bool PlayerManagerImplementation::checkEncumbrancies(CreatureObject* player, ArmorObject* armor) {
 	int strength = player->getHAM(CreatureAttribute::STRENGTH);
@@ -1480,7 +1503,12 @@ void PlayerManagerImplementation::awardExperience(CreatureObject* player, const 
 	if (playerObject == NULL)
 		return;
 
-	int xp = playerObject->addExperience(xpType, (int) (amount * localMultiplier * globalExpMultiplier));
+	float speciesModifier = 1.f;
+
+	if (amount > 0)
+		speciesModifier = getSpeciesXpModifier(player->getSpeciesName(), xpType);
+
+	int xp = playerObject->addExperience(xpType, (int) (amount * speciesModifier * localMultiplier * globalExpMultiplier));
 
 	player->notifyObservers(ObserverEventType::XPAWARDED, player, xp);
 
@@ -2072,7 +2100,7 @@ void PlayerManagerImplementation::sendBattleFatigueMessage(CreatureObject* playe
 	}
 }
 
-int PlayerManagerImplementation::healEnhance(CreatureObject* enhancer, CreatureObject* patient, byte attribute, int buffvalue, float duration) {
+int PlayerManagerImplementation::healEnhance(CreatureObject* enhancer, CreatureObject* patient, byte attribute, int buffvalue, float duration, int absorption) {
 	String buffname = "medical_enhance_" + BuffAttribute::getName(attribute);
 	uint32 buffcrc = buffname.hashCode();
 	uint32 buffdiff = buffvalue;
@@ -2100,6 +2128,9 @@ int PlayerManagerImplementation::healEnhance(CreatureObject* enhancer, CreatureO
 
 	if(BuffAttribute::isProtection(attribute)) {
 		buff->setSkillModifier(BuffAttribute::getProtectionString(attribute), buffvalue);
+
+		if (absorption > 0)
+			buff->setSkillModifier(BuffAttribute::getAbsorptionString(attribute), absorption);
 	} else {
 		buff->setAttributeModifier(attribute, buffvalue);
 		buff->setFillAttributesOnBuff(true);
@@ -5117,6 +5148,10 @@ void PlayerManagerImplementation::doPvpDeathRatingUpdate(CreatureObject* player,
 		return;
 
 	uint32 totalDamage = threatMap->getTotalDamage();
+
+	if (totalDamage == 0)
+		return;
+
 	int defenderPvpRating = ghost->getPvpRating();
 	int victimRatingTotalDelta = 0;
 	ManagedReference<CreatureObject*> highDamageAttacker = NULL;
@@ -5273,4 +5308,16 @@ void PlayerManagerImplementation::doPvpDeathRatingUpdate(CreatureObject* player,
 
 		player->sendSystemMessage(toVictim);
 	}
+}
+
+float PlayerManagerImplementation::getSpeciesXpModifier(const String& species, const String& xpType) {
+	int bonus = xpBonusList.get(species).get(xpType);
+
+	if (bonus == -1)
+		bonus = xpBonusList.get(species).get("all");
+
+	if (bonus == -1)
+		return 1.f;
+
+	return (100.f + bonus) / 100.f;
 }

@@ -8,6 +8,7 @@
 #include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/objects/player/PlayerObject.h"
 #include "server/zone/ZoneServer.h"
+#include "server/zone/Zone.h"
 
 #include "server/zone/packets/chat/ChatRoomList.h"
 #include "server/zone/packets/chat/ChatOnDestroyRoom.h"
@@ -97,30 +98,58 @@ void ChatRoomImplementation::removeAllPlayers() {
 void ChatRoomImplementation::broadcastMessage(BaseMessage* msg) {
 	Locker locker(_this.getReferenceUnsafeStaticCast());
 
-	for (int i = 0; i < playerList.size(); ++i) {
-		ManagedReference<CreatureObject*> player = playerList.get(i);
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+	msg->acquire();
+#endif
 
-		if (player != NULL)
+	for (int i = 0; i < playerList.size(); ++i) {
+		CreatureObject* player = playerList.get(i);
+
+		if (player != NULL) {
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+			player->sendMessage(msg);
+#else
 			player->sendMessage(msg->clone());
+#endif
+		}
 	}
 
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+	msg->release();
+#else
 	delete msg;
+#endif
 }
 
 void ChatRoomImplementation::broadcastMessages(Vector<BaseMessage*>* messages) {
 	Locker locker(_this.getReferenceUnsafeStaticCast());
+
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+	for (int j = 0; j < messages->size(); ++j) {
+		BaseMessage* msg = messages->get(j);
+		msg->acquire();
+	}
+#endif
 
 	for (int i = 0; i < playerList.size(); ++i) {
 		CreatureObject* player = playerList.get(i);
 
 		for (int j = 0; j < messages->size(); ++j) {
 			BaseMessage* msg = messages->get(j);
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+			player->sendMessage(msg);
+#else
 			player->sendMessage(msg->clone());
+#endif
 		}
 	}
 
 	for (int j = 0; j < messages->size(); ++j) {
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+		messages->get(j)->release();
+#else
 		delete messages->get(j);
+#endif
 	}
 
 	messages->removeAll();
@@ -156,6 +185,9 @@ void ChatRoomImplementation::broadcastMessageCheckIgnore(BaseMessage* msg, const
 	if (senderPlayer->hasGodMode())
 		godMode = true;
 
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+	msg->acquire();
+#endif
 
 	for (int i = 0; i < playerList.size(); ++i) {
 		ManagedReference<CreatureObject*> player = playerList.get(i);
@@ -166,12 +198,20 @@ void ChatRoomImplementation::broadcastMessageCheckIgnore(BaseMessage* msg, const
 				continue;
 
 			if (!ghost->isIgnoring(lowerName) || godMode) {
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+				player->sendMessage(msg);
+#else
 				player->sendMessage(msg->clone());
+#endif
 			}
 		}
 	}
 
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+	msg->release();
+#else
 	delete msg;
+#endif
 }
 
 String ChatRoomImplementation::getGalaxyName() {
@@ -181,40 +221,28 @@ String ChatRoomImplementation::getGalaxyName() {
 String ChatRoomImplementation::getModeratorName(int index) {
 	ReadLocker locker(_this.getReferenceUnsafeStaticCast());
 
-	String name = "";
 	uint64 objectID = moderatorList.get(index);
+	auto playerManager = server->getPlayerManager();
 
-	Reference<CreatureObject*> moderator = server->getObject(objectID).castTo<CreatureObject*>();
-	if (moderator != NULL)
-		name = moderator->getFirstName();
-
-	return name;
+	return playerManager->getPlayerName(objectID);
 }
 
 String ChatRoomImplementation::getInvitedName(int index) {
 	ReadLocker locker(_this.getReferenceUnsafeStaticCast());
 
-	String name = "";
 	uint64 objectID = invitedList.get(index);
+	auto playerManager = server->getPlayerManager();
 
-	Reference<CreatureObject*> invited = server->getObject(objectID).castTo<CreatureObject*>();
-	if (invited != NULL)
-		name = invited->getFirstName();
-
-	return name;
+	return playerManager->getPlayerName(objectID);
 }
 
 String ChatRoomImplementation::getBannedName(int index) {
 	ReadLocker locker(_this.getReferenceUnsafeStaticCast());
 
-	String name = "";
 	uint64 objectID = bannedList.get(index);
+	auto playerManager = server->getPlayerManager();
 
-	Reference<CreatureObject*> banned = server->getObject(objectID).castTo<CreatureObject*>();
-	if (banned != NULL)
-		name = banned->getFirstName();
-
-	return name;
+	return playerManager->getPlayerName(objectID);
 }
 
 int ChatRoomImplementation::checkEnterPermission(CreatureObject* player) {

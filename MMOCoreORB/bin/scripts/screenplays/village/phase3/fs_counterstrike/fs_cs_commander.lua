@@ -83,7 +83,7 @@ function FsCsCommander:captureCommander(pCommander, pPlayer)
 		writeData(playerID .. ":fsCounterStrike:commanderID", commanderID)
 		CreatureObject(pPlayer):sendSystemMessage("@fs_quest_village:fs_cs_capd_commander_via_group")
 	else
-		printf("ERROR in FsCsCommander:notifyCommanderCaptured(), got to end of function without matching if conditions.\n")
+		printLuaError("ERROR in FsCsCommander:notifyCommanderCaptured(), got to end of function without matching if conditions.")
 	end
 end
 
@@ -136,7 +136,7 @@ function FsCsCommander:createCommander(pTheater)
 	pCommander = spawnMobile("dathomir", "sith_shadow_mercenary_nofaction", 0, tentX, tentZ, tentY, 0, 0)
 
 	if (pCommander == nil) then
-		printf("Error in FsCsCommander:createCommander, unable to create commander.")
+		printLuaError("FsCsCommander:createCommander, unable to create commander.")
 		return
 	end
 
@@ -203,7 +203,7 @@ function FsCsCommander:notifyEnteredCommanderTurninArea(pArea, pCreature)
 		return 1
 	end
 
-	if (shieldKillerID ~= escorterID) then
+	if (shieldKillerID ~= escorterID and FsCounterStrike:isOnEscort(pShieldKiller)) then
 		teamTurnin = true
 	end
 
@@ -276,7 +276,7 @@ function FsCsCommander:handleCommanderEscorterFailure(pPlayer, pCommander)
 		end
 
 		AiAgent(pCommander):setAiTemplate("manualescort")
-		self:doRun(pCommander)
+		createEvent(10, "FsCsCommander", "doRun", pCommander, "")
 		createEvent(self.runAwayTime * 1000, "FsCsCommander", "runAwaySuccessful", pCommander, "")
 		writeData(commanderID .. ":canBeRecaptured", 1)
 		CreatureObject(pShieldKiller):sendSystemMessage("@fs_quest_village:commander_is_free")
@@ -440,10 +440,11 @@ end
 
 function FsCsCommander:destroyCommanderWaypoint(pPlayer)
 	local waypointID = readData(SceneObject(pPlayer):getObjectID() .. ":village:csCommanderWaypoint")
-	local pWaypoint = getSceneObject(waypointID)
 
-	if (pWaypoint ~= nil) then
-		SceneObject(pWaypoint):destroyObjectFromWorld()
+	local pGhost = CreatureObject(pPlayer):getPlayerObject()
+
+	if (pGhost ~= nil) then
+		PlayerObject(pGhost):removeWaypoint(waypointID, true)
 	end
 
 	deleteData(SceneObject(pPlayer):getObjectID() .. ":village:csCommanderWaypoint")
@@ -462,7 +463,7 @@ function FsCsCommander:createCommanderWaypoint(pPlayer, theaterID)
 		end
 
 		local waypointID = PlayerObject(pGhost):addWaypoint("dathomir", wayDesc, "", wayX, wayY, WAYPOINTYELLOW, true, true, 0)
-		writeData(SceneObject(pPlayer):getObjectID() .. ":village:csCommanderWaypoint")
+		writeData(SceneObject(pPlayer):getObjectID() .. ":village:csCommanderWaypoint", waypointID)
 	end
 end
 
@@ -545,7 +546,7 @@ function FsCsCommander:setupRescueMob(pMobile)
 	createEvent(getRandomNumber(20, 60) * 1000, "FsCsCommander", "doRescuerSpatial", pMobile, "")
 end
 
-function FsCsBaseControl:doRescuerSpatial(pMobile)
+function FsCsCommander:doRescuerSpatial(pMobile)
 	if (pMobile == nil or getRandomNumber(100) < 75) then
 		return
 	end

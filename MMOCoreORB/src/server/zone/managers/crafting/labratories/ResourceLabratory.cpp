@@ -6,6 +6,9 @@
  */
 
 #include "ResourceLabratory.h"
+#include "server/zone/objects/draftschematic/DraftSchematic.h"
+#include "server/zone/objects/tangible/component/Component.h"
+#include "server/zone/objects/manufactureschematic/ingredientslots/ComponentSlot.h"
 
 ResourceLabratory::ResourceLabratory() {
 	setLoggingName("ResourceLabratory");
@@ -13,11 +16,6 @@ ResourceLabratory::ResourceLabratory() {
 
 ResourceLabratory::~ResourceLabratory() {
 }
-
-bool ResourceLabratory::allowFactoryRun(ManufactureSchematic* manufactureSchematic) {
-	return manufactureSchematic->allowFactoryRun();
-}
-
 
 void ResourceLabratory::initialize(ZoneServer* server) {
 	SharedLabratory::initialize(server);

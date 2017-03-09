@@ -8,8 +8,6 @@
 #ifndef SHAREDOBJECTTEMPLATE_H_
 #define SHAREDOBJECTTEMPLATE_H_
 
-#include "engine/engine.h"
-
 #include "templates/LuaTemplate.h"
 #include "templates/IffTemplate.h"
 #include "templates/ChildObject.h"
@@ -24,9 +22,6 @@
 
 class PortalLayout;
 class AppearanceTemplate;
-class SlotDescriptor;
-class ArrangementDescriptor;
-
 
 class SharedObjectTemplate : public LuaTemplate, public IffTemplate {
 protected:
@@ -169,7 +164,6 @@ public:
 	const static int LIVESAMPLE = 0x4000031;
 	const static int CREATUREHABITAT = 0x4000032;
 	const static int REPAIRTOOL = 0x4000033;
-	const static int LIGHTSABERCRYSTAL = 0x4000035;
 	const static int SHIPCHASSIS = 0x4000036;
 	const static int SHIPDEED = 0x4000037;
 	const static int RECYCLETOOL = 0x4000038;
@@ -690,10 +684,6 @@ public:
 		return false;
 	}
 
-	virtual bool isLightsaberCrystalTemplate() {
-		return false;
-	}
-
 	virtual bool isShipChassisTemplate() {
     	return false;
     }
@@ -754,6 +744,5 @@ public:
 		return updatesNavMesh;
 	}
 };
-
 
 #endif /* SHAREDOBJECTTEMPLATE_H_ */

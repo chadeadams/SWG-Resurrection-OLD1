@@ -1,6 +1,5 @@
 #include "Zone.h"
 #include "ZonePacketHandler.h"
-#include "ZoneClient.h"
 #include "server/zone/packets/zone/SelectCharacter.h"
 #include "server/zone/packets/zone/CmdSceneReady.h"
 #include "client/zone/managers/object/ObjectManager.h"
@@ -246,9 +245,9 @@ void ZonePacketHandler::handleUpdateTransformMessage(Message* pack) {
 
 	uint64 objid = pack->parseLong();
 
-	float x = pack->parseSignedShort() / 4;
-	float z = pack->parseSignedShort() / 4;
-	float y = pack->parseSignedShort() / 4;
+	float x = pack->parseSignedShort() / 4.f;
+	float z = pack->parseSignedShort() / 4.f;
+	float y = pack->parseSignedShort() / 4.f;
 
 	uint32 counter = pack->parseInt();
 

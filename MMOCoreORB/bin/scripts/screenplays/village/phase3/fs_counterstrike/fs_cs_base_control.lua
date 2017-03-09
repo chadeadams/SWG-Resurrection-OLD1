@@ -266,16 +266,24 @@ function FsCsBaseControl:erectShield(pTheater)
 	local pActiveArea = getSceneObject(shieldID)
 
 	if (pActiveArea ~= nil) then
-		printf("Error generating shield in FsCsBaseControl:erectShield, existing shield found.\n")
+		printLuaError("Error generating shield in FsCsBaseControl:erectShield, existing shield found.")
 		return
 	end
 
 	pActiveArea = spawnActiveArea("dathomir", "object/active_area.iff", SceneObject(pTheater):getWorldPositionX(), SceneObject(pTheater):getWorldPositionZ(), SceneObject(pTheater):getWorldPositionY(), self.shieldRadius, 0)
 
 	if pActiveArea ~= nil then
-		createObserver(ENTEREDAREA, "FsCsBaseControl", "notifyEnteredCampShieldArea", pActiveArea)
 		writeData(theaterID .. ":shieldID", SceneObject(pActiveArea):getObjectID())
+		createEvent(10000, "FsCsBaseControl", "createShieldObserver", pActiveArea, "")
 	end
+end
+
+function FsCsBaseControl:createShieldObserver(pActiveArea)
+	if (pActiveArea == nil) then
+		return
+	end
+
+	createObserver(ENTEREDAREA, "FsCsBaseControl", "notifyEnteredCampShieldArea", pActiveArea)
 end
 
 function FsCsBaseControl:attemptPowerDownShield(pPlayer, campName)
@@ -478,32 +486,34 @@ function FsCsBaseControl:spawnDefenseWaves(pTheater)
 
 	local nearbyPlayers = SceneObject(pTheater):getPlayersInRange(100)
 
-	local waveData = { self.defenseWaves.small }
-	local antennaExists = self:ifAntennaExists(pTheater)
+	if (nearbyPlayers ~= nil) then
+		local waveData = { self.defenseWaves.small }
+		local antennaExists = self:ifAntennaExists(pTheater)
 
-	if (#nearbyPlayers > 30) then
-		if (antennaExists) then
-			waveData = { self.defenseWaves.small, self.defenseWaves.small, self.defenseWaves.medium, self.defenseWaves.medium }
-		else
-			waveData = { self.defenseWaves.small, self.defenseWaves.small, self.defenseWaves.medium }
+		if (#nearbyPlayers > 30) then
+			if (antennaExists) then
+				waveData = { self.defenseWaves.small, self.defenseWaves.small, self.defenseWaves.medium, self.defenseWaves.medium }
+			else
+				waveData = { self.defenseWaves.small, self.defenseWaves.small, self.defenseWaves.medium }
+			end
+		elseif (#nearbyPlayers > 20) then
+			if (antennaExists) then
+				waveData = { self.defenseWaves.small, self.defenseWaves.small, self.defenseWaves.medium }
+			else
+				waveData = { self.defenseWaves.small, self.defenseWaves.medium }
+			end
+		elseif (#nearbyPlayers > 10) then
+			if (antennaExists) then
+				waveData = { self.defenseWaves.small, self.defenseWaves.medium }
+			else
+				waveData = { self.defenseWaves.medium }
+			end
 		end
-	elseif (#nearbyPlayers > 20) then
-		if (antennaExists) then
-			waveData = { self.defenseWaves.small, self.defenseWaves.small, self.defenseWaves.medium }
-		else
-			waveData = { self.defenseWaves.small, self.defenseWaves.medium }
-		end
-	elseif (#nearbyPlayers > 10) then
-		if (antennaExists) then
-			waveData = { self.defenseWaves.small, self.defenseWaves.medium }
-		else
-			waveData = { self.defenseWaves.medium }
-		end
-	end
 
-	for i = 1, #waveData, 1 do
-		local spawnPoint = getSpawnPoint("dathomir", theaterX, theaterY, 50, 100, true)
-		QuestSpawner:createQuestSpawner("FsCsBaseControl", waveData[i][1], waveData[i][2], spawnPoint[1], spawnPoint[2], spawnPoint[3], 0, "dathomir", pTheater)
+		for i = 1, #waveData, 1 do
+			local spawnPoint = getSpawnPoint("dathomir", theaterX, theaterY, 50, 100, true)
+			QuestSpawner:createQuestSpawner("FsCsBaseControl", waveData[i][1], waveData[i][2], spawnPoint[1], spawnPoint[2], spawnPoint[3], 0, "dathomir", pTheater)
+		end
 	end
 
 	createEvent(getRandomNumber(self.reinforcementWaveMin, self.reinforcementWaveMax), "FsCsBaseControl", "spawnDefenseWaves", pTheater, "")

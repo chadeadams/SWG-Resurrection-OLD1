@@ -6,7 +6,6 @@
  */
 
 #include "server/zone/objects/player/sessions/crafting/CraftingSession.h"
-#include "server/zone/Zone.h"
 #include "server/zone/managers/player/PlayerManager.h"
 #include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/objects/player/PlayerObject.h"
@@ -15,10 +14,10 @@
 #include "server/zone/managers/crafting/CraftingManager.h"
 #include "server/zone/managers/crafting/ComponentMap.h"
 #include "server/zone/objects/manufactureschematic/ingredientslots/ComponentSlot.h"
+#include "server/zone/objects/tangible/tool/CraftingStation.h"
 
 #include "server/zone/packets/tangible/TangibleObjectDeltaMessage3.h"
 #include "server/zone/packets/player/PlayerObjectDeltaMessage9.h"
-
 #include "server/zone/packets/manufactureschematic/ManufactureSchematicObjectDeltaMessage3.h"
 #include "server/zone/packets/manufactureschematic/ManufactureSchematicObjectDeltaMessage7.h"
 
@@ -405,9 +404,10 @@ void CraftingSessionImplementation::sendIngredientForUIListen() {
 		return;
 	}
 	uint8 allowFactory = 1;
-	if (!craftingManager.get()->allowManufactureSchematic(manufactureSchematic)) {
+	if (!manufactureSchematic->allowFactoryRun()) {
 		allowFactory = 0;
 	}
+
 	// Object Controller w/ Ingredients ***************************
 	ObjectControllerMessage* objMsg = new ObjectControllerMessage(
 			crafter->getObjectID(), 0x1B, 0x0103);
@@ -1284,7 +1284,7 @@ void CraftingSessionImplementation::createManufactureSchematic(int clientCounter
 		return;
 	}
 
-	if (!craftingManager.get()->allowManufactureSchematic(manufactureSchematic)){
+	if (!manufactureSchematic->allowFactoryRun()) {
 		sendSlotMessage(0, IngredientSlot::NOSCHEMATIC);
 		return;
 	}

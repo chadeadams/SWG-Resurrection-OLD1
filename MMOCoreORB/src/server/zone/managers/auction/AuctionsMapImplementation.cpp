@@ -5,15 +5,11 @@
  *      Author: kyle
  */
 
-#include "engine/engine.h"
-
 #include "server/zone/managers/auction/AuctionsMap.h"
-#include "AuctionTerminalMap.h"
 #include "server/zone/objects/auction/AuctionItem.h"
 #include "server/zone/objects/scene/SceneObject.h"
 #include "server/zone/objects/player/PlayerObject.h"
 #include "server/zone/ZoneServer.h"
-#include "server/chat/StringIdChatParameter.h"
 #include "server/zone/objects/tangible/components/vendor/VendorDataComponent.h"
 #include "server/zone/managers/object/ObjectManager.h"
 #include "server/zone/packets/auction/ItemSoldMessage.h"
@@ -235,10 +231,10 @@ void AuctionsMapImplementation::deleteTerminalItems(SceneObject* vendor) {
 				ManagedReference<SceneObject*> sceno = zserv->getObject(oid);
 
 				if (sceno != NULL) {
-					EXECUTE_TASK_1(sceno, {
-							Locker locker(sceno_p);
-							sceno_p->destroyObjectFromDatabase(true);
-					});
+					Core::getTaskManager()->executeTask([=] () {
+						Locker locker(sceno);
+						sceno->destroyObjectFromDatabase(true);
+					}, "DeleteTerminalItemLambda");
 				}
 			}
 		}

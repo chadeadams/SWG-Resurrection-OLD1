@@ -3,8 +3,6 @@
 		See file COPYING for copying conditions. */
 
 #include "server/zone/managers/crafting/CraftingManager.h"
-#include "server/zone/objects/resource/ResourceContainer.h"
-#include "server/zone/objects/manufactureschematic/ingredientslots/ResourceSlot.h"
 #include "server/zone/managers/crafting/labratories/SharedLabratory.h"
 #include "server/zone/managers/crafting/labratories/ResourceLabratory.h"
 #include "server/zone/managers/crafting/labratories/GeneticLabratory.h"
@@ -56,11 +54,6 @@ int CraftingManagerImplementation::calculateExperimentationFailureRate(CreatureO
 	int failure = int((50.0f + (ma - 500.0f) / 40.0f + expPoints - 5.0f * float(pointsUsed)));
 
 	return failure;
-}
-
-bool CraftingManagerImplementation::allowManufactureSchematic(ManufactureSchematic* manufactureSchematic) {
-	SharedLabratory* lab = labs.get(manufactureSchematic->getLabratory());
-	return lab->allowFactoryRun(manufactureSchematic);
 }
 
 int CraftingManagerImplementation::getCreationCount(ManufactureSchematic* manufactureSchematic) {

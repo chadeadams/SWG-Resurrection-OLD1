@@ -5,11 +5,9 @@
 
 #include "server/zone/managers/creature/LairObserver.h"
 #include "templates/params/ObserverEventType.h"
-#include "server/zone/objects/creature/ai/NonPlayerCreatureObject.h"
-#include "server/zone/objects/creature/ai/Creature.h"
+#include "server/zone/objects/creature/ai/AiAgent.h"
 #include "server/zone/packets/object/PlayClientEffectObjectMessage.h"
 #include "server/zone/packets/scene/PlayClientEffectLocMessage.h"
-#include "server/zone/objects/tangible/weapon/WeaponObject.h"
 #include "server/zone/objects/tangible/threat/ThreatMap.h"
 #include "server/zone/Zone.h"
 #include "HealLairObserverEvent.h"
@@ -45,10 +43,10 @@ int LairObserverImplementation::notifyObserverEvent(unsigned int eventType, Obse
 			task->execute();
 		}
 
-		EXECUTE_TASK_3(lairObserver, lair, attacker, {
-				Locker locker(lair_p);
-				lairObserver_p->checkForNewSpawns(lair_p, attacker_p);
-		});
+		Core::getTaskManager()->executeTask([=] () {
+			Locker locker(lair);
+			lairObserver->checkForNewSpawns(lair, attacker);
+		}, "CheckForNewSpawnsLambda");
 
 		checkForHeal(lair, attacker);
 

@@ -7,8 +7,6 @@
 
 #include "FloorMesh.h"
 
-#include "templates/appearance/MeshAppearanceTemplate.h"
-
 void FloorMeshTriangleNode::readObject(IffStream* iffStream) {
 	indicies[0] = iffStream->getInt(); // Corner Index[0]
 	indicies[1] = iffStream->getInt(); // Corner Index[1]
@@ -101,7 +99,7 @@ void FloorMesh::readObject(IffStream* iffStream) {
 
 	// Generating our own tree from triangles
 
-	Vector<Triangle*> triangles;
+	Vector<Triangle*> triangles(tris.size(), 1);
 
 	for (int i = 0; i < tris.size(); ++i) {
 		FloorMeshTriangleNode* tri = tris.get(i);
@@ -192,6 +190,8 @@ void FloorMesh::parseVersion0005(IffStream* iffStream) {
 
 		int trisDataSize = trisData->getChunkSize();
 
+		tris.removeAll(trisDataSize / 60);
+
 		while (trisDataSize > 0) {
 			FloorMeshTriangleNode* tri = new FloorMeshTriangleNode(this);
 
@@ -241,6 +241,8 @@ void FloorMesh::parseVersion0006(IffStream* iffStream) {
 		iffStream->openChunk('TRIS');
 
 		int trisCount = iffStream->getInt();
+
+		tris.removeAll(trisCount);
 
 		for (int i = 0; i < trisCount; ++i) {
 			FloorMeshTriangleNode* tri = new FloorMeshTriangleNode(this);

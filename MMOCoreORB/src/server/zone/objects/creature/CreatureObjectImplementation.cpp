@@ -3,11 +3,11 @@
 		See file COPYING for copying conditions. */
 
 #include "server/zone/objects/creature/CreatureObject.h"
+#include "server/zone/objects/creature/ai/AiAgent.h"
 #include "templates/params/creature/CreatureState.h"
 #include "templates/params/creature/CreatureFlag.h"
 
 #include "server/zone/managers/objectcontroller/ObjectController.h"
-#include "server/zone/managers/skill/SkillModManager.h"
 #include "server/zone/managers/skill/SkillManager.h"
 #include "server/zone/managers/player/PlayerManager.h"
 #include "server/zone/managers/combat/CombatManager.h"
@@ -36,6 +36,7 @@
 #include "server/zone/packets/ui/NewbieTutorialEnableHudElement.h"
 #include "server/zone/packets/ui/OpenHolocronToPageMessage.h"
 #include "server/zone/packets/object/Animation.h"
+#include "templates/params/creature/CreatureAttribute.h"
 #include "templates/params/creature/CreaturePosture.h"
 #include "server/zone/objects/creature/commands/effect/CommandEffect.h"
 #include "server/zone/objects/creature/events/CommandQueueActionEvent.h"
@@ -43,31 +44,23 @@
 #include "server/zone/ZoneServer.h"
 #include "server/chat/ChatManager.h"
 #include "server/chat/StringIdChatParameter.h"
-#include "server/zone/objects/scene/variables/DeltaVectorMap.h"
 #include "server/zone/objects/creature/variables/CommandQueueAction.h"
 #include "server/zone/objects/creature/commands/QueueCommand.h"
 #include "server/zone/objects/group/GroupObject.h"
-#include "server/zone/packets/tangible/UpdatePVPStatusMessage.h"
 #include "server/zone/objects/player/FactionStatus.h"
 #include "server/zone/objects/area/ActiveArea.h"
 #include "server/zone/objects/mission/MissionObject.h"
 #include "server/zone/objects/area/CampSiteActiveArea.h"
-#include "server/zone/objects/tangible/wearables/WearableObject.h"
 #include "server/zone/objects/tangible/weapon/WeaponObject.h"
-#include "server/zone/objects/intangible/VehicleControlDevice.h"
 #include "server/zone/objects/guild/GuildObject.h"
 #include "server/zone/objects/creature/events/DizzyFallDownEvent.h"
 #include "server/zone/packets/ui/ExecuteConsoleCommand.h"
 #include "server/zone/objects/creature/buffs/StateBuff.h"
-#include "server/zone/objects/creature/buffs/PrivateBuff.h"
 #include "server/zone/objects/creature/buffs/PrivateSkillMultiplierBuff.h"
 #include "server/zone/objects/creature/buffs/PlayerVehicleBuff.h"
-
-#include "server/zone/packets/object/SitOnObject.h"
-
+#include "server/zone/objects/intangible/PetControlDevice.h"
 #include "server/zone/managers/planet/PlanetManager.h"
 #include "terrain/manager/TerrainManager.h"
-#include "server/zone/managers/resource/resourcespawner/SampleTask.h"
 
 #include "templates/creature/SharedCreatureObjectTemplate.h"
 
@@ -78,7 +71,6 @@
 
 #include "server/zone/packets/zone/unkByteFlag.h"
 #include "server/zone/packets/zone/CmdStartScene.h"
-#include "server/zone/packets/zone/CmdSceneReady.h"
 #include "server/zone/packets/zone/ParametersMessage.h"
 
 #include "server/zone/managers/guild/GuildManager.h"
@@ -88,7 +80,6 @@
 
 #include "server/zone/objects/tangible/threat/ThreatMap.h"
 
-#include "buffs/BuffDurationEvent.h"
 #include "engine/core/TaskManager.h"
 
 float CreatureObjectImplementation::DEFAULTRUNSPEED = 5.376;
@@ -253,6 +244,8 @@ void CreatureObjectImplementation::finalize() {
 }
 
 void CreatureObjectImplementation::sendToOwner(bool doClose) {
+	auto owner = this->owner.get();
+
 	if (owner == NULL)
 		return;
 
@@ -314,7 +307,7 @@ void CreatureObjectImplementation::sendToOwner(bool doClose) {
 
 void CreatureObjectImplementation::sendBaselinesTo(SceneObject* player) {
 	CreatureObject* thisPointer = asCreatureObject();
-	Zone* zone = getZone();
+	Zone* zone = getZoneUnsafe();
 
 	if (zone == NULL)
 		return;
@@ -624,63 +617,62 @@ void CreatureObjectImplementation::addMountedCombatSlow() {
 
 	ManagedReference<CreatureObject*> creo = asCreatureObject();
 
-	EXECUTE_TASK_2(creo, parent, {
-			Locker locker(creo_p);
-			Locker clocker(parent_p, creo_p);
+	Core::getTaskManager()->executeTask([=] () {
+		Locker locker(creo);
+		Locker clocker(parent, creo);
 
-			float newSpeed = 1;
-			SharedObjectTemplate* templateData = creo_p->getObjectTemplate();
-			SharedCreatureObjectTemplate* playerTemplate = dynamic_cast<SharedCreatureObjectTemplate*> (templateData);
+		float newSpeed = 1;
+		SharedObjectTemplate* templateData = creo->getObjectTemplate();
+		SharedCreatureObjectTemplate* playerTemplate = dynamic_cast<SharedCreatureObjectTemplate*> (templateData);
 
-			if (playerTemplate != NULL) {
-				const Vector<FloatParam>& speedTempl = playerTemplate->getSpeed();
-				newSpeed = speedTempl.get(0);
-			}
+		if (playerTemplate != NULL) {
+			const Vector<FloatParam>& speedTempl = playerTemplate->getSpeed();
+			newSpeed = speedTempl.get(0);
+		}
 
-			float oldSpeed = 1;
-			PetManager* petManager = creo_p->getZoneServer()->getPetManager();
+		float oldSpeed = 1;
+		PetManager* petManager = creo->getZoneServer()->getPetManager();
 
-			if (petManager != NULL) {
-				oldSpeed = petManager->getMountedRunSpeed(parent_p);
-			}
+		if (petManager != NULL) {
+			oldSpeed = petManager->getMountedRunSpeed(parent);
+		}
 
-			float magnitude = newSpeed / oldSpeed;
+		float magnitude = newSpeed / oldSpeed;
 
-			uint32 crc = STRING_HASHCODE("mounted_combat_slow");
-			StringIdChatParameter startStringId("combat_effects", "mount_slow_for_combat"); // Your mount slows down to prepare for combat.
+		uint32 crc = STRING_HASHCODE("mounted_combat_slow");
+		StringIdChatParameter startStringId("combat_effects", "mount_slow_for_combat"); // Your mount slows down to prepare for combat.
 
-			ManagedReference<PlayerVehicleBuff*> buff = new PlayerVehicleBuff(parent_p, crc, 604800, BuffType::OTHER);
+		ManagedReference<PlayerVehicleBuff*> buff = new PlayerVehicleBuff(parent, crc, 604800, BuffType::OTHER);
 
-			Locker blocker(buff);
+		Locker blocker(buff);
 
-			buff->setSpeedMultiplierMod(magnitude);
-			buff->setAccelerationMultiplierMod(magnitude);
-			buff->setStartMessage(startStringId);
+		buff->setSpeedMultiplierMod(magnitude);
+		buff->setAccelerationMultiplierMod(magnitude);
+		buff->setStartMessage(startStringId);
 
-			parent_p->addBuff(buff);
-	});
+		parent->addBuff(buff);
+	}, "AddMountedCombatSlowLambda");
 }
-
 
 void CreatureObjectImplementation::removeMountedCombatSlow(bool showEndMessage) {
 	ManagedReference<CreatureObject*> creo = asCreatureObject();
 	ManagedReference<CreatureObject*> vehicle = getParent().get().castTo<CreatureObject*>();
-	if(vehicle == NULL)
+	if (vehicle == NULL)
 		return;
 
-	EXECUTE_TASK_3(vehicle, creo, showEndMessage, {
-		Locker locker(vehicle_p);
+	Core::getTaskManager()->executeTask([=] () {
+		Locker locker(vehicle);
 		uint32 buffCRC = STRING_HASHCODE("mounted_combat_slow");
-		bool hasBuff = vehicle_p->hasBuff(buffCRC);
-		if(hasBuff) {
-			vehicle_p->removeBuff(buffCRC);
-			if(showEndMessage_p) {
+		bool hasBuff = vehicle->hasBuff(buffCRC);
+		if (hasBuff) {
+			vehicle->removeBuff(buffCRC);
+			if (showEndMessage) {
 				//I don't think we want to show this on dismount, or after a gallop
 				StringIdChatParameter endStringId("combat_effects", "mount_speed_after_combat"); // Your mount speeds up.
-				creo_p->sendSystemMessage(endStringId);
+				creo->sendSystemMessage(endStringId);
 			}
 		}
-	});
+	}, "RemoveMountedCombatSlowLambda");
 }
 
 void CreatureObjectImplementation::setCombatState() {
@@ -769,15 +761,13 @@ bool CreatureObjectImplementation::setState(uint64 state, bool notifyClient) {
 			if (state == CreatureState::SITTINGONCHAIR) {
 				//this is fucking wrong
 
-				Zone* thisZone = getZone();
+				Zone* thisZone = getZoneUnsafe();
 
 				setPosture(CreaturePosture::SITTING, false);
 
-				SortedVector<ManagedReference<QuadTreeEntry*> > closeSceneObjects;
-				int maxInRangeObjects = 0;
-
 				if (thisZone != NULL) {
-					//Locker locker(thisZone);
+					SortedVector<QuadTreeEntry*> closeSceneObjects;
+					int maxInRangeObjects = 0;
 
 					if (closeobjects == NULL) {
 #ifdef COV_DEBUG
@@ -786,26 +776,42 @@ bool CreatureObjectImplementation::setState(uint64 state, bool notifyClient) {
 						thisZone->getInRangeObjects(getWorldPositionX(), getWorldPositionY(), ZoneServer::CLOSEOBJECTRANGE, &closeSceneObjects, true);
 						maxInRangeObjects = closeSceneObjects.size();
 					} else {
-						closeobjects->safeCopyTo(closeSceneObjects);
+						closeobjects->safeCopyReceiversTo(closeSceneObjects, 1);
 						maxInRangeObjects = closeSceneObjects.size();
 					}
 
-					for (int i = 0; i < closeSceneObjects.size(); ++i) {
-						SceneObject* object = static_cast<SceneObject*> (closeSceneObjects.get(i).get());
+					SitOnObject* soo = new SitOnObject(asCreatureObject(), getPositionX(), getPositionZ(), getPositionY());
+					CreatureObjectDeltaMessage3* dcreo3 = new CreatureObjectDeltaMessage3(asCreatureObject());
+					dcreo3->updatePosture();
+					dcreo3->updateState();
+					dcreo3->close();
+
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+					Reference<BasePacket*> pack1 = soo;
+					Reference<BasePacket*> pack2 = dcreo3;
+#endif
+
+					for (int i = 0; i < maxInRangeObjects; ++i) {
+						SceneObject* object = static_cast<SceneObject*> (closeSceneObjects.get(i));
 
 						if (object->getParent().get() == getParent().get()) {
-							SitOnObject* soo = new SitOnObject(asCreatureObject(), getPositionX(), getPositionZ(), getPositionY());
-							object->sendMessage(soo);
-							CreatureObjectDeltaMessage3* dcreo3 = new CreatureObjectDeltaMessage3(asCreatureObject());
-							dcreo3->updatePosture();
-							dcreo3->updateState();
-							dcreo3->close();
-							object->sendMessage(dcreo3);
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+							object->sendMessage(pack1);
+							object->sendMessage(pack2);
+#else
+							object->sendMessage(soo->clone());
+							object->sendMessage(dcreo3->clone());
+#endif
 						} else {
 							sendDestroyTo(object);
 							sendTo(object, true);
 						}
 					}
+
+#ifndef LOCKFREE_BCLIENT_BUFFERS
+					delete soo;
+					delete dcreo3;
+#endif
 				}
 			} else {
 				CreatureObjectDeltaMessage3* dcreo3 = new CreatureObjectDeltaMessage3(asCreatureObject());
@@ -2585,11 +2591,17 @@ void CreatureObjectImplementation::updateGroupMFDPositions() {
 	if (group != NULL) {
 		GroupList* list = group->getGroupList();
 		if (list != NULL) {
+			ClientMfdStatusUpdateMessage* msg = new ClientMfdStatusUpdateMessage(creo);
+
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+			Reference<BasePacket*> pack = msg;
+#endif
+
 			for (int i = 0; i < list->size(); i++) {
 
 				Reference<CreatureObject*> member = list->get(i).get();
 
-				if (member == NULL || creo == member)
+				if (member == NULL || creo == member || !member->isPlayerCreature())
 					continue;
 
 				CloseObjectsVector* cev = (CloseObjectsVector*)member->getCloseObjects();
@@ -2597,17 +2609,24 @@ void CreatureObjectImplementation::updateGroupMFDPositions() {
 				if (cev == NULL || cev->contains(creo.get()))
 					continue;
 
-				ClientMfdStatusUpdateMessage *msg = new ClientMfdStatusUpdateMessage(creo);
-				member->sendMessage(msg);
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+				member->sendMessage(pack);
+#else
+				member->sendMessage(msg->clone());
+#endif
 			}
+
+#ifndef LOCKFREE_BCLIENT_BUFFERS
+			delete msg;
+#endif
 		}
 	}
 }
 
 void CreatureObjectImplementation::notifySelfPositionUpdate() {
-	if (getZone() != NULL) {
+	if (getZoneUnsafe() != NULL) {
 		ManagedReference<PlanetManager*> planetManager =
-				getZone()->getPlanetManager();
+				getZoneUnsafe()->getPlanetManager();
 
 		if (planetManager != NULL) {
 			TerrainManager* terrainManager = planetManager->getTerrainManager();
@@ -2774,15 +2793,23 @@ void CreatureObjectImplementation::sendMessage(BasePacket* msg) {
 	ManagedReference<ZoneClientSession*> ownerClient = owner.get();
 
 	if (ownerClient == NULL) {
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+		if (!msg->getReferenceCount())
+#endif
 		delete msg;
+
 		return;
 	} else {
 		ownerClient->sendMessage(msg);
 	}
 }
 
+Reference<ZoneClientSession*> CreatureObjectImplementation::getClient() {
+	return owner.get();
+}
+
 void CreatureObjectImplementation::sendStateCombatSpam(const String& fileName, const String& stringName, byte color, int damage, bool broadcast) {
-	Zone* zone = getZone();
+	Zone* zone = getZoneUnsafe();
 	if (zone == NULL)
 		return;
 
@@ -2926,7 +2953,7 @@ bool CreatureObjectImplementation::isAttackableBy(CreatureObject* object, bool b
 	if ((!bypassDeadCheck && isDead()) || isInvisible())
 		return false;
 
-	if (object->getZone() != getZone())
+	if (object->getZoneUnsafe() != getZoneUnsafe())
 		return false;
 
 	if (isPlayerCreature()) {

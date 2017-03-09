@@ -4,9 +4,7 @@
 
 package server.zone.objects.mission;
 
-import engine.util.Observer;
 import engine.util.Observable;
-import engine.core.Task;
 import server.zone.objects.mission.MissionObject;
 import server.zone.objects.mission.MissionObjective;
 import server.zone.objects.mission.MissionObserver;
@@ -55,8 +53,8 @@ class BountyMissionObjective extends MissionObjective {
 		Logger.setLoggingName("BountyMissionObjective");
 	}
 
-	public native void finalize() {
-		cancelAllTasks();
+	public void finalize() {
+
 	}
 
 	public void initializeTransientMembers() {
