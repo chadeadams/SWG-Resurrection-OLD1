@@ -49,6 +49,7 @@ object_building_general_bunker_warren_01 = object_building_general_shared_bunker
 		{templateFile = "object/tangible/terminal/terminal_elevator_up.iff", x = 3.27517, z = 1.23045, y = -21.8704, ow = 0.707107, ox = 0, oy = -0.707107, oz = 0, cellid = 13, containmentType = -1},
 		{templateFile = "object/tangible/terminal/terminal_elevator_down.iff", x = 3.25385, z = 5.33045, y = -21.8635, ow = 0.707107, ox = 0, oy = -0.707107, oz = 0, cellid = 13, containmentType = -1}
 	},
+    --Code added 3/10/2017 to allow entry into The Warren - (Nugax nugax@swgresurrection.com)
 	--publicStructure = 0,
     publicStructure = 1,
 	ejectionPoint = {-20, 107}
