@@ -1,6 +1,6 @@
-padawan_chef_02_conv_handler = conv_handler:new {}
+padawan_pannaqa_03_conv_handler = conv_handler:new {}
 
-function padawan_chef_02_conv_handler:getInitialScreen(pPlayer, pNpc, pConvTemplate)
+function padawan_pannaqa_03_conv_handler:getInitialScreen(pPlayer, pNpc, pConvTemplate)
 	local convoTemplate = LuaConversationTemplate(pConvTemplate)
 
 	local trialOwnerID = readData(SceneObject(pNpc):getObjectID() .. ":ownerID")
@@ -18,20 +18,15 @@ function padawan_chef_02_conv_handler:getInitialScreen(pPlayer, pNpc, pConvTempl
 	return convoTemplate:getScreen("intro")
 end
 
-function padawan_chef_02_conv_handler:runScreenHandlers(pConvTemplate, pPlayer, pNpc, selectedOption, pConvScreen)
+function padawan_pannaqa_03_conv_handler:runScreenHandlers(pConvTemplate, pPlayer, pNpc, selectedOption, pConvScreen)
 	local screen = LuaConversationScreen(pConvScreen)
 	local screenID = screen:getScreenID()
 	local playerID = SceneObject(pPlayer):getObjectID()
 
-	if (screenID == "pay_next_time") then
-		writeData(playerID .. ":JediTrials:spokeToTarget01", 1)
-		CreatureObject(pNpc):setPvpStatusBitmask(0)
-		CreatureObject(pNpc):setOptionsBitmask(0)
-		PadawanTrials:createMainLocation(pPlayer)
+	if (screenID == "take_part_for_me" or screenID == "drinking_and_wandering") then
+		writeData(playerID .. ":JediTrials:spokeToTarget02", 1)
 		writeData(SceneObject(pNpc):getObjectID() .. ":destroyNpcOnExit", 1)
-	elseif (screenID == "just_a_minute") then
-		PadawanTrials:removeNpcDestroyActiveArea(pPlayer)
-		CreatureObject(pNpc):engageCombat(pPlayer)
+		PadawanTrials:createMainLocation(pPlayer)
 	end
 
 	return pConvScreen

@@ -127,7 +127,11 @@ function VillageJediManager:canSurrenderSkill(pPlayer, skillName)
 		return false
 	end
 
+<<<<<<< HEAD
 	if string.find(skillName, "force_sensitive_") and CreatureObject(pPlayer):hasSkill("force_title_jedi_rank_01") and CreatureObject(pPlayer):getForceSensitiveSkillCount(false) <= 0 then
+=======
+	if string.find(skillName, "force_sensitive_") and CreatureObject(pPlayer):hasSkill("force_title_jedi_rank_02") and CreatureObject(pPlayer):getForceSensitiveSkillCount(false) <= 24 then
+>>>>>>> 63aa60ae69dee41551419dfca31f8eb98f4c0899
 		return false
 	end
 
