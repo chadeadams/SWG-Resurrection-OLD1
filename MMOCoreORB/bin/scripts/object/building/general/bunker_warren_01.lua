@@ -51,8 +51,8 @@ object_building_general_bunker_warren_01 = object_building_general_shared_bunker
 	},
     --Code added 3/10/2017 to allow entry into The Warren - (Nugax nugax@swgresurrection.com)
 	--publicStructure = 0,
-    publicStructure = 1,
-	ejectionPoint = {-20, 107}
+    --publicStructure = 1,
+	--ejectionPoint = {-20, 107}
 }
 
 ObjectTemplates:addTemplate(object_building_general_bunker_warren_01, "object/building/general/bunker_warren_01.iff")
