@@ -22,17 +22,27 @@ function NewPlayerHelper:spawnSceneObjects()
 end
 
 function NewPlayerHelper:spawnMobiles()
+-- Added Locations 3/12/2017
+-- Azureth (azureth@swgresurrection.com) 
 
 	--Spawn New Player Helper Droids
 
     --Corellia
     --Cornet StrP
 	spawnMobile("corellia","new_player_helper",0,-144,28,-4723,-1,0)
-
-    --Naboo
+	--Tyrena Starport
+	spawnMobile("corellia","new_player_helper",0,-5036,21,-2285,-1,0)
+	--Kor Vella Starport
+	spawnMobile("corellia","new_player_helper",0,-3142,31,2811,-1,0)
+    
+	--Naboo
     --Theed Starport
     spawnMobile("naboo","new_player_helper",0,-4858,6,4163,-1,0)
-
+	--Kaadura Starport
+	spawnMobile("naboo","new_player_helper",0,5214,-192,6681,-1,0)
+	-- Moenia Starport
+	spawnMobile("naboo","new_player_helper",0,4729,4,-4698,-1,0)
+	
     --Tatooine
     --Mos Eisley
     spawnMobile("tatooine","new_player_helper",0,3532,5,-4803,-1,0)
