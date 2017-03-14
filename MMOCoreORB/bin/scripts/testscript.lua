@@ -6,6 +6,5 @@ function runScript(creatureObject)
 	creature:_setObject(creatureObject)
   	
   	--creature:setHAM(0, getRandomNumber(99))
-	--test
   	credits = creature:getBankCredits()  
 end
