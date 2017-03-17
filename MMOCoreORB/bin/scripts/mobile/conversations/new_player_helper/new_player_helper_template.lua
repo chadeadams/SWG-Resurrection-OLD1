@@ -76,7 +76,7 @@ new_player_helper_money = ConvoScreen:new {
 new_player_helper_everyoneelse = ConvoScreen:new {
 	id = "everyoneelse",
 	leftDialog = "",
-	customDialogText = "Players are all over. Some are on other planets in the wilderness hunting or gathering. Some are trying to become a Jedi. Some are preforming in Cantinas. Some are in big cities such as Theed on Naboo, or Cornet on Corellia. Add the Resurrection chat tab to chat with players Galaxy wide or use the Auction channel for business opportunities!",
+	customDialogText = "Players are all over. Some are on other planets in the wilderness hunting or gathering. Some are trying to become a Jedi. Some are preforming in Cantinas. Some are in big cities such as Theed on Naboo, or Coronet on Corellia. Add the Resurrection chat tab to chat with players Galaxy wide or use the Auction channel for business opportunities!",
 	stopConversation = "true",
 	options = {	
 	}
