@@ -57,6 +57,8 @@ object_tangible_deed_harvester_deed_harvester_gas_deed_medium = object_tangible_
 	-- Azureth (azureth@swgresurrection.com)
 	experimentalMin = {0, 0, 2*3, 50000*3, 1000},
 	experimentalMax = {0, 0, 6*3, 75000*3, 1000},
+	-- experimentalMin = {0, 0, 2, 50000, 1000},
+	-- experimentalMax = {0, 0, 6, 75000, 1000},
 	experimentalPrecision = {0, 0, 0, 0, 0},
 	experimentalCombineType = {0, 0, 1, 1, 4},
 }

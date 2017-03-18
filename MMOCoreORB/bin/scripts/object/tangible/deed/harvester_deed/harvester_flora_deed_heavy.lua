@@ -57,6 +57,8 @@ object_tangible_deed_harvester_deed_harvester_flora_deed_heavy = object_tangible
 	-- Azureth (azureth@swgresurrection.com)
 	experimentalMin = {0, 0, 3*3, 100000*3, 1000},
 	experimentalMax = {0, 0, 7*3, 150000*3, 1000},
+	-- experimentalMin = {0, 0, 3, 100000, 1000},
+	-- experimentalMax = {0, 0, 7, 150000, 1000},
 	experimentalPrecision = {0, 0, 0, 0, 0},
 	experimentalCombineType = {0, 0, 1, 1, 4},
 }

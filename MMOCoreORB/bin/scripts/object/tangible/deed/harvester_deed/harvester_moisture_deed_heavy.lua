@@ -55,6 +55,8 @@ object_tangible_deed_harvester_deed_harvester_moisture_deed_heavy = object_tangi
 	experimentalSubGroupTitles = {"null", "null", "extractrate", "hoppersize", "hitpoints"},
 	experimentalMin = {0, 0, 3*3, 100000*3, 1000},
 	experimentalMax = {0, 0, 7*3, 150000*3, 1000},
+	-- experimentalMin = {0, 0, 3, 100000, 1000},
+	-- experimentalMax = {0, 0, 7, 150000, 1000},
 	experimentalPrecision = {0, 0, 0, 0, 0},
 	experimentalCombineType = {0, 0, 1, 1, 4},
 }
