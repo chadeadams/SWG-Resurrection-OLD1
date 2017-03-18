@@ -17,15 +17,8 @@
 #include "server/zone/objects/building/BuildingObject.h"
 #include "server/zone/objects/tangible/terminal/Terminal.h"
 #include "templates/SharedObjectTemplate.h"
-#include "templates/appearance/PortalLayout.h"
-#include "templates/appearance/FloorMesh.h"
-#include "templates/appearance/PathGraph.h"
 
 #include "server/zone/managers/structure/StructureManager.h"
-
-#include "server/zone/managers/minigames/FishingManager.h"
-#include "server/zone/managers/minigames/GamblingManager.h"
-#include "server/zone/managers/minigames/ForageManager.h"
 #include "terrain/ProceduralTerrainAppearance.h"
 
 ZoneImplementation::ZoneImplementation(ZoneProcessServer* serv, const String& name) {
@@ -381,14 +374,14 @@ int ZoneImplementation::getInRangeActiveAreas(float x, float y, SortedVector<Man
 	return objects->size();
 }
 
-int ZoneImplementation::getInRangeNavMeshes(float x, float y, float range, SortedVector<ManagedReference<NavMeshRegion*> >* objects, bool readlock) {
+int ZoneImplementation::getInRangeNavMeshes(float x, float y, SortedVector<ManagedReference<NavMeshRegion*> >* objects, bool readlock) {
 	Zone* thisZone = _this.getReferenceUnsafeStaticCast();
 
 	SortedVector<ManagedReference<QuadTreeEntry*> > entryObjects;
 
 	try {
 		thisZone->rlock(readlock);
-		regionTree->inRange(x, y, range, entryObjects);
+		regionTree->inRange(x, y, entryObjects);
 		thisZone->runlock(readlock);
 	}catch (...) {
 		thisZone->runlock(readlock);

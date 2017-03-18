@@ -14,13 +14,10 @@
 #include "server/zone/objects/waypoint/WaypointObject.h"
 #include "server/zone/managers/stringid/StringIdManager.h"
 #include "server/zone/objects/region/CityRegion.h"
-#include "server/zone/objects/area/ActiveArea.h"
 #include "server/chat/StringIdChatParameter.h"
-#include "server/zone/managers/planet/MapLocationType.h"
 #include "server/zone/packets/ui/CreateClientPathMessage.h"
 #include "server/zone/objects/player/sessions/sui/FindSessionSuiCallback.h"
 #include "server/zone/objects/scene/WorldCoordinates.h"
-#include "server/zone/objects/cell/CellObject.h"
 #include "server/zone/managers/collision/PathFinderManager.h"
 #include "templates/building/SharedBuildingObjectTemplate.h"
 #include "templates/appearance/PortalLayout.h"
@@ -163,7 +160,7 @@ void FindSessionImplementation::findPlanetaryObject(String& maplocationtype) {
 
 	SortedVector<ManagedReference<NavMeshRegion*> > regions;
 	//fetch nav meshes near the target position
-	zone->getInRangeNavMeshes(end.getX(), end.getY(), 5, &regions, false);
+	zone->getInRangeNavMeshes(end.getX(), end.getY(), &regions, false);
 
 	bool withinNavMesh = false;
 
@@ -185,11 +182,11 @@ void FindSessionImplementation::findPlanetaryObject(String& maplocationtype) {
 			PortalLayout* portalLayout = templateData->getPortalLayout();
 
 			if (portalLayout != NULL) {
-				const Vector <CellProperty>& cells = portalLayout->getCellProperties();
+				const Vector <Reference<CellProperty*> >& cells = portalLayout->getCellProperties();
 				if (cells.size() > 0) {
-					const CellProperty& cell = cells.get(0);
-					for (int i = 0; i < cell.getNumberOfPortals(); i++) {
-						const CellPortal* portal = cell.getPortal(i);
+					const CellProperty* cell = cells.get(0);
+					for (int i = 0; i < cell->getNumberOfPortals(); i++) {
+						const CellPortal* portal = cell->getPortal(i);
 						const AABB& box = portalLayout->getPortalBounds(portal->getGeometryIndex());
 
 						Vector3 center = box.center();

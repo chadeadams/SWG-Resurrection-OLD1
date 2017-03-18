@@ -8,7 +8,6 @@
 #ifndef DIRECTORMANAGER_H_
 #define DIRECTORMANAGER_H_
 
-#include "engine/engine.h"
 #include "DirectorSharedMemory.h"
 #include "server/zone/managers/director/QuestStatus.h"
 #include "server/zone/managers/director/QuestVectorMap.h"
@@ -190,9 +189,12 @@ namespace server {
 		static int createQuestVectorMap(lua_State* L);
 		static int createNavMesh(lua_State* L);
 		static int creatureTemplateExists(lua_State* L);
+		static int printLuaError(lua_State* L);
+		static int getSpawnPointInArea(lua_State* L);
 
 	private:
 		void setupLuaPackagePath(Lua* luaEngine);
+		static void printTraceError(lua_State* L, const String& error);
 		void initializeLuaEngine(Lua* luaEngine);
 		int loadScreenPlays(Lua* luaEngine);
 		void loadJediManager(Lua* luaEngine);

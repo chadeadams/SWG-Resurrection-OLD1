@@ -24,28 +24,28 @@ function QuestSpawner:createQuestSpawner(screenplayName, dataTableName, spawnLis
 	local sPlay = _G[screenplayName]
 
 	if (sPlay == nil) then
-		printf("Error in QuestSpawner:createQuestSpawner, invalid screenplay name. \n")
+		printLuaError("QuestSpawner:createQuestSpawner, invalid screenplay name.")
 		return
 	end
 
 	local dataTable = sPlay[dataTableName]
 
 	if (dataTable == nil) then
-		printf("Error in QuestSpawner:createQuestSpawner, unable to find data table " .. dataTableName .. " in screenplay " .. screenplayName .. ".\n")
+		printLuaError("QuestSpawner:createQuestSpawner, unable to find data table " .. dataTableName .. " in screenplay " .. screenplayName)
 		return
 	end
 
 	local spawnList = sPlay[spawnListName]
 
 	if (spawnList == nil) then
-		printf("Error in QuestSpawner:createQuestSpawner, unable to find spawn list table " .. spawnList .. " in screenplay " .. screenplayName .. ".\n")
+		printLuaError("QuestSpawner:createQuestSpawner, unable to find spawn list table " .. spawnList .. " in screenplay " .. screenplayName)
 		return
 	end
 
 	local pSpawner = spawnSceneObject(planet, "object/tangible/spawning/quest_spawner.iff", xLoc, zLoc, yLoc, cellID, 0)
 
 	if (pSpawner == nil) then
-		printf("Error in QuestSpawner:createQuestSpawner, unable to create spawner object.\n")
+		printLuaError("QuestSpawner:createQuestSpawner, unable to create spawner object.")
 		return
 	end
 
@@ -81,14 +81,14 @@ function QuestSpawner:doQuestSpawnerPulse(pSpawner)
 	local sPlay = _G[screenplayName]
 
 	if (sPlay == nil) then
-		printf("Error in QuestSpawner:doQuestSpawnerPulse, invalid screenplay name. \n")
+		printLuaError("QuestSpawner:doQuestSpawnerPulse, invalid screenplay name.")
 		return
 	end
 
 	local dataTable = sPlay[dataTableName]
 
 	if (dataTable == nil) then
-		printf("Error in QuestSpawner:doQuestSpawnerPulse, unable to find data table " .. dataTableName .. " in screenplay " .. screenplayName .. ".\n")
+		printLuaError("QuestSpawner:doQuestSpawnerPulse, unable to find data table " .. dataTableName .. " in screenplay " .. screenplayName)
 		return
 	end
 
@@ -130,21 +130,21 @@ function QuestSpawner:createSpawn(pSpawner)
 	local sPlay = _G[screenplayName]
 
 	if (sPlay == nil) then
-		printf("Error in QuestSpawner:createSpawn, invalid screenplay name. \n")
+		printLuaError("QuestSpawner:createSpawn, invalid screenplay name.")
 		return
 	end
 
 	local spawnList = sPlay[spawnListName]
 
 	if (spawnList == nil) then
-		printf("Error in QuestSpawner:createSpawn, unable to find spawn list table " .. spawnListName .. " in screenplay " .. screenplayName .. ".\n")
+		printLuaError("QuestSpawner:createSpawn, unable to find spawn list table " .. spawnListName .. " in screenplay " .. screenplayName)
 		return
 	end
 
 	local dataTable = sPlay[dataTableName]
 
 	if (dataTable == nil) then
-		printf("Error in QuestSpawner:createSpawn, unable to find data table " .. dataTableName .. " in screenplay " .. screenplayName .. ".\n")
+		printLuaError("QuestSpawner:createSpawn, unable to find data table " .. dataTableName .. " in screenplay " .. screenplayName)
 		return
 	end
 
@@ -179,10 +179,18 @@ function QuestSpawner:createSpawn(pSpawner)
 	local spawnerY = SceneObject(pSpawner):getPositionY()
 
 	local zoneName = SceneObject(pSpawner):getZoneName()
+	local inNavMesh = SceneObject(pSpawner):isInNavMesh()
 
 	while (numToSpawn > 0) do
 		if (maxPop > curPop) then
-			local spawnPoint = getSpawnPoint(zoneName, spawnerX, spawnerY, 5, 10, true)
+			local spawnPoint
+
+			if (inNavMesh) then 
+				spawnPoint = getSpawnPointInArea(zoneName, spawnerX, spawnerY, 10)
+			else
+				spawnPoint = getSpawnPoint(zoneName, spawnerX, spawnerY, 5, 10, true)
+			end
+
 			local pNpc = spawnMobile(zoneName, randSpawn[1], 0, spawnPoint[1], spawnPoint[2], spawnPoint[3], getRandomNumber(360) - 180, 0)
 
 			if (pNpc ~= nil) then

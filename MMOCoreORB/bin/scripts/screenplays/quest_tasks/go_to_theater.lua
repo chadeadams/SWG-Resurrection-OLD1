@@ -8,18 +8,9 @@
 --  - mobileList 			- a list of mobiles to spawn around the theater. The list follows the format of the spawn_mobiles module.
 --  - despawnTime 			- the time in milliseconds that the theater will remain in the world before being despawned.
 --  - onFailedSpawn 		- function that is called if the spawn of the theater or any element creation fails.
---  - onSuccessfulSpawn 	- function that is called if the spawning was successful.
 
 local ObjectManager = require("managers.object.object_manager")
 local SpawnMobiles = require("utils.spawn_mobiles")
-local Logger = require("utils.logger")
-
-local ACTIVE_AREA_IFF = "object/active_area.iff"
-local READ_DISK_ERROR_STRING = "@quest/force_sensitive/intro:read_disk_error"
-local THEATER_SUM_STRING = "@quest/force_sensitive/intro:theater_sum"
-
-local ACTIVE_AREA_ID_STRING = "activeAreaId"
-local THEATER_ID_STRING = "theaterId"
 
 GoToTheater = Task:new {
 	-- Task properties
@@ -35,140 +26,146 @@ GoToTheater = Task:new {
 	despawnTime = 0,
 	activeAreaRadius = 0,
 	onFailedSpawn = nil,
-	onSuccessfulSpawn = nil,
+	onTheaterCreated = nil,
+	onObjectsSpawned = nil,
 	onEnteredActiveArea = nil,
 	onTheaterDespawn = nil
 }
 
--- Get the spawned mobile list for the theater.
--- @param pPlayer pointer to the creature object of the player.
--- @return the spawned mobile list for the theater.
-function GoToTheater:getSpawnedMobileList(pPlayer)
-	Logger:log("Getting the spawned mobile list for " .. self.taskName .. " theater.", LT_INFO)
-	local theaterId = readData(SceneObject(pPlayer):getObjectID() .. self.taskName .. THEATER_ID_STRING)
-	local pTheater = getSceneObject(theaterId)
-
-	if pTheater == nil then
-		return nil
-	end
-
-	return SpawnMobiles.getSpawnedMobiles(pTheater, self.taskName)
-end
-
--- Setup the active area around the theater.
--- @param pPlayer pointer to the creature object for whom the theater is created for.
--- @param spawnPoint the coordinates to spawn the active area at.
--- @return true if setup was successful, false otherwise.
-function GoToTheater:setupActiveArea(pPlayer, spawnPoint)
-	Logger:log("Setting up active area for " .. self.taskName .. " theater.", LT_INFO)
-	local pActiveArea = spawnActiveArea(CreatureObject(pPlayer):getZoneName(), ACTIVE_AREA_IFF, spawnPoint[1], 0, spawnPoint[3], self.activeAreaRadius, 0)
-
-	if (pActiveArea ~= nil) then
-		writeData(SceneObject(pPlayer):getObjectID() .. self.taskName .. ACTIVE_AREA_ID_STRING, SceneObject(pActiveArea):getObjectID())
-		createObserver(ENTEREDAREA, self.taskName, "handleEnteredAreaEvent", pActiveArea)
-		return true
-	end
-
-	return false
-end
-
--- Handle the entered active area event.
--- @param pActiveArea pointer to the active area that is entered.
--- @param pPlayer pointer to the creature who is entering the active area.
--- @param nothing not used.
-function GoToTheater:handleEnteredAreaEvent(pActiveArea, pPlayer, nothing)
-	if not SceneObject(pPlayer):isPlayerCreature() then
-		return 0
-	end
-
-	local storedActiveAreaId = readData(SceneObject(pPlayer):getObjectID() .. self.taskName .. ACTIVE_AREA_ID_STRING)
-	if storedActiveAreaId == SceneObject(pActiveArea):getObjectID() then
-		Logger:log("Player entered active area of " .. self.taskName .. " theater.", LT_INFO)
-		local spawnedObjects = self:getSpawnedMobileList(pPlayer)
-		self:callFunctionIfNotNil(self.onEnteredActiveArea, nil, pPlayer, spawnedObjects)
-
-		return 1
-	end
-
-	return 0
-end
-
--- Start the GoToTheater.
--- @param pPlayer pointer to the creature object of the player.
 function GoToTheater:taskStart(pPlayer)
-	Logger:log("Spawning " .. self.taskName .. " theater.", LT_INFO)
-
 	local zoneName = SceneObject(pPlayer):getZoneName()
 	local spawnPoint = getSpawnArea(zoneName, SceneObject(pPlayer):getWorldPositionX(), SceneObject(pPlayer):getWorldPositionY(), self.minimumDistance, self.maximumDistance, 20, 10, true)
 	local playerID = SceneObject(pPlayer):getObjectID()
 
 	if (spawnPoint == nil) then
-		printf("Error in GoToTheater:taskStart() for task " .. self.taskName .. ", spawnPoint is nil.\n")
+		printLuaError("GoToTheater:taskStart() for task " .. self.taskName .. ", spawnPoint is nil.")
+		self:callFunctionIfNotNil(self.onFailedSpawn, nil, pPlayer)
+		self:finish(pPlayer)
+		return false
 	end
 
-	if spawnPoint ~= nil then
-		local pTheater = spawnSceneObject(zoneName, "object/static/structure/nobuild/nobuild_32.iff", spawnPoint[1], spawnPoint[2], spawnPoint[3], 0, 0)
+	local pTheater = spawnSceneObject(zoneName, "object/static/structure/nobuild/nobuild_32.iff", spawnPoint[1], spawnPoint[2], spawnPoint[3], 0, 0)
 
-		if (pTheater ~= nil) then
-			writeData(playerID .. self.taskName .. THEATER_ID_STRING, SceneObject(pTheater):getObjectID())
+	if (pTheater == nil) then
+		return false
+	end
 
-			for i = 1, #self.theater, 1 do
-				local objectData = self.theater[i]
-				local pObject = spawnSceneObject(zoneName, objectData.template, spawnPoint[1] + objectData.xDiff, spawnPoint[2]  + objectData.zDiff, spawnPoint[3] + objectData.yDiff, 0, objectData.heading)
+	writeData(playerID .. self.taskName .. "theaterID", SceneObject(pTheater):getObjectID())
 
-				if (pObject ~= nil) then
-					writeData(playerID .. self.taskName .. "theaterObject" .. i, SceneObject(pObject):getObjectID())
-				end
-			end
+	local pActiveArea = spawnActiveArea(zoneName, "object/active_area.iff", spawnPoint[1], 0, spawnPoint[3], 250, 0)
 
-			Logger:log("Spawning mobiles for " .. self.taskName .. " theater.", LT_INFO)
-			local spawnedMobilesList = SpawnMobiles.spawnMobiles(pTheater, self.taskName, self.mobileList, true)
-			local spawnedMobilesWithLocList = SpawnMobiles.spawnMobilesWithLoc(pTheater, self.taskName, self.mobileListWithLoc)
+	if (pActiveArea == nil) then
+		return false
+	end
 
-			if (spawnedMobilesList == nil and spawnedMobilesWithLocList ~= nil) then
-				spawnedMobilesList = spawnedMobilesWithLocList
-			end
+	writeData(playerID .. self.taskName .. "spawnEnterAreaId", SceneObject(pActiveArea):getObjectID())
+	createObserver(ENTEREDAREA, self.taskName, "enteredTheaterSpawnArea", pActiveArea)
 
-			if spawnedMobilesList ~= nil or #self.mobileList == 0 then
-				if self:setupActiveArea(pPlayer, spawnPoint) then
-					local waypointId
+	pActiveArea = spawnActiveArea(zoneName, "object/active_area.iff", spawnPoint[1], 0, spawnPoint[3], 300, 0)
 
-					if (self.createWaypoint) then
-						local pGhost = CreatureObject(pPlayer):getPlayerObject()
+	if (pActiveArea == nil) then
+		return false
+	end
 
-						if (pGhost ~= nil) then
-							waypointId = PlayerObject(pGhost):addWaypoint(zoneName, self.waypointDescription, "", spawnPoint[1], spawnPoint[3], WAYPOINTYELLOW, true, true, WAYPOINTQUESTTASK)
-						end
-					end
+	writeData(playerID .. self.taskName .. "spawnExitAreaId", SceneObject(pActiveArea):getObjectID())
+	createObserver(EXITEDAREA, self.taskName, "exitedTheaterSpawnArea", pActiveArea)
 
-					if waypointId ~= nil or not self.createWaypoint then
-						createEvent(self.despawnTime, self.taskName, "handleDespawnTheater", pPlayer, "")
-						self:callFunctionIfNotNil(self.onSuccessfulSpawn, nil, pPlayer, spawnedMobilesList)
-						return true
-					end
-				end
-			end
+	if (self.createWaypoint) then
+		local pGhost = CreatureObject(pPlayer):getPlayerObject()
+
+		if (pGhost ~= nil) then
+			PlayerObject(pGhost):addWaypoint(zoneName, self.waypointDescription, "", spawnPoint[1], spawnPoint[3], WAYPOINTYELLOW, true, true, WAYPOINTQUESTTASK)
 		end
 	end
 
-	-- Something failed above, clean up and end the task.
-	Logger:log("Failed to spawn " .. self.taskName .. " theater.", LT_ERROR)
-	self:callFunctionIfNotNil(self.onFailedSpawn, nil, pPlayer)
-	self:finish(pPlayer)
+	self:callFunctionIfNotNil(self.onTheaterCreated, nil, pPlayer)
 
-	return false
+	return true
 end
 
--- Handle the task finish event.
--- @param pPlayer pointer to the creature object of the player that the event was triggered for.
-function GoToTheater:taskFinish(pPlayer)
-	Logger:log("Despawning " .. self.taskName .. " theater.", LT_INFO)
+function GoToTheater:enteredTheaterSpawnArea(pActiveArea, pPlayer)
+	if not SceneObject(pPlayer):isPlayerCreature() then
+		return 0
+	end
+
+	local storedActiveAreaId = readData(SceneObject(pPlayer):getObjectID() .. self.taskName .. "spawnEnterAreaId")
+
+	if (storedActiveAreaId == SceneObject(pActiveArea):getObjectID()) then
+		self:spawnTheaterObjects(pPlayer)
+	end
+
+	return 0
+end
+
+function GoToTheater:exitedTheaterSpawnArea(pActiveArea, pPlayer)
+	if not SceneObject(pPlayer):isPlayerCreature() then
+		return 0
+	end
+
+	local storedActiveAreaId = readData(SceneObject(pPlayer):getObjectID() .. self.taskName .. "spawnExitAreaId")
+
+	if (storedActiveAreaId == SceneObject(pActiveArea):getObjectID()) then
+		self:despawnTheaterObjects(pPlayer)
+		self:callFunctionIfNotNil(self.exitedDespawnArea, nil, pPlayer)
+	end
+
+	return 0
+end
+
+function GoToTheater:spawnTheaterObjects(pPlayer)
+	local pTheater = self:getTheaterObject(pPlayer)
+
+	if (pTheater == nil) then
+		printLuaError("GoToTheater:spawnTheaterObjects for " .. self.taskName .. ", theater object null.")
+		self:finish(pPlayer)
+		return
+	end
+
+	if (self:areTheaterObjectsSpawned(pPlayer)) then
+		return
+	end
+
+	local zoneName = SceneObject(pTheater):getZoneName()
+
+	local spawnPoint = { SceneObject(pTheater):getWorldPositionX(), SceneObject(pTheater):getWorldPositionZ(), SceneObject(pTheater):getWorldPositionY() }
 
 	local playerID = SceneObject(pPlayer):getObjectID()
 
-	self:removeTheaterWaypoint(pPlayer)
+	for i = 1, #self.theater, 1 do
+		local objectData = self.theater[i]
+		local xLoc = spawnPoint[1] + objectData.xDiff
+		local yLoc = spawnPoint[3] + objectData.yDiff
+		local zLoc = getTerrainHeight(pPlayer, xLoc, yLoc) + objectData.zDiff
+		local pObject = spawnSceneObject(zoneName, objectData.template, xLoc, zLoc, yLoc, 0, math.rad(objectData.heading))
 
-	local activeAreaId = readData(playerID .. self.taskName .. ACTIVE_AREA_ID_STRING)
+		if (pObject ~= nil) then
+			writeData(playerID .. self.taskName .. "theaterObject" .. i, SceneObject(pObject):getObjectID())
+		end
+	end
+
+	local spawnedMobilesList
+
+	if (self.mobileList ~= nil and #self.mobileList > 0) then
+		spawnedMobilesList = SpawnMobiles.spawnMobiles(pTheater, self.taskName, self.mobileList, true)
+	elseif (self.mobileListWithLoc ~= nil and #self.mobileListWithLoc > 0) then
+		spawnedMobilesList = SpawnMobiles.spawnMobilesWithLoc(pTheater, self.taskName, self.mobileListWithLoc)
+	end
+
+	if not self:setupActiveArea(pPlayer, spawnPoint) then
+		self:finish(pPlayer)
+	else
+		self:callFunctionIfNotNil(self.onObjectsSpawned, nil, pPlayer, spawnedMobilesList)
+	end
+end
+
+function GoToTheater:despawnTheaterObjects(pPlayer)
+	if (not self:areTheaterObjectsSpawned(pPlayer)) then
+		return
+	end
+
+	local playerID = SceneObject(pPlayer):getObjectID()
+
+	local activeAreaId = readData(playerID .. self.taskName .. "activeAreaId")
 	local pArea = getSceneObject(activeAreaId)
 
 	if (pArea ~= nil) then
@@ -184,33 +181,99 @@ function GoToTheater:taskFinish(pPlayer)
 		end
 	end
 
-	local theaterId = readData(playerID .. self.taskName .. THEATER_ID_STRING)
-	local pTheater = getSceneObject(theaterId)
+	local pTheater = self:getTheaterObject(pPlayer)
 
 	if (pTheater ~= nil) then
-		SpawnMobiles.despawnMobiles(pTheater, self.taskName)
+		SpawnMobiles.despawnMobiles(pTheater, self.taskName, true)
+		self:callFunctionIfNotNil(self.onTheaterDespawn, nil, pPlayer)
+	end
+end
+
+function GoToTheater:setupActiveArea(pPlayer, spawnPoint)
+	local pActiveArea = spawnActiveArea(CreatureObject(pPlayer):getZoneName(), "object/active_area.iff", spawnPoint[1], 0, spawnPoint[3], self.activeAreaRadius, 0)
+
+	if (pActiveArea ~= nil) then
+		writeData(SceneObject(pPlayer):getObjectID() .. self.taskName .. "activeAreaId", SceneObject(pActiveArea):getObjectID())
+		createEvent(2000, self.taskName, "createAreaObserver", pActiveArea, "")
+		return true
+	end
+
+	return false
+end
+
+function GoToTheater:createAreaObserver(pActiveArea)
+	if (pActiveArea == nil) then
+		return
+	end
+
+	createObserver(ENTEREDAREA, self.taskName, "handleEnteredAreaEvent", pActiveArea)
+end
+
+function GoToTheater:handleEnteredAreaEvent(pActiveArea, pPlayer, nothing)
+	if not SceneObject(pPlayer):isPlayerCreature() then
+		return 0
+	end
+
+	local storedActiveAreaId = readData(SceneObject(pPlayer):getObjectID() .. self.taskName .. "activeAreaId")
+	if storedActiveAreaId == SceneObject(pActiveArea):getObjectID() then
+		local spawnedObjects = self:getSpawnedMobileList(pPlayer)
+		self:callFunctionIfNotNil(self.onEnteredActiveArea, nil, pPlayer, spawnedObjects)
+
+		return 1
+	end
+
+	return 0
+end
+
+function GoToTheater:areTheaterObjectsSpawned(pPlayer)
+	local playerID = SceneObject(pPlayer):getObjectID()
+
+	for i = 1, #self.theater, 1 do
+		local objectID = readData(playerID .. self.taskName .. "theaterObject" .. i)
+		local pObject = getSceneObject(objectID)
+
+		if (pObject ~= nil) then
+			return true
+		end
+	end
+
+	return false
+end
+
+function GoToTheater:taskFinish(pPlayer)
+	local playerID = SceneObject(pPlayer):getObjectID()
+
+	self:removeTheaterWaypoint(pPlayer)
+	self:despawnTheaterObjects(pPlayer)
+	SpawnMobiles.clearStoredRespawnData(pPlayer, self.taskName, self.mobileList)
+
+	local activeAreaId = readData(playerID .. self.taskName .. "spawnEnterAreaId")
+	local pArea = getSceneObject(activeAreaId)
+
+	if (pArea ~= nil) then
+		SceneObject(pArea):destroyObjectFromWorld()
+	end
+
+	deleteData(playerID .. self.taskName .. "spawnEnterAreaId")
+
+	activeAreaId = readData(playerID .. self.taskName .. "spawnExitAreaId")
+	pArea = getSceneObject(activeAreaId)
+
+	if (pArea ~= nil) then
+		SceneObject(pArea):destroyObjectFromWorld()
+	end
+
+	deleteData(playerID .. self.taskName .. "spawnExitAreaId")
+
+	local pTheater = self:getTheaterObject(pPlayer)
+
+	if (pTheater ~= nil) then
 		SceneObject(pTheater):destroyObjectFromWorld()
 	end
 
-	self:callFunctionIfNotNil(self.onTheaterDespawn, nil, pPlayer)
+	deleteData(playerID .. self.taskName .. "theaterID")
 
 	return true
-end
-
--- Handle the despawn event.
--- @param pPlayer pointer to the creature object of the player that the event was triggered for.
-function GoToTheater:handleDespawnTheater(pPlayer)
-	if (not self:hasTaskStarted(pPlayer)) then
-		return
-	end
-	local pPlayerObj = CreatureObject(pPlayer):getPlayerObject()
-
-	if (pPlayerObj ~= nil and PlayerObject(pPlayerObj):isOnline()) then
-		createEvent(self.despawnTime / 2, self.taskName, "handleDespawnTheater", pPlayer, "")
-		return
-	end
-
-	self:finish(pPlayer)
 end
 
 function GoToTheater:removeTheaterWaypoint(pPlayer)
@@ -221,6 +284,23 @@ function GoToTheater:removeTheaterWaypoint(pPlayer)
 	end
 
 	PlayerObject(pGhost):removeWaypointBySpecialType(WAYPOINTQUESTTASK)
+end
+
+function GoToTheater:getSpawnedMobileList(pPlayer)
+	local pTheater = self:getTheaterObject(pPlayer)
+
+	if pTheater == nil then
+		return nil
+	end
+
+	return SpawnMobiles.getSpawnedMobiles(pTheater, self.taskName)
+end
+
+function GoToTheater:getTheaterObject(pPlayer)
+	local theaterId = readData(SceneObject(pPlayer):getObjectID() .. self.taskName .. "theaterID")
+	local pTheater = getSceneObject(theaterId)
+
+	return pTheater
 end
 
 return GoToTheater

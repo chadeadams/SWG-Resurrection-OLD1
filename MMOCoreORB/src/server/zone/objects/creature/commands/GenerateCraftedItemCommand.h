@@ -10,7 +10,6 @@
 #include "server/zone/objects/draftschematic/DraftSchematic.h"
 #include "server/zone/objects/factorycrate/FactoryCrate.h"
 #include "server/zone/managers/crafting/CraftingManager.h"
-#include "server/zone/managers/stringid/StringIdManager.h"
 
 class GenerateCraftedItemCommand : public QueueCommand {
 public:
@@ -171,7 +170,7 @@ public:
 			prototype->updateToDatabase();
 
 			if (quantity > 1) {
-				ManagedReference<FactoryCrate* > crate = prototype->createFactoryCrate(true);
+				ManagedReference<FactoryCrate* > crate = prototype->createFactoryCrate(quantity, true);
 
 				if (crate == NULL) {
 					prototype->destroyObjectFromDatabase(true);

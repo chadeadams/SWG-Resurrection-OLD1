@@ -1,11 +1,10 @@
 #include "DestructibleBuildingMenuComponent.h"
 #include "server/zone/Zone.h"
-#include "server/zone/objects/player/PlayerObject.h"
+#include "server/zone/ZoneProcessServer.h"
 #include "server/zone/packets/object/ObjectMenuResponse.h"
 #include "server/zone/objects/scene/SceneObject.h"
 #include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/objects/building/BuildingObject.h"
-#include "server/zone/objects/tangible/TangibleObject.h"
 #include "server/zone/managers/structure/tasks/DestroyStructureTask.h"
 
 void DestructibleBuildingMenuComponent::fillObjectMenuResponse(SceneObject* sceneObject, ObjectMenuResponse* menuResponse, CreatureObject* player) const {
@@ -43,7 +42,7 @@ int DestructibleBuildingMenuComponent::handleObjectMenuSelect(SceneObject* scene
 	if (pendingTask != NULL)
 		return 0;
 
-	pendingTask = new DestroyStructureTask(building, true);
+	pendingTask = new DestroyStructureTask(building, true, true);
 
 	if (selectedID == 128) {
 		building->addPendingTask("destruction", pendingTask, 15000);

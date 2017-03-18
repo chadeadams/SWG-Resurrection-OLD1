@@ -16,6 +16,7 @@
 #include "server/zone/objects/player/EntertainingObserver.h"
 #include "templates/params/creature/CreatureAttribute.h"
 #include "server/zone/objects/player/PlayerObject.h"
+#include "server/zone/objects/player/FactionStatus.h"
 #include "server/zone/objects/tangible/Instrument.h"
 #include "server/zone/packets/object/Flourish.h"
 #include "server/zone/packets/creature/CreatureObjectDeltaMessage6.h"
@@ -843,7 +844,7 @@ void EntertainingSessionImplementation::sendEntertainmentUpdate(CreatureObject* 
 	/*if (updateEntValue)
 		creature->setTerrainNegotiation(0.8025000095f, true);*/
 
-	String str = entertainer->getZoneServer()->getChatManager()->getMoodAnimation(mood);
+	String str = creature->getZoneServer()->getChatManager()->getMoodAnimation(mood);
 	creature->setMoodString(str, true);
 }
 

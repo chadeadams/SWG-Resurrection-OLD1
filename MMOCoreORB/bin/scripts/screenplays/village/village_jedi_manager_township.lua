@@ -58,7 +58,11 @@ end
 
 function VillageJediManagerTownship:switchToNextPhase()
 	if (not isZoneEnabled("dathomir")) then
-		rescheduleServerEvent("VillagePhaseChange", 60 * 60 * 1000)
+		if (hasServerEvent("VillagePhaseChange")) then
+			rescheduleServerEvent("VillagePhaseChange", 60 * 60 * 1000)
+		end
+
+		return
 	end
 
 	local currentPhase = VillageJediManagerTownship.getCurrentPhase()
@@ -151,7 +155,7 @@ function VillageJediManagerTownship:createVillageMasterObject()
 	local pMaster = spawnSceneObject("dathomir", "object/tangible/spawning/quest_spawner.iff", 5291, 78.5, -4126, 0, 0)
 
 	if (pMaster == nil) then
-		printf("Error in VillageJediManagerTownship:createVillageMasterObject(), unable to create master village object.\n")
+		printLuaError("VillageJediManagerTownship:createVillageMasterObject(), unable to create master village object.")
 		return
 	end
 

@@ -1810,14 +1810,14 @@ object_tangible_terminal_terminal_character_builder = object_tangible_terminal_s
 			--},
 			"Deeds",
 			{
+				"Resource Deed", "object/tangible/veteran_reward/resource.iff",
 				"Vehicle Deeds",
 				{
 					"Swoop", "object/tangible/deed/vehicle_deed/speederbike_swoop_deed.iff",
 					--"Jetpack", "object/tangible/deed/vehicle_deed/jetpack_deed.iff",
 					"Speederbike", "object/tangible/deed/vehicle_deed/speederbike_deed.iff",
 					--"Speederbike Flash", "object/tangible/deed/vehicle_deed/speederbike_flash_deed.iff",
-					"Landspeeder x34", "object/tangible/deed/vehicle_deed/landspeeder_x34_deed.iff",		
-                    "Speederbike Old", "object/tangible/deed/vehicle_deed/speederbike_old_deed.iff"								
+					"Landspeeder x34", "object/tangible/deed/vehicle_deed/landspeeder_x34_deed.iff"										
 				},
 				"Structure Deeds",
 				{
@@ -1862,25 +1862,28 @@ object_tangible_terminal_terminal_character_builder = object_tangible_terminal_s
 					},
 					"Installation Deeds",
 					{
-						"Harvester Deeds",
-						{
-							"Creature Harvester Deed", "object/tangible/deed/harvester_deed/harvester_creature_deed.iff",
-							"Personal Flora Harvester Deed", "object/tangible/deed/harvester_deed/harvester_flora_deed.iff",
-							"Heavy Flora Harvester Deed", "object/tangible/deed/harvester_deed/harvester_flora_deed_heavy.iff",
-							"Medium Flora Harvester Deed", "object/tangible/deed/harvester_deed/harvester_flora_deed_medium.iff",
-							"Personal Gas Harvester Deed", "object/tangible/deed/harvester_deed/harvester_gas_deed.iff",
-							"Heavy Gas Harvester Deed", "object/tangible/deed/harvester_deed/harvester_gas_deed_heavy.iff",
-							"Medium Gas Harvester Deed", "object/tangible/deed/harvester_deed/harvester_gas_deed_medium.iff",
-							"Personal Liquid Harvester Deed", "object/tangible/deed/harvester_deed/harvester_liquid_deed.iff",
-							"Heavy Liquid Harvester Deed", "object/tangible/deed/harvester_deed/harvester_liquid_deed_heavy.iff",
-							"Medium Liquid Harvester Deed", "object/tangible/deed/harvester_deed/harvester_liquid_deed_medium.iff",
-							"Personal Moisture Harvester Deed", "object/tangible/deed/harvester_deed/harvester_moisture_deed.iff",
-							"Heavy Moisture Harvester Deed", "object/tangible/deed/harvester_deed/harvester_moisture_deed_heavy.iff",
-							"Medium Moisture Harvester Deed", "object/tangible/deed/harvester_deed/harvester_moisture_deed_medium.iff",
-							"Personal Mineral Harvester Deed", "object/tangible/deed/harvester_deed/harvester_ore_s1_deed.iff",
-							"Heavy Mineral Harvester Deed", "object/tangible/deed/harvester_deed/harvester_ore_heavy_deed.iff",
-							"Medium Mineral Harvester Deed", "object/tangible/deed/harvester_deed/harvester_ore_s2_deed.iff"
-						},
+
+                    --March 13, 2017 - Removed Harvester deeds as they do not work right if spawned - (nugax nugax@swgresurrection.com)
+					--	"Harvester Deeds",
+						--{
+							--"Creature Harvester Deed", "object/tangible/deed/harvester_deed/harvester_creature_deed.iff",
+							--"Personal Flora Harvester Deed", "object/tangible/deed/harvester_deed/harvester_flora_deed.iff",
+							--"Heavy Flora Harvester Deed", "object/tangible/deed/harvester_deed/harvester_flora_deed_heavy.iff",
+							--"Medium Flora Harvester Deed", "object/tangible/deed/harvester_deed/harvester_flora_deed_medium.iff",
+							--"Personal Gas Harvester Deed", "object/tangible/deed/harvester_deed/harvester_gas_deed.iff",
+							--"Heavy Gas Harvester Deed", "object/tangible/deed/harvester_deed/harvester_gas_deed_heavy.iff",
+							--"Medium Gas Harvester Deed", "object/tangible/deed/harvester_deed/harvester_gas_deed_medium.iff",
+							--"Personal Liquid Harvester Deed", "object/tangible/deed/harvester_deed/harvester_liquid_deed.iff",
+							--"Heavy Liquid Harvester Deed", "object/tangible/deed/harvester_deed/harvester_liquid_deed_heavy.iff",
+							--"Medium Liquid Harvester Deed", "object/tangible/deed/harvester_deed/harvester_liquid_deed_medium.iff",
+							--"Personal Moisture Harvester Deed", "object/tangible/deed/harvester_deed/harvester_moisture_deed.iff",
+							--"Heavy Moisture Harvester Deed", "object/tangible/deed/harvester_deed/harvester_moisture_deed_heavy.iff",
+							--"Medium Moisture Harvester Deed", "object/tangible/deed/harvester_deed/harvester_moisture_deed_medium.iff",
+							--"Personal Mineral Harvester Deed", "object/tangible/deed/harvester_deed/harvester_ore_s1_deed.iff",
+							--"Heavy Mineral Harvester Deed", "object/tangible/deed/harvester_deed/harvester_ore_heavy_deed.iff",
+							--"Medium Mineral Harvester Deed", "object/tangible/deed/harvester_deed/harvester_ore_s2_deed.iff"
+                            --"Medium Mineral Harvester Deed", "object/tangible/deed/harvester_deed/harvester_ore_s2_deed.iff"
+						--},
 						"Generator Deeds",
 						{
 							"Fusion Generator Deed", "object/tangible/deed/generator_deed/generator_fusion_deed.iff",
@@ -2177,7 +2180,7 @@ object_tangible_terminal_terminal_character_builder = object_tangible_terminal_s
 			{
 				"Landspeeder av21", "object/tangible/deed/vehicle_deed/landspeeder_av21_deed.iff",
 				"Landspeeder x31", "object/tangible/deed/vehicle_deed/landspeeder_x31_deed.iff",
-				"Sith Speeder", "object/tangible/deed/vehicle_deed/sith_speeder.iff",
+				"Sith Speeder", "object/tangible/deed/vehicle_deed/sith_speeder_deed.iff",
 				"BARC Speeder", "object/tangible/deed/vehicle_deed/barc_speeder_deed.iff",
 				"Imperial BARC Speder", "object/tangible/deed/vehicle_deed/barc_speeder_imperial_deed.iff",
 				"Rebel BARC Speeder", "object/tangible/deed/vehicle_deed/barc_speeder_rebel_deed.iff",
@@ -2685,7 +2688,6 @@ object_tangible_terminal_terminal_character_builder = object_tangible_terminal_s
 			},
 			"Pharmaceutical",
 			{
-				"Small StimPack", "object/tangible/medicine/stimpack_sm_s1.iff",
 				"StimPack A", "object/tangible/medicine/crafted/crafted_stimpack_sm_s1_a.iff",
 				"StimPack B", "object/tangible/medicine/crafted/crafted_stimpack_sm_s1_b.iff",
 				"StimPack C", "object/tangible/medicine/crafted/crafted_stimpack_sm_s1_c.iff",
@@ -2699,14 +2701,12 @@ object_tangible_terminal_terminal_character_builder = object_tangible_terminal_s
 				"Medpack Grenade Area A", "object/tangible/medicine/crafted/medpack_grenade_area_a.iff",
 				"Medpack Grenade Area B", "object/tangible/medicine/crafted/medpack_grenade_area_b.iff",
 				"Medpack Grenade Area C", "object/tangible/medicine/crafted/medpack_grenade_area_c.iff",
-				"Medpack Enhance Action A", "object/tangible/medicine/crafted/medpack_enhance_action_a.iff",
-				"Medpack Enhance Constitution A", "object/tangible/medicine/crafted/medpack_enhance_constitution_a.iff",
-				--"Medpack Enhance Disease A", "object/tangible/medicine/crafted/medpack_enhance_disease_a.iff",
-				"Medpack Enhance Health A", "object/tangible/medicine/crafted/medpack_enhance_health_a.iff",
-				--"Medpack Enhance Poison A", "object/tangible/medicine/crafted/medpack_enhance_poison_a.iff",
-				"Medpack Enhance Quickness A", "object/tangible/medicine/crafted/medpack_enhance_quickness_a.iff",
-				"Medpack Enhance Stamina A", "object/tangible/medicine/crafted/medpack_enhance_stamina_a.iff",
-				"Medpack Enhance Strength A", "object/tangible/medicine/crafted/medpack_enhance_strength_a.iff",
+				"Medpack Enhance Disease A", "object/tangible/medicine/crafted/medpack_enhance_disease_a.iff",
+				"Medpack Enhance Disease B", "object/tangible/medicine/crafted/medpack_enhance_disease_b.iff",
+				"Medpack Enhance Disease C", "object/tangible/medicine/crafted/medpack_enhance_disease_c.iff",
+				"Medpack Enhance Poison A", "object/tangible/medicine/crafted/medpack_enhance_poison_a.iff",
+				"Medpack Enhance Poison B", "object/tangible/medicine/crafted/medpack_enhance_poison_b.iff",
+				"Medpack Enhance Poison C", "object/tangible/medicine/crafted/medpack_enhance_poison_c.iff",
 				"Fire blanket", "object/tangible/medicine/crafted/medic_fire_blanket.iff",
 				"Medpack Cure Disease A", "object/tangible/medicine/crafted/medpack_cure_disease_a.iff",
 				"Medpack Cure Disease Area A", "object/tangible/medicine/crafted/medpack_cure_disease_area_a.iff",
@@ -2714,16 +2714,11 @@ object_tangible_terminal_terminal_character_builder = object_tangible_terminal_s
 				"Medpack Cure Poison Area A", "object/tangible/medicine/crafted/medpack_cure_poison_area_a.iff",
 				"Disease Health Area A", "object/tangible/medicine/crafted/medpack_disease_area_health_a.iff",
 				"Poison Health Area A", "object/tangible/medicine/crafted/medpack_poison_area_health_a.iff",
-				"Medpack Health Wound", "object/tangible/medicine/medpack_wound_health.iff",
 				"Medpack Blinded", "object/tangible/medicine/crafted/medpack_blinded_a.iff",
 				"Medpack Dizzy", "object/tangible/medicine/crafted/medpack_dizzy_a.iff",
 				"Medpack Intimidated", "object/tangible/medicine/crafted/medpack_intimidated_a.iff",
 				"Medpack Stunned", "object/tangible/medicine/crafted/medpack_stunned_a.iff",
 				"Revive Pack", "object/tangible/medicine/medpack_revive.iff"
-			},
-			"Resources",
-			{
-				"Resource Deed", "object/tangible/veteran_reward/resource.iff"
 			},
 			--"Scout Equipment",
 			--{

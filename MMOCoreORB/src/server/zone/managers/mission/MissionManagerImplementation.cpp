@@ -18,8 +18,6 @@
 #include "server/zone/objects/mission/HuntingMissionObjective.h"
 #include "server/zone/objects/mission/ReconMissionObjective.h"
 #include "server/zone/objects/mission/BountyMissionObjective.h"
-#include "server/zone/objects/creature/ai/AiAgent.h"
-#include "server/zone/objects/region/Region.h"
 #include "server/zone/objects/area/SpawnArea.h"
 #include "server/zone/managers/resource/ResourceManager.h"
 #include "templates/manager/TemplateManager.h"
@@ -30,12 +28,10 @@
 #include "server/zone/managers/creature/CreatureManager.h"
 #include "server/zone/managers/creature/CreatureTemplateManager.h"
 #include "templates/mobile/LairTemplate.h"
-#include "server/zone/managers/planet/HuntingTargetEntry.h"
 #include "server/zone/objects/tangible/tool/SurveyTool.h"
-#include "server/zone/objects/area/MissionReconActiveArea.h"
 #include "server/zone/Zone.h"
-#include "server/db/ServerDatabase.h"
 #include "server/zone/managers/stringid/StringIdManager.h"
+#include "server/zone/objects/player/FactionStatus.h"
 
 void MissionManagerImplementation::loadLuaSettings() {
 	try {
@@ -1875,8 +1871,8 @@ BountyTargetListElement* MissionManagerImplementation::getRandomPlayerBounty(Cre
 			ManagedReference<CreatureObject*> creo = server->getObject(randomTarget->getTargetId()).castTo<CreatureObject*>();
 
 			if (creo != NULL) {
-				ZoneClientSession* targetClient = creo->getClient();
-				ZoneClientSession* playerClient = player->getClient();
+				auto targetClient = creo->getClient();
+				auto playerClient = player->getClient();
 
 				if (targetClient != NULL && playerClient != NULL) {
 					if (targetClient->getAccountID() == playerClient->getAccountID()) {
@@ -1900,8 +1896,8 @@ BountyTargetListElement* MissionManagerImplementation::getRandomPlayerBounty(Cre
 			ManagedReference<CreatureObject*> creo = server->getObject(randomTarget->getTargetId()).castTo<CreatureObject*>();
 
 			if (creo != NULL) {
-				ZoneClientSession* targetClient = creo->getClient();
-				ZoneClientSession* playerClient = player->getClient();
+				auto targetClient = creo->getClient();
+				auto playerClient = player->getClient();
 
 				if (targetClient != NULL && playerClient != NULL) {
 					if (targetClient->getAccountID() == playerClient->getAccountID()) {

@@ -11,7 +11,6 @@
 #include "server/zone/objects/scene/SceneObject.h"
 #include "server/zone/objects/building/BuildingObject.h"
 #include "server/zone/objects/area/ActiveArea.h"
-#include "server/zone/objects/staticobject/StaticObject.h"
 #include "server/zone/managers/planet/PlanetManager.h"
 #include "terrain/manager/TerrainManager.h"
 #include "templates/building/SharedBuildingObjectTemplate.h"
@@ -198,7 +197,7 @@ bool ZoneContainerComponent::transferObject(SceneObject* sceneObject, SceneObjec
 		// hack to get around notifyEnter/Exit only working with tangible objects
 		Vector3 worldPos = object->getWorldPosition();
 		SortedVector<ManagedReference<NavMeshRegion*> > objects;
-		zone->getInRangeNavMeshes(object->getPositionX(), object->getPositionY(), 1, &objects, false);
+		zone->getInRangeNavMeshes(object->getPositionX(), object->getPositionY(), &objects, false);
 
 		for(auto& area : objects) {
 			if(area->isNavRegion()) {
@@ -259,7 +258,7 @@ bool ZoneContainerComponent::removeObject(SceneObject* sceneObject, SceneObject*
 		
 //		zoneLocker.release();
 
-		SortedVector<ManagedReference<QuadTreeEntry*> >* closeObjects = object->getCloseObjects();
+		auto closeObjects = object->getCloseObjects();
 
 		if (closeObjects != NULL) {
 			try {

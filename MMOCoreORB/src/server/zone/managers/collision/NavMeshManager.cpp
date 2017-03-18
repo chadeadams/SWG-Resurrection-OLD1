@@ -2,8 +2,8 @@
 #include "pathfinding/RecastNavMesh.h"
 #include "pathfinding/RecastNavMeshBuilder.h"
 #include "server/zone/managers/planet/PlanetManager.h"
-#include "conf/ConfigManager.h"
 #include "terrain/manager/TerrainManager.h"
+#include "terrain/ProceduralTerrainAppearance.h"
 
 // Lower thread count, used during runtime
 const String NavMeshManager::TileQueue = "NavMeshWorker";
@@ -72,7 +72,7 @@ void NavMeshManager::checkJobs() {
         info("Popping job - CurrentSize: " + String::valueOf(jobs.size()), true);
 #endif
         Reference<NavMeshJob*> job = jobs.get(0);
-        ManagedReference<NavMeshRegion*> region = job->getRegion();
+        Reference<NavMeshRegion*> region = job->getRegion();
 
         if (region == NULL) {
         	jobs.drop(jobs.elementAt(0).getKey());
@@ -110,7 +110,7 @@ void NavMeshManager::startJob(Reference<NavMeshJob*> job) {
         return;
     }
 
-    ManagedReference<NavMeshRegion*> region = job->getRegion();
+    Reference<NavMeshRegion*> region = job->getRegion();
 
     if (region == NULL) {
     	return;

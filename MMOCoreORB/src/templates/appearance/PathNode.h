@@ -8,13 +8,12 @@
 #ifndef PATHNODE_H_
 #define PATHNODE_H_
 
-#include "engine/engine.h"
-
+#include "engine/util/u3d/Vector3.h"
 #include "templates/appearance/PathEdge.h"
 
 class PathGraph;
 
-class PathNode : public Object {
+class PathNode {
 public:
 	enum PathNodeType
 	{
@@ -72,6 +71,14 @@ public:
 		radius = iffStream->getFloat(); //radius
 		if(radius == 0.0f)
 			radius = 0.5f;
+	}
+
+	bool toBinaryStream(ObjectOutputStream* stream) {
+		return false;
+	}
+
+	bool parseFromBinaryStream(ObjectInputStream* stream) {
+		return false;
 	}
 
 	inline float getX() const {

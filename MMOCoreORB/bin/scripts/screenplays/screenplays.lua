@@ -16,6 +16,7 @@ require("sui.SuiListBox")
 require("sui.SuiMessageBox")
 require("sui.SuiQuestPopup")
 require("sui.SuiTemplate")
+require("sui.SuiTransferBox")
 require("sui.custom.SuiAmpPuzzle")
 require("sui.custom.SuiArrayPuzzle")
 require("sui.custom.SuiFsCrafting1Analyzer")
@@ -178,7 +179,7 @@ includeFile("village/phase4/fs_crafting4_theater.lua")
 includeFile("village/phase4/fs_crafting4.lua")
 includeFile("village/phase4/fs_village_defense.lua")
 includeFile("village/convos/convohelpers/experience_converter.lua")
-includeFile("village/convos/fs_experience_converter_conv_handler.lua")
+includeFile("village/convos/paemos_conv_handler.lua")
 includeFile("village/convos/elder_conv_handler.lua")
 includeFile("village/convos/fs_surveyor_conv_handler.lua")
 includeFile("village/convos/intro/old_man_conv_handler.lua")
@@ -202,17 +203,38 @@ includeFile("village/convos/phase4/med_droid_phase4_conv_handler.lua")
 includeFile("village/convos/phase4/sarguillo_phase4_conv_handler.lua")
 includeFile("village/convos/phase4/sivarra_phase4_conv_handler.lua")
 
--- Jedi Trials (Padawan)
-includeFile("jedi/padawan/jedi_padawan_trial.lua")
-includeFile("jedi/padawan/convos/trials_padawan_architect_01.lua")
-includeFile("jedi/padawan/convos/trials_padawan_architect_02.lua")
-includeFile("jedi/padawan/convos/trials_padawan_artist_01.lua")
-includeFile("jedi/padawan/convos/trials_padawan_artist_02.lua")
-includeFile("jedi/padawan/trials/trial_architect.lua")
-includeFile("jedi/padawan/trials/trial_artist.lua")
+-- Jedi Trials
+includeFile("jedi/trialData.lua")
+includeFile("jedi/jedi_trials.lua")
+includeFile("jedi/padawan/padawan_trials.lua")
+includeFile("jedi/padawan/convos/padawan_architect_01_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_architect_02_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_artist_01_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_artist_02_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_bad_cat_01_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_chef_01_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_chef_02_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_kill_baz_nitch_01_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_kill_falumpaset_01_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_kill_sludge_panther_01_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_old_musician_01_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_old_musician_02_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_old_musician_03_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_pannaqa_01_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_pannaqa_02_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_pannaqa_03_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_peoples_soldier_01_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_politician_01_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_sob_story_01_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_spice_mom_01_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_spice_mom_02_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_surveyor_01_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_the_ring_01_conv_handler.lua")
+includeFile("jedi/padawan/convos/padawan_the_ring_02_conv_handler.lua")
 
 -- Jedi Objects
-includeFile("jedi/shrine/ForceShrineMenuComponent.lua")
+includeFile("jedi/components/ForceShrineMenuComponent.lua")
+includeFile("jedi/components/TrialsSearchObjectMenuComponent.lua")
 
 -- Events - Bestine Election
 includeFile("events/conversations/bestine_election/bestine_election_conv_handler.lua")
@@ -593,13 +615,19 @@ includeFile("tests/tests.lua")
 
 --Buff Terminals Around Cities, etc.
 includeFile("buffterminals/buff_terms.lua")
-includeFile("buffterminals/advanced_buff_terms.lua")
+--includeFile("buffterminals/advanced_buff_terms.lua")
 
 --Force Trainers at Exar Kun Temple
 includeFile("force_trainers/force_trainers_exar_kun_temple.lua")
 
---Black Market Merchants
+--Black Market Merchants Added:(3/1/17) (Nugax nugax@swgresurrection.com
 includeFile("black_market/black_mark_dealer_screenplays.lua")
+
+--Custom Screenplays Added:(3/1/17) (Nugax nugax@swgresurrection.com)
+includeFile("custom_screenplays/imperial_recruiter.lua")
+
+--New Player Helper Droids at Starports Added: (3/6/2017) (Nugax nugax@swgresurrection.com)
+includeFile("new_player_helper/new_player_helper.lua")
 
 
 

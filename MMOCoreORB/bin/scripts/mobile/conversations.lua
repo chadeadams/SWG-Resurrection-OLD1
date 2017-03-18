@@ -159,6 +159,8 @@ includeFile("conversations/recruiter/imperial_recruiter_conv.lua")
 
 -- Heralds
 includeFile("conversations/tasks/heralds/herald_conv.lua")
+includeFile("conversations/tasks/heralds/herald_corellia1_conv.lua")
+includeFile("conversations/tasks/heralds/herald_corellia2_conv.lua")
 includeFile("conversations/tasks/heralds/herald_lok1_conv.lua")
 includeFile("conversations/tasks/heralds/herald_lok2_conv.lua")
 includeFile("conversations/tasks/heralds/herald_naboo1_conv.lua")
@@ -276,3 +278,7 @@ includeFile("conversations/junk_dealer/junk_dealer_sneg_conv.lua")
 
 --Black Market Conversations
 includeFile("conversations/black_market/black_market_template.lua")
+
+--New Player Helper Conversation (Added 3/6/2017 - Nugax nugax@swgresurrection.com
+includeFile("conversations/new_player_helper/new_player_helper_template.lua")
+

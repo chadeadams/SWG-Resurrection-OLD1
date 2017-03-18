@@ -95,6 +95,8 @@ function ForceShrineMenuComponent:doMeditate(pObject, pPlayer)
 --]] 	
 --Added 1-3-2017 - Nugax - Shrine Components for jedi
 
+--Pushing file 3/9/17
+
         if (not isJediPadwan) then
         --Unlock Padawan / check to see if they have iniate rank from killing mellachie
         if (CreatureObject(pPlayer):hasSkill("force_title_jedi_rank_01")) then
