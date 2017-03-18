@@ -414,15 +414,19 @@ bool FactoryObjectImplementation::startFactory() {
 		if (weapon->hasPowerup())
 			return false;
 	}
+	// -- Reduced Factory Timers 3/18/2017
+	// Azureth(azureth@swgresurrection.com)
 
-	timer = ((int)schematic->getComplexity()) * 8;
+	// timer = ((int)schematic->getComplexity()) * 8;
+	timer = ((int)schematic->getComplexity()) * 4;
 
 	if(!populateSchematicBlueprint(schematic))
 		return false;
 
 	// Add sampletask
 	Reference<CreateFactoryObjectTask* > createFactoryObjectTask = new CreateFactoryObjectTask(_this.getReferenceUnsafeStaticCast());
-	addPendingTask("createFactoryObject", createFactoryObjectTask, timer * 1000);
+	addPendingTask("createFactoryObject", createFactoryObjectTask, timer * 500);
+	// addPendingTask("createFactoryObject", createFactoryObjectTask, timer * 1000);
 
 	operating = true;
 
