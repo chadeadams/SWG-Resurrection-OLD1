@@ -1207,8 +1207,12 @@ void PlayerManagerImplementation::disseminateExperience(TangibleObject* destruct
 				String xpType = entry->elementAt(j).getKey();
 				float xpAmount = baseXp;
 
+				if (group != NULL) {
+					xpAmount *= (float) damage / (totalDamage / 3);
+				}
+				else {
 				xpAmount *= (float) damage / totalDamage;
-
+				}
 				//Cap xp based on level
 				xpAmount = MIN(xpAmount, calculatePlayerLevel(attacker, xpType) * 300.f);
 
@@ -1222,6 +1226,9 @@ void PlayerManagerImplementation::disseminateExperience(TangibleObject* destruct
 				//Jedi experience doesn't count towards combat experience supposedly.
 				if (xpType != "jedi_general")
 					combatXp += xpAmount;
+
+				if (xpType == "jedi_general")
+					xpAmount = xpAmount / 3;
 
 				//Award individual expType
 				awardExperience(attacker, xpType, xpAmount);
