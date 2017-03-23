@@ -55,7 +55,7 @@ DBHost = "127.0.0.1"
 DBPort = 3306
 DBName = "swgemu"
 DBUser = "root"
-DBPass = "res16"
+DBPass = "Res16!"
 DBSecret = "swgemus3cr37!" -- Change this! This value should be unique and of reasonable length.
 
 LoginPort = 44453
@@ -67,7 +67,7 @@ MantisHost = "127.0.0.1"
 MantisPort = 3306
 MantisName = "swgemu"
 MantisUser = "root"
-MantisPass = "res16"
+MantisPass = "Res16!"
 MantisPrfx = "mantis_" -- The prefix for your mantis tables.
 
 AutoReg = 1
