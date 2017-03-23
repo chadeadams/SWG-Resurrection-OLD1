@@ -51,14 +51,7 @@ performanceDuration = 7200 -- in seconds
 medicalDuration = 7200 -- in seconds
 
 --Sets the experience multiplier while grouped
---Normal
---groupExpMultiplier = 2.0
-
---Advanced
---groupExpMultiplier = 4.0
-
---Quad Advanced
-groupExpMultiplier = 8.0
+groupExpMultiplier = 2.0
 
 
 --========================================
@@ -78,10 +71,10 @@ globalExpMultiplier = 4.0
 
 --Sets the base number of control devices of each type that a player can have in their datapad at once
 --For creature pets, A Creature Handler will have the base number + their stored pets skill mod as limit
-baseStoredCreaturePets = 2
-baseStoredFactionPets = 3
+baseStoredCreaturePets = 3
+baseStoredFactionPets = 4
 baseStoredDroids = 5
-baseStoredVehicles = 4
+baseStoredVehicles = 5
 baseStoredShips = 3
 
 -----------------------------------
