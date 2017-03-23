@@ -130,6 +130,8 @@ includeFile("village/village_spawn_table.lua")
 includeFile("village/intro/fs_intro.lua")
 includeFile("village/intro/glowing.lua")
 includeFile("village/intro/go_to_dathomir.lua")
+--Added for Custom Jedi - Nugax - 1-4-2017
+includeFile("village/intro/give_novice_jedi.lua")
 includeFile("village/intro/old_man_intro_encounter.lua")
 includeFile("village/intro/sith_shadow_encounter.lua")
 includeFile("village/intro/sith_shadow_intro_theater.lua")
@@ -614,4 +616,23 @@ includeFile("record_keepers/record_keepers.lua")
 
 --Tests
 includeFile("tests/tests.lua")
+
+--Buff Terminals Around Cities, etc.
+includeFile("buffterminals/buff_terms.lua")
+--includeFile("buffterminals/advanced_buff_terms.lua")
+
+--Force Trainers at Exar Kun Temple
+includeFile("force_trainers/force_trainers_exar_kun_temple.lua")
+
+--Black Market Merchants Added:(3/1/17) (Nugax nugax@swgresurrection.com
+includeFile("black_market/black_mark_dealer_screenplays.lua")
+
+--Custom Screenplays Added:(3/1/17) (Nugax nugax@swgresurrection.com)
+includeFile("custom_screenplays/imperial_recruiter.lua")
+
+--New Player Helper Droids at Starports Added: (3/6/2017) (Nugax nugax@swgresurrection.com)
+includeFile("new_player_helper/new_player_helper.lua")
+
+
+
 

@@ -6,7 +6,8 @@ jediManagerName = "VillageJediManager"
 
 NOTINABUILDING = 0
 
-NUMBEROFTREESTOMASTER = 6
+--NUMBEROFTREESTOMASTER = 6
+NUMBEROFTREESTOMASTER = 0
 
 VillageJediManager = JediManager:new {
 	screenplayName = jediManagerName,
@@ -106,13 +107,16 @@ function VillageJediManager:canLearnSkill(pPlayer, skillName)
 		end
 	end
 
-	if skillName == "force_title_jedi_rank_01" and CreatureObject(pPlayer):getForceSensitiveSkillCount(false) < 24 then
+--Modified for Custom Jedi System
+--SWGResurrection Changes 1/3/2017
+
+	if skillName == "force_title_jedi_rank_01" and CreatureObject(pPlayer):getForceSensitiveSkillCount(false) < 0 then
 		return false
 	end
 
-	if skillName == "force_title_jedi_rank_03" and not CreatureObject(pPlayer):villageKnightPrereqsMet("") then
-		return false
-	end
+--	if skillName == "force_title_jedi_rank_03" and not CreatureObject(pPlayer):villageKnightPrereqsMet("") then
+--		return false
+--	end
 
 	return true
 end
@@ -123,8 +127,14 @@ function VillageJediManager:canSurrenderSkill(pPlayer, skillName)
 		return false
 	end
 
-	if string.find(skillName, "force_sensitive_") and CreatureObject(pPlayer):hasSkill("force_title_jedi_rank_02") and CreatureObject(pPlayer):getForceSensitiveSkillCount(false) <= 24 then
-		return false
+
+	if string.find(skillName, "force_sensitive_") and CreatureObject(pPlayer):hasSkill("force_title_jedi_rank_01") and CreatureObject(pPlayer):getForceSensitiveSkillCount(false) <= 0 then
+
+--Removed for Jedi 3/12/2017 (Nugax nugax@swgresurrection.com)
+-- ===========================================================
+--	if string.find(skillName, "force_sensitive_") and CreatureObject(pPlayer):hasSkill("force_title_jedi_rank_02") and CreatureObject(pPlayer):getForceSensitiveSkillCount(false) <= 24 then
+-- Looks like this Value needs to return true to advance - Darkbane
+		return true
 	end
 
 	if string.find(skillName, "force_discipline_") and CreatureObject(pPlayer):hasSkill("force_title_jedi_rank_03") and not CreatureObject(pPlayer):villageKnightPrereqsMet(skillName) then

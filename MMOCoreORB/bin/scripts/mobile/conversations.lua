@@ -275,3 +275,10 @@ includeFile("conversations/junk_dealer/junk_dealer_quich_conv.lua")
 includeFile("conversations/junk_dealer/junk_dealer_reggi_conv.lua")
 includeFile("conversations/junk_dealer/junk_dealer_sheani_conv.lua")
 includeFile("conversations/junk_dealer/junk_dealer_sneg_conv.lua")
+
+--Black Market Conversations
+includeFile("conversations/black_market/black_market_template.lua")
+
+--New Player Helper Conversation (Added 3/6/2017 - Nugax nugax@swgresurrection.com
+includeFile("conversations/new_player_helper/new_player_helper_template.lua")
+

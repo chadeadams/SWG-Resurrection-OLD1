@@ -42,3 +42,12 @@ includeFile("lair/serverobjects.lua")
 
 -- Outfits
 includeFile("outfits/serverobjects.lua")
+
+--Force Trainers Customized (1/5/16)
+includeFile("force_trainers/serverobjects.lua")
+
+-- Black Market Dealer (1/1/17)
+includeFile("black_market/black_market_dealer.lua")
+
+--New Player Helper (Added: 3/6/2017 - Nugax nugax@swgresurrection.com)
+includeFile("new_player_helper/new_player_helper.lua")

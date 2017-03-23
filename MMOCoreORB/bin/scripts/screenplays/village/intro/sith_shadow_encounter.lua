@@ -166,8 +166,8 @@ function SithShadowEncounter:taskFinish(pPlayer)
 		return true
 	end
 
-	if (QuestManager.hasCompletedQuest(pPlayer, QuestManager.quests.GOT_DATAPAD) and FsIntro:getCurrentStep(pPlayer) == 4) then
-		FsIntro:setCurrentStep(pPlayer, 5)
+	if (QuestManager.hasCompletedQuest(pPlayer, QuestManager.quests.GOT_DATAPAD) and FsIntro:getCurrentStep(pPlayer) == 4) then         	
+        FsIntro:setCurrentStep(pPlayer, 5)
 	elseif not OldManIntroEncounter:hasForceCrystal(pPlayer) then
 		FsIntro:startStepDelay(pPlayer, 1)
 	end
