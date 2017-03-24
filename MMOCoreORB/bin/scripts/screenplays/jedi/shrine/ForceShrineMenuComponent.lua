@@ -97,7 +97,7 @@ function ForceShrineMenuComponent:doMeditate(pObject, pPlayer)
 
 --Pushing file 3/9/17
 
-        if (not isJediPadwan) then
+        if (not isJediPadawan) then -- Fixed typo from Padwan to Padawan *Darkbane*
         --Unlock Padawan / check to see if they have iniate rank from killing mellachie
         if (CreatureObject(pPlayer):hasSkill("force_title_jedi_rank_01")) then
                	if (pPlayer == nil) then
