@@ -58,7 +58,7 @@ groupExpMultiplier = 2.0
 
 --Sets a global experience multiplier
 --Normal XP
---globalExpMultiplier = 1.5
+globalExpMultiplier = 1.5
 
 --Double XP
 --globalExpMultiplier = 2.0
@@ -67,7 +67,7 @@ groupExpMultiplier = 2.0
 --globalExpMultiplier = 3.0
 
 --Quad XP
-globalExpMultiplier = 4.0
+--globalExpMultiplier = 4.0
 
 --Sets the base number of control devices of each type that a player can have in their datapad at once
 --For creature pets, A Creature Handler will have the base number + their stored pets skill mod as limit
