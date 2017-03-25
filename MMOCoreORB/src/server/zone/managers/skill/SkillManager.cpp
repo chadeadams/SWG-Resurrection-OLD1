@@ -344,7 +344,6 @@ bool SkillManager::awardSkill(const String& skillName, CreatureObject* creature,
 			creature->setLevel(playerManager->calculatePlayerLevel(creature));
 		}
 
-
 		if (skill->getSkillName().contains("force_sensitive") && skill->getSkillName().contains("_04"))
 			JediManager::instance()->onFSTreeCompleted(creature, skill->getSkillName());
 	}

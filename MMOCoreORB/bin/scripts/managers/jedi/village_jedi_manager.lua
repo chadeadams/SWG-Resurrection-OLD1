@@ -133,8 +133,8 @@ function VillageJediManager:canSurrenderSkill(pPlayer, skillName)
 --Removed for Jedi 3/12/2017 (Nugax nugax@swgresurrection.com)
 -- ===========================================================
 --	if string.find(skillName, "force_sensitive_") and CreatureObject(pPlayer):hasSkill("force_title_jedi_rank_02") and CreatureObject(pPlayer):getForceSensitiveSkillCount(false) <= 24 then
--- Looks like this Value needs to return true to advance - Darkbane
-		return true
+
+		return false
 	end
 
 	if string.find(skillName, "force_discipline_") and CreatureObject(pPlayer):hasSkill("force_title_jedi_rank_03") and not CreatureObject(pPlayer):villageKnightPrereqsMet(skillName) then
