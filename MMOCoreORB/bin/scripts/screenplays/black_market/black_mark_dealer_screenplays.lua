@@ -19,7 +19,7 @@ function sp_black_market_dealers:spawnMobiles()
 	spawnMobile("naboo", "black_market_dealer", 1, -4805, 6, 4141, -1, 0 )
     --Terra Nova
     spawnMobile("corellia", "black_market_dealer", 1, -91, 29, -5714 , -1, 0)
-
+	
 end
 
 
