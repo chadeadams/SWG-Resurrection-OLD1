@@ -8,7 +8,7 @@ sp_black_market_dealers = ScreenPlay:new {
 registerScreenPlay("sp_black_market_dealers", true)
 
 function sp_black_market_dealers:start() 
-    self:spawnMobiles(
+    self:spawnMobiles()
 end 
 
 function sp_black_market_dealers:spawnMobiles()
