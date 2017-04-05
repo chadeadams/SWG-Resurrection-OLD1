@@ -12,6 +12,10 @@ See nugax (nugax@swgresurrection) for info
 2) Please use GitKraken or Github GUI client for changes. Its 
 easier.
 
+Recommended:
+<a href='https://www.gitkraken.com/download'>https://www.gitkraken.com/download</a>
+
+
 3) When editing code: Please us this format for code comments:
 
 
