@@ -18,7 +18,7 @@ Recommended:
 
 3) When editing code: Please us this format for code comments:
 
-
+[code]
 
 <Start Comment Code>  -- for Lua // for C++
 Code Change:  description of change (enough to understand what you did, you can even just comment out old code)
@@ -27,7 +27,7 @@ Author: nugax (nugax@swgresurrection.com)    (please put email so we can contact
 
 <End Comment Code>
    
-
+[/code]
    
 Thank for contributing!
    
