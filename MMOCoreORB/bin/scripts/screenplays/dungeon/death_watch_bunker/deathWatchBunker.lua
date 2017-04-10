@@ -58,7 +58,10 @@ DeathWatchBunkerScreenPlay = ScreenPlay:new {
 	},
 
 	doorData = {
-		{ cellAccess = 5996316, lockTime = 10, doorType = 1 }, -- Entrance
+		--changing to unlock DWB? 4/10/2017
+		--Nugax (nugax@swgresurrection.com)
+		--{ cellAccess = 5996316, lockTime = 10, doorType = 1 }, -- Entrance
+		{ cellAccess = 5996316, lockTime = 10, doorType = 2 }, -- Entrance
 		{ cellAccess = 5996326, lockTime = 10, doorType = 2 }, -- Area A
 		{ cellAccess = 5996338, lockTime = 10, doorType = 2 }, -- Area B
 		{ cellAccess = 5996352, lockTime = 10, doorType = 2 }, -- Mines
