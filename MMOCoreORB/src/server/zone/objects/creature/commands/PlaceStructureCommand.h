@@ -6,7 +6,6 @@
 #define PLACESTRUCTURECOMMAND_H_
 
 #include "server/zone/objects/creature/CreatureObject.h"
-#include "server/zone/objects/tangible/deed/Deed.h"
 #include "server/zone/objects/tangible/deed/structure/StructureDeed.h"
 
 class PlaceStructureCommand : public QueueCommand {
@@ -29,7 +28,7 @@ public:
 		if (!checkInvalidLocomotions(creature))
 			return INVALIDLOCOMOTION;
 
-		if (creature->getParent() != NULL) {
+		if (creature->getParent().get() != NULL) {
 			creature->sendSystemMessage("@player_structure:not_inside"); //You can not place a structure while you are inside a building.
 			return GENERALERROR;
 		}

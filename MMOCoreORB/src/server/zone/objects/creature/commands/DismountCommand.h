@@ -6,7 +6,6 @@
 #define DISMOUNTCOMMAND_H_
 
 #include "server/zone/objects/scene/SceneObject.h"
-#include "server/zone/objects/creature/VehicleObject.h"
 #include "server/zone/objects/intangible/ControlDevice.h"
 #include "templates/creature/SharedCreatureObjectTemplate.h"
 
@@ -38,7 +37,7 @@ public:
 		if (!checkInvalidLocomotions(creature))
 			return INVALIDLOCOMOTION;
 
-		ManagedReference<SceneObject*> mount = creature->getParent();
+		ManagedReference<SceneObject*> mount = creature->getParent().get();
 
 		if (mount == NULL || !mount->isCreatureObject()) {
 			creature->clearState(CreatureState::RIDINGMOUNT);
@@ -118,7 +117,7 @@ public:
 
 		playerManager->updateSwimmingState(creature, z);
 
-		ManagedReference<ControlDevice*> device = vehicle->getControlDevice();
+		ManagedReference<ControlDevice*> device = vehicle->getControlDevice().get();
 
 		if (device != NULL && vehicle->getServerObjectCRC() == 0x32F87A54) // Auto-store jetpack on dismount.
 			device->storeObject(creature);
@@ -138,14 +137,14 @@ public:
 
 		creature->removeMountedCombatSlow(false); // these are already removed off the player - Just remove it off the mount
 
-		if(vehicle->hasBuff(gallopCRC)) {
+		if (vehicle->hasBuff(gallopCRC)) {
 			ManagedReference<Buff*> buff = vehicle->getBuff(gallopCRC);
-			if(buff != NULL) {
-				EXECUTE_TASK_2(buff, vehicle, {
-					Locker lock(vehicle_p);
-					Locker buffLocker(buff_p, vehicle_p);
-					buff_p->removeAllModifiers();
-				});
+			if (buff != NULL) {
+				Core::getTaskManager()->executeTask([=] () {
+					Locker lock(vehicle);
+					Locker buffLocker(buff, vehicle);
+					buff->removeAllModifiers();
+				}, "RemoveGallopModsLambda");
 			}
 		}
 

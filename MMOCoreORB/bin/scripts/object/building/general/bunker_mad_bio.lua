@@ -42,7 +42,9 @@
 
 
 object_building_general_bunker_mad_bio = object_building_general_shared_bunker_mad_bio:new {
-	publicStructure = 0,
+    --Code Removed 3/9/17 - To allow players to enter Geo Caves (Nugax nugax@swgresurrection.com)	
+    --publicStructure = 0,
+    publicStructure = 1,
 	ejectionPoint = {-66, -23}
 
 }

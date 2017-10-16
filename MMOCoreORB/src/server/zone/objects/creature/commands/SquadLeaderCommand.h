@@ -8,9 +8,6 @@
 #ifndef SQUADLEADERCOMMAND_H_
 #define SQUADLEADERCOMMAND_H_
 
-#include "server/zone/objects/scene/SceneObject.h"
-#include "server/chat/ChatManager.h"
-#include "server/zone/managers/stringid/StringIdManager.h"
 #include "CombatQueueCommand.h"
 
 class SquadLeaderCommand : public CombatQueueCommand {
@@ -76,7 +73,7 @@ public:
 		if (target == leader)
 			return true;
 
-		if (target->getParentRecursively(SceneObjectType::BUILDING) != leader->getParentRecursively(SceneObjectType::BUILDING))
+		if (target->getParentRecursively(SceneObjectType::BUILDING).get() != leader->getParentRecursively(SceneObjectType::BUILDING).get())
 			return false;
 
 		PlayerObject* leaderGhost = leader->getPlayerObject();

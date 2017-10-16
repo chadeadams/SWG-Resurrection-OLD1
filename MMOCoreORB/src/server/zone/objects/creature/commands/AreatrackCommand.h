@@ -5,7 +5,6 @@
 #ifndef AREATRACKCOMMAND_H_
 #define AREATRACKCOMMAND_H_
 
-#include "server/zone/objects/scene/SceneObject.h"
 #include "server/zone/objects/player/sui/callbacks/AreaTrackSuiCallback.h"
 
 class AreatrackCommand : public QueueCommand {
@@ -30,7 +29,7 @@ public:
 		if(!creature->hasSkill("outdoors_ranger_novice"))
 			return GENERALERROR;
 
-		if(creature->getParent() != NULL && creature->getParent().get()->isCellObject()) {
+		if(creature->getParent().get() != NULL && creature->getParent().get()->isCellObject()) {
 			creature->sendSystemMessage("@skl_use:sys_scan_inside"); // Your tracking skills only apply to outdoor environments.
 			return GENERALERROR;
 		}

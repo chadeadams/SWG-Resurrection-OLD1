@@ -6,7 +6,6 @@
 #define ROTATEFURNITURECOMMAND_H_
 
 #include "server/zone/objects/scene/SceneObject.h"
-#include "server/zone/objects/tangible/components/vendor/VendorDataComponent.h"
 #include "server/zone/objects/tangible/components/EventPerkDataComponent.h"
 
 class RotateFurnitureCommand : public QueueCommand {
@@ -61,7 +60,7 @@ public:
 			return GENERALERROR;
 		}
 
-		ManagedReference<SceneObject*> rootParent = creature->getRootParent();
+		ManagedReference<SceneObject*> rootParent = creature->getRootParent().get();
 
 		BuildingObject* buildingObject = rootParent != NULL ? (rootParent->isBuildingObject() ? cast<BuildingObject*>( rootParent.get()) : NULL) : NULL;
 		EventPerkDataComponent* data = cast<EventPerkDataComponent*>(obj->getDataObjectComponent()->get());
@@ -93,7 +92,7 @@ public:
 				return GENERALERROR;
 			}
 
-			if (obj->getRootParent() != buildingObject || buildingObject->containsChildObject(obj)) {
+			if (obj->getRootParent().get() != buildingObject || buildingObject->containsChildObject(obj)) {
 				creature->sendSystemMessage("@player_structure:rotate_what"); //What do you want to rotate?
 				return GENERALERROR;
 			}
@@ -111,8 +110,9 @@ public:
 
 		obj->incrementMovementCounter();
 
-		if (obj->getParent() != NULL)
-			obj->teleport(obj->getPositionX(), obj->getPositionZ(), obj->getPositionY(), obj->getParent().get()->getObjectID());
+		ManagedReference<SceneObject*> objParent = obj->getParent().get();
+		if (objParent != NULL)
+			obj->teleport(obj->getPositionX(), obj->getPositionZ(), obj->getPositionY(), objParent->getObjectID());
 		else
 			obj->teleport(obj->getPositionX(), obj->getPositionZ(), obj->getPositionY());
 

@@ -542,7 +542,7 @@ function FsCrafting4ComputerCoreMenuComponent:attemptConfigure(pCore, pPlayer)
 		TangibleObject(pCore):setLuaStringData("lastCorrectWiresUsed", correctWiresUsed)
 
 		local integrity = tonumber(TangibleObject(pCore):getLuaStringData("puzzleIntegrity"))
-		integrity = integrity - getRandomNumber(12,24)
+		integrity = integrity - getRandomNumber(13,17)
 		TangibleObject(pCore):setLuaStringData("puzzleIntegrity", integrity)
 
 		if (integrity <= 0) then
@@ -699,7 +699,7 @@ function FsCrafting4:setConnectionCallback(pPlayer, pSui, eventIndex, args)
 	local pPageData = LuaSuiBoxPage(pSui):getSuiPageData()
 
 	if (pPageData == nil) then
-		printf("Error in FsCrafting4:setConnectionCallback, pageData is nil.\n")
+		printLuaError("FsCrafting4:setConnectionCallback, pageData is nil.")
 		return
 	end
 

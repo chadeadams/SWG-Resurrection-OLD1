@@ -7,12 +7,6 @@
 
 #include "server/zone/objects/scene/SceneObject.h"
 #include "server/zone/objects/building/BuildingObject.h"
-#include "server/zone/packets/object/DataTransform.h"
-#include "server/zone/packets/object/DataTransformWithParent.h"
-#include "templates/appearance/PortalLayout.h"
-#include "templates/appearance/FloorMesh.h"
-#include "templates/appearance/MeshAppearanceTemplate.h"
-#include "server/zone/objects/tangible/components/vendor/VendorDataComponent.h"
 
 class MoveFurnitureCommand : public QueueCommand {
 public:
@@ -46,8 +40,8 @@ public:
 			return GENERALERROR;
 		}
 
-		ManagedReference<SceneObject*> rootParent = obj->getRootParent();
-		ManagedReference<SceneObject*> creatureParent = creature->getRootParent();
+		ManagedReference<SceneObject*> rootParent = obj->getRootParent().get();
+		ManagedReference<SceneObject*> creatureParent = creature->getRootParent().get();
 
 		if (creatureParent == NULL || !creatureParent->isBuildingObject()) {
 			creature->sendSystemMessage("@player_structure:must_be_in_building"); //You must be in a building to do that.
@@ -61,12 +55,12 @@ public:
 
 		BuildingObject* buildingObject = cast<BuildingObject*>( creatureParent.get());
 
-		if (buildingObject == NULL || obj->getRootParent() != buildingObject || buildingObject->containsChildObject(obj)) {
+		if (buildingObject == NULL || rootParent != buildingObject || buildingObject->containsChildObject(obj)) {
 			creature->sendSystemMessage("@player_structure:move_what"); //What do you want to move?
 			return GENERALERROR;
 		}
 
-		if (buildingObject != rootParent || !buildingObject->isOnAdminList(creature)) {
+		if (!buildingObject->isOnAdminList(creature)) {
 			creature->sendSystemMessage("@player_structure:must_be_admin"); //You must be a building admin to do that.
 			return GENERALERROR;
 		}
@@ -137,8 +131,9 @@ public:
 
 		obj->incrementMovementCounter();
 
-		if (obj->getParent() != NULL)
-			obj->teleport(x, z, y, obj->getParent().get()->getObjectID());
+		ManagedReference<SceneObject*> objParent = obj->getParent().get();
+		if (objParent != NULL)
+			obj->teleport(x, z, y, objParent->getObjectID());
 		else
 			obj->teleport(x, z, y);
 

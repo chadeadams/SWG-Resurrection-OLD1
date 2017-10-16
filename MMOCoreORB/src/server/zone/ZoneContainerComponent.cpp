@@ -11,11 +11,10 @@
 #include "server/zone/objects/scene/SceneObject.h"
 #include "server/zone/objects/building/BuildingObject.h"
 #include "server/zone/objects/area/ActiveArea.h"
-#include "server/zone/objects/staticobject/StaticObject.h"
 #include "server/zone/managers/planet/PlanetManager.h"
 #include "terrain/manager/TerrainManager.h"
 #include "templates/building/SharedBuildingObjectTemplate.h"
-#include "server/zone/objects/pathfinding/NavMeshRegion.h"
+#include "server/zone/objects/pathfinding/NavArea.h"
 
 bool ZoneContainerComponent::insertActiveArea(Zone* newZone, ActiveArea* activeArea) const {
 	if (newZone == NULL)
@@ -155,7 +154,7 @@ bool ZoneContainerComponent::transferObject(SceneObject* sceneObject, SceneObjec
 		else
 			parent->removeObject(object, sceneObject, true);
 
-		if (object->getParent() != NULL && parent->containsChildObject(object))
+		if (object->getParent().get() != NULL && parent->containsChildObject(object))
 			return false;
 		else
 			object->setParent(NULL);
@@ -197,12 +196,13 @@ bool ZoneContainerComponent::transferObject(SceneObject* sceneObject, SceneObjec
 
 		// hack to get around notifyEnter/Exit only working with tangible objects
 		Vector3 worldPos = object->getWorldPosition();
-		SortedVector<ManagedReference<NavMeshRegion*> > objects;
-		zone->getInRangeNavMeshes(object->getPositionX(), object->getPositionY(), 1, &objects, false);
+
+		SortedVector<ManagedReference<NavArea*> > objects;
+		zone->getInRangeNavMeshes(object->getPositionX(), object->getPositionY(), &objects, false);
 
 		for(auto& area : objects) {
-			if(area->isNavRegion()) {
-				NavMeshRegion *mesh = area->asNavRegion();
+			if(area->isNavArea()) {
+				NavArea *mesh = area->asNavArea();
 
 				if(mesh->containsPoint(worldPos.getX(), worldPos.getY())) {
 					mesh->updateNavMesh(object, false);
@@ -235,7 +235,7 @@ bool ZoneContainerComponent::removeObject(SceneObject* sceneObject, SceneObject*
 	if (object->isActiveArea())
 		return removeActiveArea(zone, dynamic_cast<ActiveArea*>(object));
 
-	ManagedReference<SceneObject*> parent = object->getParent();
+	ManagedReference<SceneObject*> parent = object->getParent().get();
 	//SortedVector<ManagedReference<SceneObject*> >* notifiedSentObjects = sceneObject->getNotifiedSentObjects();
 
 	try {
@@ -259,7 +259,7 @@ bool ZoneContainerComponent::removeObject(SceneObject* sceneObject, SceneObject*
 		
 //		zoneLocker.release();
 
-		SortedVector<ManagedReference<QuadTreeEntry*> >* closeObjects = object->getCloseObjects();
+		auto closeObjects = object->getCloseObjects();
 
 		if (closeObjects != NULL) {
 			try {

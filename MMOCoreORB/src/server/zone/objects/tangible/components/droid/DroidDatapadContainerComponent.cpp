@@ -9,7 +9,7 @@
 #include "server/zone/objects/player/PlayerObject.h"
 
 bool DroidDatapadContainerComponent::checkContainerPermission(SceneObject* sceneObject, CreatureObject* creature, uint16 permission) const {
-	ManagedReference<SceneObject*> p = sceneObject->getParent();
+	ManagedReference<SceneObject*> p = sceneObject->getParent().get();
 
 	if (p == NULL || !p->isDroidObject()) {
 		return false;
@@ -21,7 +21,7 @@ bool DroidDatapadContainerComponent::checkContainerPermission(SceneObject* scene
 		return false;
 	}
 
-	if (!creature->getPlayerObject()->isPrivileged() && droid->getLinkedCreature() != creature){
+	if (!creature->getPlayerObject()->isPrivileged() && droid->getLinkedCreature().get() != creature){
 		return false;
 	}
 

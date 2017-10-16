@@ -12,7 +12,6 @@
 #include "server/zone/objects/player/sessions/ConversationSession.h"
 #include "server/zone/ZoneServer.h"
 #include "server/zone/objects/group/GroupObject.h"
-#include "server/zone/packets/chat/ChatSystemMessage.h"
 #include "server/zone/objects/player/sessions/EntertainingSession.h"
 #include "server/zone/objects/player/PlayerObject.h"
 #include "server/zone/managers/player/PlayerManager.h"
@@ -136,6 +135,7 @@ Luna<LuaCreatureObject>::RegType LuaCreatureObject::Register[] = {
 		{ "setFactionStatus", &LuaTangibleObject::setFactionStatus },
 		{ "getDamageDealerList", &LuaCreatureObject::getDamageDealerList },
 		{ "getHealingThreatList", &LuaCreatureObject::getHealingThreatList},
+		{ "getSkillMod", &LuaCreatureObject::getSkillMod},
 		{ 0, 0 }
 };
 
@@ -156,11 +156,17 @@ int LuaCreatureObject::_setObject(lua_State* L) {
 	LuaTangibleObject::_setObject(L);
 
 #ifdef DYNAMIC_CAST_LUAOBJECTS
-	realObject = dynamic_cast<CreatureObject*>(_getRealSceneObject());
+	auto obj = dynamic_cast<CreatureObject*>(_getRealSceneObject());
+
+	if (obj != realObject)
+		realObject = obj;
 
 	assert(!_getRealSceneObject() || realObject != NULL);
 #else
-	realObject = static_cast<CreatureObject*>(lua_touserdata(L, -1));
+	auto obj = static_cast<CreatureObject*>(lua_touserdata(L, -1));
+
+	if (realObject != obj)
+		realObject = obj;
 #endif
 
 	return 0;
@@ -1027,6 +1033,16 @@ int LuaCreatureObject::getHealingThreatList(lua_State* L) {
 			lua_rawseti(L, -2, count);
 		}
 	}
+
+	return 1;
+}
+
+int LuaCreatureObject::getSkillMod(lua_State* L) {
+	String skillMod = lua_tostring(L, -1);
+
+	int result = realObject->getSkillMod(skillMod);
+
+	lua_pushnumber(L, result);
 
 	return 1;
 }

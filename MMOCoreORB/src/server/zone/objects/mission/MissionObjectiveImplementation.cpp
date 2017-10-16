@@ -5,7 +5,6 @@
  *      Author: victor
  */
 
-#include "server/zone/ZoneProcessServer.h"
 #include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/objects/mission/MissionObjective.h"
 #include "server/zone/objects/mission/MissionObserver.h"
@@ -21,7 +20,6 @@
 #include "server/zone/packets/player/PlayMusicMessage.h"
 #include "server/zone/objects/mission/events/FailMissionAfterCertainTimeTask.h"
 #include "events/CompleteMissionObjectiveTask.h"
-#include "server/zone/objects/group/GroupObject.h"
 
 void MissionObjectiveImplementation::destroyObjectFromDatabase() {
 	for (int i = 0; i < observers.size(); ++i) {
@@ -62,7 +60,7 @@ void MissionObjectiveImplementation::activate() {
 void MissionObjectiveImplementation::complete() {
 	Locker _lock(_this.getReferenceUnsafeStaticCast());
 
-	ManagedReference<CreatureObject*> player = getPlayerOwner();
+	ManagedReference<CreatureObject*> player = getPlayerOwner().get();
 
 	if (player == NULL)
 		return;
@@ -116,7 +114,7 @@ void MissionObjectiveImplementation::awardFactionPoints() {
 	}
 
 	//Award faction points for faction delivery missions.
-	ManagedReference<CreatureObject*> creatureOwner = getPlayerOwner();
+	ManagedReference<CreatureObject*> creatureOwner = getPlayerOwner().get();
 
 	if (creatureOwner != NULL) {
 		ManagedReference<PlayerObject*> ghost = creatureOwner->getPlayerObject();
@@ -147,7 +145,7 @@ void MissionObjectiveImplementation::awardFactionPoints() {
 }
 
 void MissionObjectiveImplementation::removeMissionFromPlayer() {
-	ManagedReference<CreatureObject*> player = getPlayerOwner();
+	ManagedReference<CreatureObject*> player = getPlayerOwner().get();
 	ManagedReference<MissionObject* > mission = this->mission.get();
 
 	if (player != NULL && mission != NULL) {
@@ -174,7 +172,7 @@ void MissionObjectiveImplementation::awardReward() {
 
 	Vector3 missionEndPoint = getEndPosition();
 
-	ManagedReference<CreatureObject*> owner = getPlayerOwner();
+	ManagedReference<CreatureObject*> owner = getPlayerOwner().get();
 
 	ManagedReference<GroupObject*> group = owner->getGroup();
 
@@ -185,12 +183,20 @@ void MissionObjectiveImplementation::awardReward() {
 
 		playerCount = group->getNumberOfPlayerMembers();
 
-		for(int i = 0; i < group->getGroupSize(); i++) {
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+	Reference<BasePacket*> pack = pmm;
+#endif
+
+		for (int i = 0; i < group->getGroupSize(); i++) {
 			Reference<CreatureObject*> groupMember = group->getGroupMember(i);
 
 			if (groupMember != NULL && groupMember->isPlayerCreature()) {
 				//Play mission complete sound.
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+				groupMember->sendMessage(pack);
+#else
 				groupMember->sendMessage(pmm->clone());
+#endif
 
 				if (groupMember->getWorldPosition().distanceTo(missionEndPoint) < 128) {
 					players.add(groupMember);
@@ -198,7 +204,9 @@ void MissionObjectiveImplementation::awardReward() {
 			}
 		}
 
+#ifndef LOCKFREE_BCLIENT_BUFFERS
 		delete pmm;
+#endif
 	} else {
 		//Play mission complete sound.
 		owner->sendMessage(pmm);

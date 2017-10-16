@@ -4,7 +4,6 @@
 */
 
 #include "server/db/ServerDatabase.h"
-#include "server/db/MantisDatabase.h"
 #include "PlayerCreationManager.h"
 #include "ProfessionDefaultsInfo.h"
 #include "RacialCreationData.h"
@@ -16,7 +15,6 @@
 #include "server/login/account/Account.h"
 #include "server/zone/objects/player/sui/messagebox/SuiMessageBox.h"
 #include "server/zone/objects/player/PlayerObject.h"
-#include "server/zone/packets/MessageCallback.h"
 #include "server/zone/packets/charcreation/ClientCreateCharacterCallback.h"
 #include "server/zone/packets/charcreation/ClientCreateCharacterSuccess.h"
 #include "templates/manager/TemplateManager.h"
@@ -29,11 +27,7 @@
 #include "server/zone/objects/ship/ShipObject.h"
 #include "templates/customization/CustomizationIdManager.h"
 #include "server/zone/managers/skill/imagedesign/ImageDesignManager.h"
-#include "templates/customization/AssetCustomizationManagerTemplate.h"
-#include "templates/params/PaletteColorCustomizationVariable.h"
-#include "templates/customization/BasicRangedIntCustomizationVariable.h"
 #include "server/zone/managers/jedi/JediManager.h"
-#include "server/login/account/AccountManager.h"
 
 PlayerCreationManager::PlayerCreationManager() :
 		Logger("PlayerCreationManager") {
@@ -314,8 +308,9 @@ void PlayerCreationManager::loadLuaStartingItems(Lua* lua) {
 			for (int itemNumber = 1;
 					itemNumber <= professionSpecificItemList.getTableSize();
 					itemNumber++) {
-				professionDefaultsInfo.get(professions.get(professionNumber))->getStartingItems()->add(
-						professionSpecificItemList.getStringAt(itemNumber));
+				auto& val = professionDefaultsInfo.get(professions.get(professionNumber));
+				auto itemObj = professionSpecificItemList.getStringAt(itemNumber);
+				val->getStartingItems()->add(itemObj);
 			}
 			professionSpecificItemList.pop();
 		}
@@ -337,10 +332,10 @@ void PlayerCreationManager::loadLuaStartingItems(Lua* lua) {
 	}
 }
 
-bool PlayerCreationManager::createCharacter(ClientCreateCharacterCallback* callback) {
+bool PlayerCreationManager::createCharacter(ClientCreateCharacterCallback* callback) const {
 	TemplateManager* templateManager = TemplateManager::instance();
 
-	ZoneClientSession* client = callback->getClient();
+	auto client = callback->getClient();
 
 	if (client->getCharacterCount(zoneServer.get()->getGalaxyID()) >= 10) {
 		ErrorMessage* errMsg = new ErrorMessage("Create Error", "You are limited to 10 characters per galaxy.", 0x0);
@@ -515,9 +510,11 @@ bool PlayerCreationManager::createCharacter(ClientCreateCharacterCallback* callb
 							uint32 sec = res->getUnsignedInt(0);
 
 							Time timeVal(sec);
-
-							if (timeVal.miliDifference() < 3600000) {
-								ErrorMessage* errMsg = new ErrorMessage("Create Error", "You are only permitted to create one character per hour. Repeat attempts prior to 1 hour elapsing will reset the timer.", 0x0);
+                        //Added 3/1/2017 - Nugax (nugax@swgreurrection.com (FIX)
+                        //12 hour timer for creating new characters
+						//	if (timeVal.miliDifference() < 3600000) {
+                            if (timeVal.miliDifference() < 43200000) {
+								ErrorMessage* errMsg = new ErrorMessage("Create Error", "You are only permitted to create one character every 12 hours per account. Repeat attempts prior to 12 hours elapsing will reset the timer.", 0x0);
 								client->sendMessage(errMsg);
 
 								playerCreature->destroyPlayerCreatureFromDatabase(true);
@@ -533,9 +530,11 @@ bool PlayerCreationManager::createCharacter(ClientCreateCharacterCallback* callb
 
 					if (lastCreatedCharacter.containsKey(accID)) {
 						Time lastCreatedTime = lastCreatedCharacter.get(accID);
-
-						if (lastCreatedTime.miliDifference() < 3600000) {
-							ErrorMessage* errMsg = new ErrorMessage("Create Error", "You are only permitted to create one character per hour. Repeat attempts prior to 1 hour elapsing will reset the timer.", 0x0);
+                        //Added 2/27/2017 - Nugax (nugax@swgreurrection.com
+                        //12 hour timer for creating new characters
+						//if (lastCreatedTime.miliDifference() < 3600000) {
+                          if (lastCreatedTime.miliDifference() < 43200000) {
+							ErrorMessage* errMsg = new ErrorMessage("Create Error", "You are only permitted to create one character every 12 hours per account. Repeat attempts prior to 12 hours elapsing will reset the timer.", 0x0);
 							client->sendMessage(errMsg);
 
 							playerCreature->destroyPlayerCreatureFromDatabase(true);
@@ -606,11 +605,14 @@ bool PlayerCreationManager::createCharacter(ClientCreateCharacterCallback* callb
 	chatManager->sendMail("system", "@newbie_tutorial/newbie_mail:welcome_subject", "@newbie_tutorial/newbie_mail:welcome_body", playerCreature->getFirstName());
 
 	//Join auction chat room
+    //Find text: join auction chat room nugax(nugax@swgresurrection.com)
 	ghost->addChatRoom(chatManager->getAuctionRoom()->getRoomID());
 
+    //Adjusted 12 hour timer
+    //Added 2/27/2017 - nugax (nugax@swgresurrection.com)
 	ManagedReference<SuiMessageBox*> box = new SuiMessageBox(playerCreature, SuiWindowType::NONE);
 	box->setPromptTitle("PLEASE NOTE");
-	box->setPromptText("You are limited to creating one character per hour. Attempting to create another character or deleting your character before the 1 hour timer expires will reset the timer.");
+	box->setPromptText("You are limited to creating one character every 12 hours per account. Attempting to create another character or deleting your character before the 12 hour timer expires will reset the timer.");
 
 	ghost->addSuiBox(box);
 	playerCreature->sendMessage(box->generateMessage());
@@ -619,7 +621,7 @@ bool PlayerCreationManager::createCharacter(ClientCreateCharacterCallback* callb
 }
 
 int PlayerCreationManager::getMaximumAttributeLimit(const String& race,
-		int attributeNumber) {
+		int attributeNumber) const {
 	String maleRace = race + "_male";
 
 	if (attributeNumber < 0 || attributeNumber > 8) {
@@ -638,7 +640,7 @@ int PlayerCreationManager::getMaximumAttributeLimit(const String& race,
 }
 
 int PlayerCreationManager::getMinimumAttributeLimit(const String& race,
-		int attributeNumber) {
+		int attributeNumber) const {
 	String maleRace = race + "_male";
 
 	if (attributeNumber < 0 || attributeNumber > 8) {
@@ -656,7 +658,7 @@ int PlayerCreationManager::getMinimumAttributeLimit(const String& race,
 	}
 }
 
-int PlayerCreationManager::getTotalAttributeLimit(const String& race) {
+int PlayerCreationManager::getTotalAttributeLimit(const String& race) const {
 	String maleRace = race + "_male";
 
 	Reference<RacialCreationData*> racialData = racialCreationData.get(
@@ -669,13 +671,13 @@ int PlayerCreationManager::getTotalAttributeLimit(const String& race) {
 	}
 }
 
-bool PlayerCreationManager::validateCharacterName(const String& characterName) {
+bool PlayerCreationManager::validateCharacterName(const String& characterName) const {
 	return true;
 }
 
 void PlayerCreationManager::addStartingItems(CreatureObject* creature,
-		const String& clientTemplate, bool equipmentOnly) {
-	SortedVector < String > *items = NULL;
+		const String& clientTemplate, bool equipmentOnly) const {
+	const SortedVector < String >* items = NULL;
 
 	if (!defaultCharacterEquipment.contains(clientTemplate))
 		items = &defaultCharacterEquipment.get(0);
@@ -724,14 +726,14 @@ void PlayerCreationManager::addStartingItems(CreatureObject* creature,
 
 void PlayerCreationManager::addProfessionStartingItems(CreatureObject* creature,
 		const String& profession, const String& clientTemplate,
-		bool equipmentOnly) {
-	ProfessionDefaultsInfo* professionData = professionDefaultsInfo.get(
+		bool equipmentOnly) const {
+	const ProfessionDefaultsInfo* professionData = professionDefaultsInfo.get(
 			profession);
 
 	if (professionData == NULL)
 		professionData = professionDefaultsInfo.get(0);
 
-	Reference<Skill*> startingSkill = professionData->getSkill();
+	auto startingSkill = professionData->getSkill();
 	//Reference<Skill*> startingSkill = SkillManager::instance()->getSkill("crafting_artisan_novice");
 
 	//Starting skill.
@@ -746,7 +748,7 @@ void PlayerCreationManager::addProfessionStartingItems(CreatureObject* creature,
 		creature->setMaxHAM(i, mod, false);
 	}
 
-	SortedVector < String > *itemTemplates = professionData->getProfessionItems(
+	auto itemTemplates = professionData->getProfessionItems(
 			clientTemplate);
 
 	if (itemTemplates == NULL)
@@ -807,7 +809,7 @@ void PlayerCreationManager::addProfessionStartingItems(CreatureObject* creature,
 }
 
 void PlayerCreationManager::addHair(CreatureObject* creature,
-		const String& hairTemplate, const String& hairCustomization) {
+		const String& hairTemplate, const String& hairCustomization) const {
 	if (hairTemplate.isEmpty())
 		return;
 
@@ -874,7 +876,7 @@ void PlayerCreationManager::addHair(CreatureObject* creature,
 }
 
 void PlayerCreationManager::addCustomization(CreatureObject* creature,
-		const String& customizationString, const String& appearanceFilename) {
+		const String& customizationString, const String& appearanceFilename) const {
 	//TODO: Validate customizationString
 	CustomizationVariables data;
 
@@ -886,7 +888,7 @@ void PlayerCreationManager::addCustomization(CreatureObject* creature,
 }
 
 void PlayerCreationManager::addStartingItemsInto(CreatureObject* creature,
-		SceneObject* container) {
+		SceneObject* container) const {
 
 	if (creature == NULL || container == NULL
 			|| !creature->isPlayerCreature()) {
@@ -967,7 +969,7 @@ void PlayerCreationManager::addStartingItemsInto(CreatureObject* creature,
 }
 
 void PlayerCreationManager::addStartingWeaponsInto(CreatureObject* creature,
-		SceneObject* container) {
+		SceneObject* container) const {
 	if (creature == NULL || container == NULL || !creature->isPlayerCreature())
 		return;
 
@@ -1055,7 +1057,7 @@ void PlayerCreationManager::addStartingWeaponsInto(CreatureObject* creature,
 
 void PlayerCreationManager::addRacialMods(CreatureObject* creature,
 		const String& race, Vector<String>* startingSkills,
-		Vector<String>* startingItems, bool equipmentOnly) {
+		Vector<String>* startingItems, bool equipmentOnly) const {
 	Reference<RacialCreationData*> racialData = racialCreationData.get(race);
 
 	if (racialData == NULL)

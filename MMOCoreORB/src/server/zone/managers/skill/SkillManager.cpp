@@ -6,7 +6,6 @@
 #include "SkillManager.h"
 #include "SkillModManager.h"
 #include "PerformanceManager.h"
-#include "imagedesign/ImageDesignManager.h"
 #include "server/zone/objects/creature/variables/Skill.h"
 #include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/objects/player/PlayerObject.h"
@@ -18,9 +17,6 @@
 #include "templates/datatables/DataTableRow.h"
 #include "server/zone/managers/crafting/schematicmap/SchematicMap.h"
 #include "server/zone/packets/creature/CreatureObjectDeltaMessage4.h"
-#include "server/zone/packets/creature/CreatureObjectDeltaMessage6.h"
-#include "server/zone/objects/tangible/weapon/WeaponObject.h"
-#include "server/zone/objects/tangible/wearables/RobeObject.h"
 
 SkillManager::SkillManager()
 : Logger("SkillManager") {
@@ -200,7 +196,7 @@ void SkillManager::removeAbility(PlayerObject* ghost, const String& abilityName,
 		ghost->removeAbility(ability, notifyClient);
 }
 
-void SkillManager::addAbilities(PlayerObject* ghost, Vector<String>& abilityNames, bool notifyClient) {
+void SkillManager::addAbilities(PlayerObject* ghost, const Vector<String>& abilityNames, bool notifyClient) {
 	Vector<Ability*> abilities;
 
 	for (int i = 0; i < abilityNames.size(); ++i) {
@@ -215,7 +211,7 @@ void SkillManager::addAbilities(PlayerObject* ghost, Vector<String>& abilityName
 	ghost->addAbilities(abilities, notifyClient);
 }
 
-void SkillManager::removeAbilities(PlayerObject* ghost, Vector<String>& abilityNames, bool notifyClient) {
+void SkillManager::removeAbilities(PlayerObject* ghost, const Vector<String>& abilityNames, bool notifyClient) {
 	Vector<Ability*> abilities;
 
 	for (int i = 0; i < abilityNames.size(); ++i) {
@@ -235,7 +231,7 @@ void SkillManager::removeAbilities(PlayerObject* ghost, Vector<String>& abilityN
 }*/
 
 bool SkillManager::awardSkill(const String& skillName, CreatureObject* creature, bool notifyClient, bool awardRequiredSkills, bool noXpRequired) {
-	Skill* skill = skillMap.get(skillName.hashCode());
+	auto skill = skillMap.get(skillName.hashCode());
 
 	if (skill == NULL)
 		return false;
@@ -243,10 +239,10 @@ bool SkillManager::awardSkill(const String& skillName, CreatureObject* creature,
 	Locker locker(creature);
 
 	//Check for required skills.
-	Vector<String>* requiredSkills = skill->getSkillsRequired();
+	auto requiredSkills = skill->getSkillsRequired();
 	for (int i = 0; i < requiredSkills->size(); ++i) {
 		const String& requiredSkillName = requiredSkills->get(i);
-		Skill* requiredSkill = skillMap.get(requiredSkillName.hashCode());
+		auto requiredSkill = skillMap.get(requiredSkillName.hashCode());
 
 		if (requiredSkill == NULL)
 			continue;
@@ -280,16 +276,16 @@ bool SkillManager::awardSkill(const String& skillName, CreatureObject* creature,
 		creature->addSkill(skill, notifyClient);
 
 		//Add skill modifiers
-		VectorMap<String, int>* skillModifiers = skill->getSkillModifiers();
+		auto skillModifiers = skill->getSkillModifiers();
 
 		for (int i = 0; i < skillModifiers->size(); ++i) {
-			VectorMapEntry<String, int>* entry = &skillModifiers->elementAt(i);
+			auto entry = &skillModifiers->elementAt(i);
 			creature->addSkillMod(SkillModManager::SKILLBOX, entry->getKey(), entry->getValue(), notifyClient);
 
 		}
 
 		//Add abilities
-		Vector<String>* abilityNames = skill->getAbilities();
+		auto abilityNames = skill->getAbilities();
 		addAbilities(ghost, *abilityNames, notifyClient);
 		if (skill->isGodOnly()) {
 			for (int i = 0; i < abilityNames->size(); ++i) {
@@ -303,7 +299,7 @@ bool SkillManager::awardSkill(const String& skillName, CreatureObject* creature,
 		}
 
 		//Add draft schematic groups
-		Vector<String>* schematicsGranted = skill->getSchematicsGranted();
+		auto schematicsGranted = skill->getSchematicsGranted();
 		SchematicMap::instance()->addSchematics(ghost, *schematicsGranted, notifyClient);
 
 		//Update maximum experience.
@@ -395,12 +391,12 @@ bool SkillManager::surrenderSkill(const String& skillName, CreatureObject* creat
 	creature->removeSkill(skill, notifyClient);
 
 	//Remove skill modifiers
-	VectorMap<String, int>* skillModifiers = skill->getSkillModifiers();
+	auto skillModifiers = skill->getSkillModifiers();
 
 	ManagedReference<PlayerObject*> ghost = creature->getPlayerObject();
 
 	for (int i = 0; i < skillModifiers->size(); ++i) {
-		VectorMapEntry<String, int>* entry = &skillModifiers->elementAt(i);
+		auto entry = &skillModifiers->elementAt(i);
 		creature->removeSkillMod(SkillModManager::SKILLBOX, entry->getKey(), entry->getValue(), notifyClient);
 
 	}
@@ -412,7 +408,7 @@ bool SkillManager::surrenderSkill(const String& skillName, CreatureObject* creat
 		//Remove abilities but only if the creature doesn't still have a skill that grants the
 		//ability.  Some abilities are granted by multiple skills. For example Dazzle for dancers
 		//and musicians.
-		Vector<String>* skillAbilities = skill->getAbilities();
+		auto skillAbilities = skill->getAbilities();
 		if (skillAbilities->size() > 0) {
 			SortedVector<String> abilitiesLost;
 			for (int i = 0; i < skillAbilities->size(); i++) {
@@ -420,7 +416,7 @@ bool SkillManager::surrenderSkill(const String& skillName, CreatureObject* creat
 			}
 			for (int i = 0; i < skillList->size(); i++) {
 				Skill* remainingSkill = skillList->get(i);
-				Vector<String>* remainingAbilities = remainingSkill->getAbilities();
+				auto remainingAbilities = remainingSkill->getAbilities();
 				for(int j = 0; j < remainingAbilities->size(); j++) {
 					if (abilitiesLost.contains(remainingAbilities->get(j))) {
 						abilitiesLost.drop(remainingAbilities->get(j));
@@ -436,7 +432,7 @@ bool SkillManager::surrenderSkill(const String& skillName, CreatureObject* creat
 		}
 
 		//Remove draft schematic groups
-		Vector<String>* schematicsGranted = skill->getSchematicsGranted();
+		auto schematicsGranted = skill->getSchematicsGranted();
 		SchematicMap::instance()->removeSchematics(ghost, *schematicsGranted, notifyClient);
 
 		//Update maximum experience.
@@ -500,12 +496,11 @@ void SkillManager::surrenderAllSkills(CreatureObject* creature, bool notifyClien
 			creature->removeSkill(skill, notifyClient);
 
 			//Remove skill modifiers
-			VectorMap<String, int>* skillModifiers = skill->getSkillModifiers();
+			auto skillModifiers = skill->getSkillModifiers();
 
 			for (int i = 0; i < skillModifiers->size(); ++i) {
-				VectorMapEntry<String, int>* entry = &skillModifiers->elementAt(i);
+				auto entry = &skillModifiers->elementAt(i);
 				creature->removeSkillMod(SkillModManager::SKILLBOX, entry->getKey(), entry->getValue(), notifyClient);
-
 			}
 
 			SkillModManager::instance()->verifySkillBoxSkillMods(creature);
@@ -515,11 +510,11 @@ void SkillManager::surrenderAllSkills(CreatureObject* creature, bool notifyClien
 				ghost->addSkillPoints(skill->getSkillPointsRequired());
 
 				//Remove abilities
-				Vector<String>* abilityNames = skill->getAbilities();
+				auto abilityNames = skill->getAbilities();
 				removeAbilities(ghost, *abilityNames, notifyClient);
 
 				//Remove draft schematic groups
-				Vector<String>* schematicsGranted = skill->getSchematicsGranted();
+				auto schematicsGranted = skill->getSchematicsGranted();
 				SchematicMap::instance()->removeSchematics(ghost, *schematicsGranted, notifyClient);
 
 				/// update force
@@ -532,7 +527,7 @@ void SkillManager::surrenderAllSkills(CreatureObject* creature, bool notifyClien
 void SkillManager::awardDraftSchematics(Skill* skill, PlayerObject* ghost, bool notifyClient) {
 	if (ghost != NULL) {
 		//Add draft schematic groups
-		Vector<String>* schematicsGranted = skill->getSchematicsGranted();
+		auto schematicsGranted = skill->getSchematicsGranted();
 		SchematicMap::instance()->addSchematics(ghost, *schematicsGranted, notifyClient);
 	}
 }
@@ -657,7 +652,7 @@ bool SkillManager::fulfillsSkillPrerequisites(const String& skillName, CreatureO
 		return false;
 	}
 
-	Vector<String>* requiredSpecies = skill->getSpeciesRequired();
+	auto requiredSpecies = skill->getSpeciesRequired();
 	if (requiredSpecies->size() > 0) {
 		bool foundSpecies = false;
 		for (int i = 0; i < requiredSpecies->size(); i++) {
@@ -672,7 +667,7 @@ bool SkillManager::fulfillsSkillPrerequisites(const String& skillName, CreatureO
 	}
 
 	//Check for required skills.
-	Vector<String>* requiredSkills = skill->getSkillsRequired();
+	auto requiredSkills = skill->getSkillsRequired();
 	for (int i = 0; i < requiredSkills->size(); ++i) {
 		const String& requiredSkillName = requiredSkills->get(i);
 		Skill* requiredSkill = skillMap.get(requiredSkillName.hashCode());

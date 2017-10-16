@@ -20,11 +20,8 @@
 #include "server/zone/managers/player/PlayerManager.h"
 #include "server/zone/managers/director/DirectorManager.h"
 #include "server/zone/managers/collision/NavMeshManager.h"
-#include "server/zone/objects/creature/CreatureObject.h"
 
 #include "engine/util/u3d/QuadTree.h"
-
-#include "engine/orb/db/CommitMasterTransactionThread.h"
 
 ManagedReference<ZoneServer*> ServerCore::zoneServerRef = NULL;
 SortedVector<String> ServerCore::arguments;
@@ -128,8 +125,8 @@ void ServerCore::initialize() {
 			int zoneAllowedConnections =
 					configManager->getZoneAllowedConnections();
 
-			if (arguments.contains("deleteNavRegions") && zoneServer != NULL) {
-				zoneServer->setShouldDeleteNavRegions(true);
+			if (arguments.contains("deleteNavMeshes") && zoneServer != NULL) {
+				zoneServer->setShouldDeleteNavAreas(true);
 			}
 
 			ObjectDatabaseManager* dbManager =
@@ -288,7 +285,7 @@ void ServerCore::shutdown() {
 
 	orb->shutdown();
 
-	Core::getTaskManager()->shutdown();
+	Core::shutdownTaskManager();
 
 	if (zoneServer != NULL) {
 		zoneServer->stop();

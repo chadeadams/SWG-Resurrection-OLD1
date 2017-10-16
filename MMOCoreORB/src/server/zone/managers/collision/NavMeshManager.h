@@ -7,11 +7,8 @@
 
 #ifndef NAVMESHMANAGER_H_
 #define NAVMESHMANAGER_H_
-#include <functional>
-#include "engine/engine.h"
-#include "engine/core/LambdaFunction.h"
-#include "server/zone/objects/pathfinding/NavMeshRegion.h"
-#include "pathfinding/RecastNavMesh.h"
+
+#include "server/zone/objects/pathfinding/NavArea.h"
 #include "server/zone/Zone.h"
 #include "engine/util/u3d/AABB.h"
 #include "server/zone/managers/collision/NavMeshJob.h"
@@ -33,9 +30,9 @@ public:
 	~NavMeshManager() { }
 	void initialize(int numThreads);
 
-	void enqueueJob(Zone* zone, NavMeshRegion* region, AABB areaToBuild, const RecastSettings& recastConfig, const String& queue);
+	void enqueueJob(Zone* zone, NavArea* area, AABB areaToBuild, const RecastSettings& recastConfig, const String& queue);
 
-	void cancelJobs(NavMeshRegion* region);
+	void cancelJobs(NavArea* area);
 	void cancelAllJobs();
 	void stop();
 

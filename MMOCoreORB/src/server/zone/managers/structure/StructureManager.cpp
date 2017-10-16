@@ -17,7 +17,6 @@
 #include "server/zone/ZoneServer.h"
 #include "server/zone/objects/area/ActiveArea.h"
 #include "server/zone/objects/tangible/deed/structure/StructureDeed.h"
-#include "server/zone/objects/tangible/sign/SignObject.h"
 #include "server/zone/objects/region/Region.h"
 #include "server/zone/objects/player/PlayerObject.h"
 #include "server/zone/objects/player/sessions/PlaceStructureSession.h"
@@ -225,10 +224,10 @@ int StructureManager::placeStructureFromDeed(CreatureObject* creature, Structure
 	for (int i = 0; i < objects.size(); ++i) {
 		ActiveArea* area = objects.get(i).get();
 
-		if (!area->isRegion() || area->isNavRegion())
+		if (!area->isRegion())
 			continue;
 
-		city = dynamic_cast<Region*>(area)->getCityRegion();
+		city = dynamic_cast<Region*>(area)->getCityRegion().get();
 
 		if (city != NULL)
 			break;
@@ -486,8 +485,8 @@ StructureObject* StructureManager::placeStructure(CreatureObject* creature,
 	return structureObject;
 }
 
-int StructureManager::destroyStructure(StructureObject* structureObject) {
-	Reference<DestroyStructureTask*> task = new DestroyStructureTask(structureObject);
+int StructureManager::destroyStructure(StructureObject* structureObject, bool playEffect) {
+	Reference<DestroyStructureTask*> task = new DestroyStructureTask(structureObject, playEffect);
 	task->execute();
 
 	return 0;
@@ -553,7 +552,7 @@ int StructureManager::declareResidence(CreatureObject* player, StructureObject* 
 	uint64 declaredOidResidence = ghost->getDeclaredResidence();
 
 	ManagedReference<BuildingObject*> declaredResidence = server->getObject(declaredOidResidence).castTo<BuildingObject*>();
-	ManagedReference<CityRegion*> cityRegion = buildingObject->getCityRegion();
+	ManagedReference<CityRegion*> cityRegion = buildingObject->getCityRegion().get();
 
 	CityManager* cityManager = server->getCityManager();
 
@@ -563,7 +562,7 @@ int StructureManager::declareResidence(CreatureObject* player, StructureObject* 
 			return 1;
 		}
 
-		ManagedReference<CityRegion*> residentCity = declaredResidence->getCityRegion();
+		ManagedReference<CityRegion*> residentCity = declaredResidence->getCityRegion().get();
 
 		if (residentCity != NULL) {
 			Locker lock(residentCity, player);
@@ -783,7 +782,7 @@ void StructureManager::moveFirstItemTo(CreatureObject* creature,
 				continue;
 
 			//if (!building->containsChildObject(childObject) && !childObject->isCreatureObject()) {
-			if (creature->getParent() != NULL
+			if (creature->getParent().get() != NULL
 					&& !building->containsChildObject(childObject)
 					&& !childObject->isCreatureObject()) {
 				if (creature->getParent().get()->getParent().get()
@@ -856,15 +855,10 @@ void StructureManager::reportStructureStatus(CreatureObject* creature,
 	if (!structure->isCivicStructure() && !structure->isGCWBase()) {
 		// property tax
 		float propertytax = 0.f;
-		if(!structure->isCivicStructure() && structure->getCityRegion() != NULL){
-			ManagedReference<CityRegion*> city = structure->getCityRegion().get();
-			if(city != NULL){
-				propertytax = city->getPropertyTax()/ 100.f * structure->getMaintenanceRate();
-				status->addMenuItem(
-							"@city/city:property_tax_prompt : "
-									+ String::valueOf(ceil(propertytax))
-									+  " cr/hr");
-			}
+		ManagedReference<CityRegion*> city = structure->getCityRegion().get();
+		if (city != NULL) {
+			propertytax = city->getPropertyTax() / 100.f * structure->getMaintenanceRate();
+			status->addMenuItem("@city/city:property_tax_prompt : " + String::valueOf(ceil(propertytax)) + " cr/hr");
 		}
 
 		// maintenance
@@ -1233,7 +1227,7 @@ void StructureManager::payMaintenance(StructureObject* structure,
 	}
 
 	if (!creature->isInRange(structure, 16.f)
-			&& creature->getRootParent() != structure) {
+			&& creature->getRootParent().get() != structure) {
 		creature->sendSystemMessage("@player_structure:pay_out_of_range"); //You have moved out of range of your original /payMaintenance target. Aborting...
 		return;
 	}

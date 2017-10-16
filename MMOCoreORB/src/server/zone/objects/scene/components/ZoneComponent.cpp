@@ -14,13 +14,11 @@
 #include "server/zone/packets/scene/UpdateTransformWithParentMessage.h"
 #include "server/zone/packets/scene/LightUpdateTransformMessage.h"
 #include "server/zone/packets/scene/LightUpdateTransformWithParentMessage.h"
-#include "server/zone/objects/region/CityRegion.h"
 #include "server/zone/packets/scene/GameSceneChangedMessage.h"
 #include "server/zone/managers/planet/PlanetManager.h"
 #include "terrain/manager/TerrainManager.h"
 #include "templates/building/SharedBuildingObjectTemplate.h"
-#include "server/zone/objects/staticobject/StaticObject.h"
-#include "server/zone/objects/pathfinding/NavMeshRegion.h"
+#include "server/zone/objects/pathfinding/NavArea.h"
 
 void ZoneComponent::notifyInsertToZone(SceneObject* sceneObject, Zone* newZone) const {
 	info("inserting to zone");
@@ -45,7 +43,7 @@ void ZoneComponent::insertChildObjectsToZone(SceneObject* sceneObject, Zone* zon
 		if (outdoorChild == NULL)
 			continue;
 
-		if (outdoorChild->getContainmentType() != 4 && outdoorChild->getParent() == NULL) {
+		if (outdoorChild->getContainmentType() != 4 && outdoorChild->getParent().get() == NULL) {
 			Locker clocker(outdoorChild, sceneObject);
 			zone->transferObject(outdoorChild, -1, true);
 		}
@@ -112,7 +110,7 @@ void ZoneComponent::updateInRangeObjectsOnMount(SceneObject* sceneObject) const 
 		for (int i = 0; i < closeObjects.size(); ++i) {
 			QuadTreeEntry* o = closeObjects.get(i);
 			QuadTreeEntry* objectToRemove = o;
-			ManagedReference<QuadTreeEntry*> rootParent = o->getRootParent();
+			ManagedReference<QuadTreeEntry*> rootParent = o->getRootParent().get();
 
 			if (rootParent != NULL)
 				o = rootParent;
@@ -247,7 +245,7 @@ void ZoneComponent::updateZone(SceneObject* sceneObject, bool lightUpdate, bool 
 
 void ZoneComponent::updateZoneWithParent(SceneObject* sceneObject, SceneObject* newParent, bool lightUpdate, bool sendPackets) const {
 	ManagedReference<Zone*> zone = sceneObject->getZone();
-	ManagedReference<SceneObject*> oldParent = sceneObject->getParent();
+	ManagedReference<SceneObject*> oldParent = sceneObject->getParent().get();
 
 	if (oldParent != NULL && !oldParent->isCellObject())
 		return;
@@ -394,7 +392,7 @@ void ZoneComponent::switchZone(SceneObject* sceneObject, const String& newTerrai
 				sceneObject->sendToOwner(true);
 
 				if (newParent->isCellObject()) {
-					ManagedReference<SceneObject*> rootParent = sceneObject->getRootParent();
+					ManagedReference<SceneObject*> rootParent = sceneObject->getRootParent().get();
 
 					if (rootParent != NULL)
 						rootParent->notifyObjectInsertedToChild(sceneObject, newParent, NULL);
@@ -414,7 +412,7 @@ void ZoneComponent::notifyRemoveFromZone(SceneObject* sceneObject) const {
 }
 
 void ZoneComponent::destroyObjectFromWorld(SceneObject* sceneObject, bool sendSelfDestroy) const {
-	ManagedReference<SceneObject*> par = sceneObject->getParent();
+	ManagedReference<SceneObject*> par = sceneObject->getParent().get();
 
 	if (!sceneObject->isActiveArea()) {
 		sceneObject->broadcastDestroy(sceneObject, sendSelfDestroy);
@@ -549,8 +547,8 @@ void ZoneComponent::destroyObjectFromWorld(SceneObject* sceneObject, bool sendSe
 			rootZone->getInRangeActiveAreas(worldPos.getX(), worldPos.getY(), 5, &objects, false);
 
 			for(auto& area : objects) {
-				if(area->isNavRegion()) {
-					NavMeshRegion *mesh = area->asNavRegion();
+				if(area->isNavArea()) {
+					NavArea *mesh = area->asNavArea();
 
 					if(mesh->containsPoint(worldPos.getX(), worldPos.getY())) {
 						mesh->updateNavMesh(sceneObject, true);

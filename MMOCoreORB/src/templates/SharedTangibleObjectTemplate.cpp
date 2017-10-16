@@ -6,9 +6,7 @@
  */
 
 #include "SharedTangibleObjectTemplate.h"
-
 #include "templates/manager/TemplateManager.h"
-#include "templates/footprint/StructureFootprint.h"
 #include "templates/params/PaletteColorCustomizationVariables.h"
 #include "templates/params/RangedIntCustomizationVariables.h"
 
@@ -37,8 +35,6 @@ SharedTangibleObjectTemplate::SharedTangibleObjectTemplate() {
 
 	useCount = 0;
 
-	factoryCrateSize = 0;
-
 	sliceable = false;
 
 	faction = 0;
@@ -50,8 +46,6 @@ SharedTangibleObjectTemplate::SharedTangibleObjectTemplate() {
 
 	skillMods.setNoDuplicateInsertPlan();
 	skillMods.setNullValue(0);
-
-	factoryCrateSize = 100;
 }
 
 SharedTangibleObjectTemplate::~SharedTangibleObjectTemplate() {
@@ -114,8 +108,6 @@ void SharedTangibleObjectTemplate::parseVariableData(const String& varName, LuaO
 		playerUseMask = Lua::getShortParameter(state);
 	} else if (varName == "useCount") {
 		useCount = Lua::getIntParameter(state);
-	} else if (varName == "factoryCrateSize") {
-		factoryCrateSize = Lua::getIntParameter(state);
 	} else if (varName == "maxCondition") {
 		maxCondition = Lua::getIntParameter(state);
 	} else if (varName == "level") {

@@ -600,3 +600,4 @@ object_draft_schematic_vehicle_civilian_shared_sith_speeder = SharedDraftSchemat
 }
 
 ObjectTemplates:addClientTemplate(object_draft_schematic_vehicle_civilian_shared_sith_speeder, "object/draft_schematic/vehicle/civilian/shared_sith_speeder.iff")
+

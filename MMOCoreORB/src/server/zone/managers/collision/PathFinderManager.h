@@ -8,11 +8,8 @@
 #ifndef PATHFINDERMANAGER_H_
 #define PATHFINDERMANAGER_H_
 
-#include "engine/engine.h"
-
 #include "server/zone/objects/scene/WorldCoordinates.h"
-#include "server/zone/objects/pathfinding/NavMeshRegion.h"
-#include "pathfinding/recast/DetourCommon.h"
+#include "server/zone/objects/pathfinding/NavArea.h"
 #include "pathfinding/recast/DetourNavMeshQuery.h"
 
 namespace server {
@@ -21,17 +18,10 @@ namespace server {
    namespace cell {
    	   class CellObject;
    }
-
-   namespace creature {
-    namespace ai {
-    	class AiAgent;
-    }
-   }
   }
  }
 }
 
-using namespace server::zone::objects::creature;
 using namespace server::zone::objects::cell;
 
 class FloorMesh;
@@ -41,16 +31,22 @@ class NavCollision : public Object {
 protected:
 	float dist;
 	Vector3 position;
-	Reference<NavMeshRegion*> region;
+	Reference<NavArea*> area;
 public:
-	int compare(const NavCollision& o1, const NavCollision& o2) const {
-		return o1.dist < o2.dist;
+
+	int compareTo(const NavCollision* rhs) const {
+		if (fabs(dist - rhs->dist) < 0.001f)
+			return 0;
+		else if (dist < rhs->dist)
+			return 1;
+		else
+			return -1;
 	}
 
-	NavCollision(const Vector3& p, float len, Reference<NavMeshRegion*> r) : dist(len), position(p), region(r) { }
+	NavCollision(const Vector3& p, float len, Reference<NavArea*> r) : dist(len), position(p), area(r) { }
 	float getDistance() const { return dist; }
 	const Vector3& getPosition() const { return position; }
-	const Reference<NavMeshRegion*>& getRegion() { return region; }
+	const Reference<NavArea*>& getNavArea() { return area; }
 };
 
 class PathFinderManager : public Singleton<PathFinderManager>, public Logger, public Object {
@@ -71,6 +67,7 @@ public:
 	 */
 	int getFloorPath(const Vector3& pointA, const Vector3& pointB, FloorMesh* floor, Vector<Triangle*>*& nodes);
 	Vector<WorldCoordinates>* findPathFromWorldToWorld(const WorldCoordinates& pointA, Vector<WorldCoordinates>& endPoints, Zone* zone, bool allowPartial);
+	bool getSpawnPointInArea(const Sphere& area, Zone* zone, Vector3& point, bool checkRaycast = true);
 protected:
 	Vector<WorldCoordinates>* findPathFromWorldToWorld(const WorldCoordinates& pointA, const WorldCoordinates& pointB, Zone *zone);
 	Vector<WorldCoordinates>* findPathFromWorldToCell(const WorldCoordinates& pointA, const WorldCoordinates& pointB, Zone *zone);
@@ -79,14 +76,16 @@ protected:
 	Vector<WorldCoordinates>* findPathFromCellToCell(const WorldCoordinates& pointA, const WorldCoordinates& pointB);
 
 	Vector<WorldCoordinates>* findPathFromCellToDifferentCell(const WorldCoordinates& pointA, const WorldCoordinates& pointB);
-	bool getRecastPath(const Vector3& start, const Vector3& end, NavMeshRegion* region, Vector<WorldCoordinates>* path, float& len, bool allowPartial);
+	bool getRecastPath(const Vector3& start, const Vector3& end, NavArea* area, Vector<WorldCoordinates>* path, float& len, bool allowPartial);
 	void addTriangleNodeEdges(const Vector3& source, const Vector3& goal, Vector<Triangle*>* trianglePath, Vector<WorldCoordinates>* path, CellObject* cell);
-	void getNavMeshCollisions(SortedVector<Reference<NavCollision*>> *collisions, const SortedVector<ManagedReference<NavMeshRegion*>> *regions, const Vector3& start, const Vector3& end);
+
+	// The caller of this function is responsible for deleting the NavCollision objects.
+	// Collisions should be sorted from closest to farthest.
+	void getNavMeshCollisions(SortedVector<NavCollision*> *collisions, const SortedVector<ManagedReference<NavArea*>> *area, const Vector3& start, const Vector3& end);
 private:
 	dtQueryFilter m_filter;
+	dtQueryFilter m_spawnFilter;
 	ThreadLocal<dtNavMeshQuery*> m_navQuery;
 };
-
-
 
 #endif /* PATHFINDERMANAGER_H_ */

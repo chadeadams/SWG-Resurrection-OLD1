@@ -7,45 +7,33 @@
 
 #include "server/zone/managers/planet/PlanetManager.h"
 
-#include "server/db/ServerDatabase.h"
 #include "server/zone/Zone.h"
 #include "server/zone/ZoneServer.h"
-#include "server/zone/managers/creature/CreatureManager.h"
+#include "server/zone/ZoneProcessServer.h"
 #include "server/zone/managers/weather/WeatherManager.h"
-#include "server/zone/managers/resource/ResourceManager.h"
 #include "server/zone/managers/collision/CollisionManager.h"
 #include "server/zone/managers/gcw/GCWManager.h"
+#include "server/zone/managers/object/ObjectManager.h"
 
 #include "engine/util/iffstream/IffStream.h"
 #include "templates/snapshot/WorldSnapshotIff.h"
 #include "templates/datatables/DataTableIff.h"
 #include "templates/datatables/DataTableRow.h"
-#include "templates/datatables/DataTableCell.h"
 #include "server/zone/managers/stringid/StringIdManager.h"
 
-#include "server/zone/managers/planet/MapLocationType.h"
-
-#include "server/zone/objects/tangible/terminal/ticketcollector/TicketCollector.h"
-#include "server/zone/objects/tangible/terminal/travel/TravelTerminal.h"
 #include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/objects/building/BuildingObject.h"
 #include "server/zone/packets/player/PlanetTravelPointListResponse.h"
 #include "server/zone/objects/area/BadgeActiveArea.h"
-
 #include "server/zone/objects/area/ActiveArea.h"
 #include "server/zone/objects/region/CityRegion.h"
 #include "server/zone/objects/region/Region.h"
 #include "server/zone/objects/tangible/ticket/TicketObject.h"
 
 #include "server/zone/objects/area/areashapes/CircularAreaShape.h"
-
 #include "conf/ConfigManager.h"
-
 #include "PlanetTravelPoint.h"
-#include "templates/tangible/SharedStructureObjectTemplate.h"
 #include "server/zone/managers/structure/StructureManager.h"
-#include "terrain/layer/boundaries/BoundaryRectangle.h"
-
 #include "server/zone/managers/collision/NavMeshManager.h"
 
 ClientPoiDataTable PlanetManagerImplementation::clientPoiDataTable;
@@ -206,7 +194,7 @@ void PlanetManagerImplementation::loadLuaConfig() {
 		Reference<RecastNavMesh*> mesh = city->getNavMesh();
 		if(mesh == NULL || !mesh->isLoaded()) {
 			Locker locker(city);
-			city->createNavRegion(NavMeshManager::MeshQueue, false);
+			city->createNavMesh(NavMeshManager::MeshQueue, false);
 		}
 	}
 
@@ -214,13 +202,13 @@ void PlanetManagerImplementation::loadLuaConfig() {
 
 	if (pendingNavMeshes.size() > 0) {
 		for (int i = pendingNavMeshes.size() - 1; i >= 0; i--) {
-			NavMeshRegion* region = pendingNavMeshes.get(i);
-			region->updateNavMesh(region->getBoundingBox());
+			NavArea* area = pendingNavMeshes.get(i);
+			area->updateNavMesh(area->getBoundingBox());
 
-			Locker lockRegion(region);
-			Locker locker(zone, region);
+			Locker lockRegion(area);
+			Locker locker(zone, area);
 
-			zone->transferObject(region, -1, false);
+			zone->transferObject(area, -1, false);
 
 			pendingNavMeshes.remove(i);
 		}
@@ -328,13 +316,13 @@ void PlanetManagerImplementation::loadNavAreas(LuaObject* regions) {
 		float y = region.getFloatAt(3);
 		float radius = region.getFloatAt(4);
 
-		ManagedReference<NavMeshRegion*> navmeshRegion = server->getZoneServer()->createObject(hashCode, 0).castTo<NavMeshRegion*>();
+		ManagedReference<NavArea*> area = server->getZoneServer()->createObject(hashCode, 0).castTo<NavArea*>();
 
-		Locker objLocker(navmeshRegion);
+		Locker objLocker(area);
 		Vector3 position(x, 0, y);
-		navmeshRegion->initializeNavRegion(position, radius, zone, name, false);
-		navmeshRegion->disableMeshUpdates(true);
-		pendingNavMeshes.put(name, navmeshRegion);
+		area->initializeNavArea(position, radius, zone, name, false);
+		area->disableMeshUpdates(true);
+		pendingNavMeshes.put(name, area);
 		region.pop();
 	}
 }
@@ -614,8 +602,7 @@ void PlanetManagerImplementation::loadClientRegions() {
 
 	DataTableIff dtiff;
 	dtiff.readObject(iffStream);
-	
-	HashSet<String> loadedNavRegions;
+
 	String zoneName = zone->getZoneName();
 	for (int i = 0; i < dtiff.getTotalRows(); ++i) {
 		String regionName;

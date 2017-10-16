@@ -14,29 +14,23 @@ import server.zone.objects.scene.SceneObject;
 import server.zone.objects.tangible.TangibleObject;
 import server.zone.objects.structure.StructureObject;
 import server.zone.Zone;
-import server.zone.managers.city.CityManager;
-include server.zone.managers.planet.PlanetTravelPoint;
-include server.chat.StringIdChatParameter;
 include server.zone.ZoneReference;
 include server.zone.objects.scene.variables.StringId;
 include system.lang.Time;
 include server.zone.objects.region.CitizenList;
 include server.zone.objects.region.events.CityUpdateEvent;
 include server.zone.objects.region.events.CitizenAssessmentEvent;
-include server.zone.objects.region.CityStructureInventory;
 include system.thread.atomic.AtomicInteger;
 include pathfinding.RecastNavMesh;
 import system.thread.Mutex;
 import engine.util.u3d.AABB;
-import system.thread.Mutex;
-include system.util.SynchronizedVector;
-import server.zone.objects.pathfinding.NavMeshRegion;
+import server.zone.objects.pathfinding.NavArea;
+include system.util.Vector;
 
-@lua
 class CityRegion extends ManagedObject implements Logger {
 
 	@weakReference
-	protected transient NavMeshRegion navmeshRegion;
+	protected transient NavArea navMesh;
 
 	protected byte cityRank;
 
@@ -255,12 +249,12 @@ class CityRegion extends ManagedObject implements Logger {
 	@local
 	@dirty
 	public RecastNavMesh getNavMesh() {
-		NavMeshRegion navRegion = navmeshRegion;
+		NavArea strongRef = navMesh;
 
-		if (navRegion == null)
+		if (strongRef == null)
 			return null;
 
-		return navRegion.getNavMesh();
+		return strongRef.getNavMesh();
 	}
 
 	@preLocked
@@ -432,14 +426,14 @@ class CityRegion extends ManagedObject implements Logger {
 		return cityTreasury;
 	}
 
-    @preLocked
-	public native void createNavRegion(final string queue, boolean forceRebuild);
-
-    @preLocked
-	public native void createNavRegion();
+	@preLocked
+	public native void createNavMesh(final string queue, boolean forceRebuild);
 
 	@preLocked
-	public native void destroyNavRegion();
+	public native void createNavMesh();
+
+	@preLocked
+	public native void destroyNavMesh();
 
 	@dirty
 	public boolean isMayor(unsigned long objectid) {

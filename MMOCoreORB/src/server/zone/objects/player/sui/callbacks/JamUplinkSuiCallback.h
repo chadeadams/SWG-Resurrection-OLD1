@@ -10,7 +10,6 @@
 
 #include "server/zone/objects/player/sui/SuiCallback.h"
 #include "server/zone/objects/scene/SceneObjectType.h"
-#include "server/zone/objects/player/PlayerObject.h"
 #include "server/zone/managers/gcw/GCWManager.h"
 
 class JamUplinkSuiCallback : public SuiCallback {
@@ -29,7 +28,7 @@ public:
 		if (player->isDead() || player->isIncapacitated())
 			return;
 
-		ManagedReference<SceneObject*> obj = suiBox->getUsingObject();
+		ManagedReference<SceneObject*> obj = suiBox->getUsingObject().get();
 
 		if (obj == NULL)
 			return;

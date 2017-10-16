@@ -4,7 +4,6 @@
 
 #include "DroidRepairModuleDataComponent.h"
 #include "server/zone/ZoneServer.h"
-#include "server/zone/objects/tangible/component/droid/DroidComponent.h"
 #include "server/zone/packets/object/ObjectMenuResponse.h"
 #include "server/zone/managers/creature/PetManager.h"
 
@@ -80,7 +79,7 @@ void DroidRepairModuleDataComponent::handlePetCommand(String cmd, CreatureObject
 		return;
 
 	// Owner-only command
-	if( droid->getLinkedCreature() != speaker )
+	if( droid->getLinkedCreature().get() != speaker )
 		return;
 
 	if( petManager->isTrainedCommand( pcd, PetManager::REPAIR, cmd ) ){

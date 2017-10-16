@@ -11,13 +11,10 @@
 #include "server/zone/objects/waypoint/WaypointObject.h"
 #include "server/zone/Zone.h"
 #include "server/zone/ZoneServer.h"
-#include "server/zone/managers/mission/MissionManager.h"
-#include "server/zone/managers/creature/CreatureManager.h"
 #include "server/zone/managers/planet/PlanetManager.h"
 #include "server/zone/objects/mission/MissionObject.h"
 #include "server/zone/objects/mission/MissionObserver.h"
 #include "server/zone/objects/creature/CreatureObject.h"
-#include "server/zone/objects/tangible/weapon/WeaponObject.h"
 #include "server/zone/objects/tangible/LairObject.h"
 #include "server/zone/managers/collision/CollisionManager.h"
 #include "templates/mobile/LairTemplate.h"
@@ -93,6 +90,9 @@ Vector3 DestroyMissionObjectiveImplementation::findValidSpawnPosition(Zone* zone
 	if(mission == NULL)
 		return position;
 
+	if (zone == NULL)
+		return position;
+
 	float newX = spawnActiveArea->getPositionX() + (256.0f - (float) System::random(512));
 	float newY = spawnActiveArea->getPositionY() + (256.0f - (float) System::random(512));
 
@@ -149,6 +149,9 @@ void DestroyMissionObjectiveImplementation::spawnLair() {
 
 	Zone* zone = spawnActiveArea->getZone();
 
+	if (zone == NULL)
+		return;
+
 	Locker locker(spawnActiveArea);
 
 	spawnActiveArea->destroyObjectFromWorld(true);
@@ -173,7 +176,7 @@ void DestroyMissionObjectiveImplementation::spawnLair() {
 
 	mlocker.release();
 
-	ManagedReference<CreatureObject*> player = getPlayerOwner();
+	ManagedReference<CreatureObject*> player = getPlayerOwner().get();
 
 	if (player != NULL) {
 		//TODO: find correct string id
@@ -250,7 +253,7 @@ void DestroyMissionObjectiveImplementation::abort() {
 	if (hasObservers()) {
 		ManagedReference<MissionObserver*> observer = getObserver(0);
 
-		ManagedReference<CreatureObject*> player = getPlayerOwner();
+		ManagedReference<CreatureObject*> player = getPlayerOwner().get();
 
 		ManagedReference<LairObject*> lair = lairObject;
 

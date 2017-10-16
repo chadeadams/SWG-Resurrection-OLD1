@@ -63,6 +63,4 @@ includeFile("intangible/vehicle/pod_racer_one_pcd.lua")
 includeFile("intangible/vehicle/pod_racer_two_pcd.lua")
 includeFile("intangible/vehicle/barc_speeder_rebel_pcd.lua")
 includeFile("intangible/vehicle/barc_speeder_imperial_pcd.lua")
-includeFile("intangible/vehicle/speederbike_old_pcd.lua")
-
 

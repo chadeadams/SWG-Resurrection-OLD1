@@ -9,10 +9,8 @@ function FsPhase3:onLoggedIn(pPlayer)
 	if (currentPhase == 3 and VillageJediManagerCommon.hasActiveQuestThisPhase(pPlayer)) then
 		self:failActiveTasks(pPlayer, true)
 
-		if (FsCounterStrike:isOnQuest(pPlayer)) then
-			-- Recreate observers in case server had restarted since player took quest
-			dropObserver(OBJECTDESTRUCTION, "FsCounterStrike", "onPlayerKilled", pPlayer)
-			createObserver(OBJECTDESTRUCTION, "FsCounterStrike", "onPlayerKilled", pPlayer)
+		if (FsCounterStrike:isOnQuest(pPlayer) and readData(SceneObject(pPlayer):getObjectID() .. ":csTheater") == 0) then
+			FsCounterStrike:resetPlayerToStart(pPlayer)
 		end
 	else
 		self:doPhaseChangeFails(pPlayer)
@@ -31,6 +29,15 @@ function FsPhase3:failActiveTasks(pPlayer, loggingIn)
 
 		if (not FsSad2:hasExceededLimit(pPlayer) and loggingIn) then
 			FsSad2:recreateCampIfDespawned(pPlayer)
+		end
+	end
+
+	if QuestManager.hasActiveQuest(pPlayer, QuestManager.quests.FS_CS_KILL5_GUARDS) or QuestManager.hasActiveQuest(pPlayer, QuestManager.quests.FS_CS_ENSURE_CAPTURE) then
+		local playerID = SceneObject(pPlayer):getObjectID()
+		local playerTheaterID = readData(playerID .. ":csTheater")
+		
+		if (playerTheaterID == 0 or readData(playerTheaterID .. ":attackerID") ~= playerID) then
+			FsCounterStrike:resetPlayerToStart(pPlayer)
 		end
 	end
 

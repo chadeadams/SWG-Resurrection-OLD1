@@ -9,7 +9,6 @@
 #include "server/zone/objects/resource/ResourceContainer.h"
 #include "server/zone/objects/building/BuildingObject.h"
 #include "server/zone/objects/tangible/tasks/GrowablePlantPulseTask.h"
-#include "server/zone/Zone.h"
 #include "server/zone/ZoneServer.h"
 
 void PlantObjectImplementation::fillObjectMenuResponse(ObjectMenuResponse* menuResponse, CreatureObject* player) {
@@ -33,8 +32,8 @@ void PlantObjectImplementation::fillObjectMenuResponse(ObjectMenuResponse* menuR
 }
 
 int PlantObjectImplementation::handleObjectMenuSelect(CreatureObject* player, byte selectedID) {
-	ManagedReference<SceneObject*> rootParent = getRootParent();
-	ManagedReference<SceneObject*> parent = getParent();
+	ManagedReference<SceneObject*> rootParent = getRootParent().get();
+	ManagedReference<SceneObject*> parent = getParent().get();
 
 	if (rootParent == NULL || parent == NULL) {
 		return 0;
@@ -237,7 +236,7 @@ void PlantObjectImplementation::changeSize(int size) {
 	if (zoneServer == NULL)
 		return;
 
-	ManagedReference<SceneObject*> parent = getParent();
+	ManagedReference<SceneObject*> parent = getParent().get();
 
 	if (parent == NULL || !parent->isCellObject())
 		return;

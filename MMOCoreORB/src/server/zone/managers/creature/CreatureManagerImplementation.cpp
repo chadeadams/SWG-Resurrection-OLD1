@@ -8,9 +8,7 @@
 #include "server/zone/managers/creature/CreatureManager.h"
 #include "server/zone/objects/creature/ai/CreatureTemplate.h"
 #include "CreatureTemplateManager.h"
-#include "DnaManager.h"
 #include "SpawnAreaMap.h"
-#include "AiMap.h"
 #include "server/zone/ZoneServer.h"
 #include "server/zone/Zone.h"
 #include "server/chat/ChatManager.h"
@@ -29,7 +27,6 @@
 #include "server/zone/objects/player/PlayerObject.h"
 #include "server/zone/objects/creature/ai/AiAgent.h"
 #include "server/zone/objects/creature/events/DespawnCreatureTask.h"
-#include "server/zone/objects/tangible/weapon/WeaponObject.h"
 #include "server/zone/objects/area/SpawnArea.h"
 #include "server/zone/managers/resource/ResourceManager.h"
 #include "server/zone/packets/chat/ChatSystemMessage.h"
@@ -554,9 +551,23 @@ int CreatureManagerImplementation::notifyDestruction(TangibleObject* destructor,
 			}
 
 			if (player->isPlayerCreature()) {
-				Locker locker(player, destructedObject);
+				if (player->isGrouped()) {
+					ManagedReference<GroupObject*> group = player->getGroup();
 
-				player->notifyObservers(ObserverEventType::KILLEDCREATURE, destructedObject);
+					if (group != NULL) {
+						for (int i = 0; i < group->getGroupSize(); i++) {
+							ManagedReference<CreatureObject*> groupMember = group->getGroupMember(i);
+
+							if (groupMember->isPlayerCreature()) {
+								Locker locker(groupMember, destructedObject);
+								groupMember->notifyObservers(ObserverEventType::KILLEDCREATURE, destructedObject);
+							}
+						}
+					}
+				} else {
+					Locker locker(player, destructedObject);
+					player->notifyObservers(ObserverEventType::KILLEDCREATURE, destructedObject);
+				}
 
 				FactionManager* factionManager = FactionManager::instance();
 
@@ -591,11 +602,11 @@ int CreatureManagerImplementation::notifyDestruction(TangibleObject* destructor,
 
 		Reference<AiAgent*> strongReferenceDestructedObject = destructedObject;
 
-		EXECUTE_TASK_1(strongReferenceDestructedObject, {
-				Locker locker(strongReferenceDestructedObject_p);
+		Core::getTaskManager()->executeTask([=] () {
+			Locker locker(strongReferenceDestructedObject);
 
-				CombatManager::instance()->attemptPeace(strongReferenceDestructedObject_p);
-		});
+			CombatManager::instance()->attemptPeace(strongReferenceDestructedObject);
+		}, "AttemptPeaceLambda");
 
 		// Check to see if we can expedite the despawn of this corpse
 		// We can expedite the despawn when corpse has no loot, no credits, player cannot harvest, and no group members in range can harvest
@@ -632,7 +643,7 @@ int CreatureManagerImplementation::notifyDestruction(TangibleObject* destructor,
 
 void CreatureManagerImplementation::droidHarvest(Creature* creature, CreatureObject* droid, int selectedID, int harvestBonus) {
 	// droid and creature are locked coming in.
-	ManagedReference<CreatureObject*> owner = droid->getLinkedCreature();
+	ManagedReference<CreatureObject*> owner = droid->getLinkedCreature().get();
 
 	if (owner == NULL) {
 		return;
@@ -1137,7 +1148,7 @@ bool CreatureManagerImplementation::addWearableItem(CreatureObject* creature, Ta
 		}
 	}
 
-	ManagedReference<SceneObject*> clothingParent = clothing->getParent();
+	ManagedReference<SceneObject*> clothingParent = clothing->getParent().get();
 
 	if (clothingParent == NULL)
 		return false;

@@ -5,8 +5,7 @@
 #ifndef AUCTIONQUERYHEADERSRESPONSEMESSAGE_H_
 #define AUCTIONQUERYHEADERSRESPONSEMESSAGE_H_
 
-#include "engine/engine.h"
-
+#include "engine/service/proto/BaseMessage.h"
 #include "server/zone/objects/auction/AuctionItem.h"
 #include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/objects/building/BuildingObject.h"
@@ -80,7 +79,7 @@ public:
 
 			int accessFee = 0;
 			ManagedReference<SceneObject*> vendor = player->getZoneServer()->getObject(il->getVendorID());
-			if(vendor != NULL && vendor->getParent() != NULL) {
+			if(vendor != NULL && vendor->getParent().get() != NULL) {
 				ManagedReference<SceneObject*> parent = vendor->getRootParent().get();
 				if(parent != NULL && parent->isBuildingObject()) {
 					BuildingObject* building = cast<BuildingObject*>(parent.get());

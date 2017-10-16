@@ -17,15 +17,16 @@ end
 
 function FsReflex2:restartQuest(pPlayer)
 	deleteData(SceneObject(pPlayer):getObjectID() .. ":failedWhipPhase2")
+
+	self:resetTasks(pPlayer)
+
 	QuestManager.activateQuest(pPlayer, QuestManager.quests.FS_REFLEX_FETCH_QUEST_00)
-	FsReflex2Theater:finish(pPlayer)
 	FsReflex2Goto:start(pPlayer)
 end
 
 function FsReflex2:failQuest(pPlayer)
 	writeData(SceneObject(pPlayer):getObjectID() .. ":failedWhipPhase2", 1)
 	FsReflex2Theater:finish(pPlayer)
-	QuestManager.resetQuest(pPlayer, QuestManager.quests.FS_REFLEX_FETCH_QUEST_00)
 	QuestManager.resetQuest(pPlayer, QuestManager.quests.FS_REFLEX_FETCH_QUEST_01)
 	QuestManager.resetQuest(pPlayer, QuestManager.quests.FS_REFLEX_FETCH_QUEST_02)
 	QuestManager.resetQuest(pPlayer, QuestManager.quests.FS_REFLEX_FETCH_QUEST_03)
@@ -81,6 +82,12 @@ function FsReflex2:completeSupplyFetch(pPlayer)
 
 			if (pBuffItem == nil) then
 				CreatureObject(pPlayer):sendSystemMessage("Error: Unable to generate item.")
+			else
+				local buffItem = LuaFsBuffItem(pBuffItem)
+				buffItem:setBuffAttribute(0)
+				buffItem:setReuseTime(259200000)
+				buffItem:setBuffValue(2000)
+				buffItem:setBuffDuration(7200)
 			end
 		end
 

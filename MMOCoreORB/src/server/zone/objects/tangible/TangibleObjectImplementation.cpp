@@ -3,11 +3,8 @@
 		See file COPYING for copying conditions. */
 
 #include "server/zone/objects/tangible/TangibleObject.h"
-#include "variables/SkillModMap.h"
 #include "server/zone/managers/object/ObjectManager.h"
 #include "server/zone/managers/skill/SkillModManager.h"
-#include "server/zone/objects/scene/variables/CustomizationVariables.h"
-#include "server/zone/packets/object/ObjectMenuResponse.h"
 #include "server/zone/packets/tangible/TangibleObjectMessage3.h"
 #include "server/zone/packets/tangible/TangibleObjectMessage6.h"
 #include "server/zone/packets/tangible/TangibleObjectMessage7.h"
@@ -20,26 +17,21 @@
 #include "server/zone/objects/area/ActiveArea.h"
 #include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/objects/creature/ai/AiAgent.h"
-#include "server/zone/objects/tangible/component/Component.h"
 #include "server/zone/objects/factorycrate/FactoryCrate.h"
-#include "server/zone/objects/player/sessions/SlicingSession.h"
-#include "server/zone/objects/tangible/weapon/WeaponObject.h"
 #include "server/zone/objects/tangible/threat/ThreatMap.h"
 #include "server/zone/Zone.h"
 #include "tasks/ClearDefenderListsTask.h"
 #include "server/zone/objects/manufactureschematic/craftingvalues/CraftingValues.h"
-#include "server/zone/objects/manufactureschematic/ingredientslots/ComponentSlot.h"
 #include "templates/tangible/tool/RepairToolTemplate.h"
 #include "server/zone/objects/tangible/tool/repair/RepairTool.h"
 #include "server/zone/managers/player/PlayerManager.h"
 #include "server/zone/managers/creature/PetManager.h"
-#include "server/zone/managers/faction/FactionManager.h"
-#include "server/zone/objects/tangible/wearables/WearableObject.h"
 #include "server/zone/objects/intangible/PetControlDevice.h"
 #include "server/zone/objects/tangible/tool/antidecay/AntiDecayKit.h"
 #include "server/zone/objects/player/events/StoreSpawnedChildrenTask.h"
 #include "server/zone/managers/gcw/GCWManager.h"
 #include "templates/faction/Factions.h"
+#include "server/zone/objects/player/FactionStatus.h"
 #include "engine/engine.h"
 
 
@@ -93,7 +85,7 @@ void TangibleObjectImplementation::notifyLoadFromDatabase() {
 		TangibleObject *tano = asTangibleObject();
 		for (int i = activeAreas.size() - 1; i >= 0; i--) {
 			auto& area = activeAreas.get(i);
-			if (!area->isNavRegion()) {
+			if (!area->isNavArea()) {
 				area->notifyExit(tano);
 				activeAreas.remove(i);
 			}
@@ -240,11 +232,11 @@ void TangibleObjectImplementation::sendPvpStatusTo(CreatureObject* player) {
 }
 
 void TangibleObjectImplementation::broadcastPvpStatusBitmask() {
-	if (getZone() == NULL)
+	if (getZoneUnsafe() == NULL)
 			return;
 
 	if (closeobjects != NULL) {
-		Zone* zone = getZone();
+		Zone* zone = getZoneUnsafe();
 
 		CreatureObject* thisCreo = asCreatureObject();
 
@@ -780,7 +772,7 @@ void TangibleObjectImplementation::updateCraftingValues(CraftingValues* values,
 	}
 }
 
-Reference<FactoryCrate*> TangibleObjectImplementation::createFactoryCrate(bool insertSelf) {
+Reference<FactoryCrate*> TangibleObjectImplementation::createFactoryCrate(int maxSize, bool insertSelf) {
 	String file;
 	uint32 type = getGameObjectType();
 
@@ -803,11 +795,6 @@ Reference<FactoryCrate*> TangibleObjectImplementation::createFactoryCrate(bool i
 	else
 		file = "object/factory/factory_crate_generic_items.iff";
 
-	SharedTangibleObjectTemplate* tanoData = dynamic_cast<SharedTangibleObjectTemplate*>(templateObject.get());
-
-	if (tanoData == NULL)
-		return NULL;
-
 	ObjectManager* objectManager = ObjectManager::instance();
 
 	Reference<FactoryCrate*> crate = (getZoneServer()->createObject(file.hashCode(), 2)).castTo<FactoryCrate*>();
@@ -817,7 +804,7 @@ Reference<FactoryCrate*> TangibleObjectImplementation::createFactoryCrate(bool i
 
 	Locker locker(crate);
 
-	crate->setMaxCapacity(tanoData->getFactoryCrateSize());
+	crate->setMaxCapacity(maxSize);
 
 	if (insertSelf) {
 		if (!crate->transferObject(asTangibleObject(), -1, false)) {
@@ -1063,6 +1050,13 @@ bool TangibleObjectImplementation::isAttackableBy(CreatureObject* object) {
 			if (pcd != NULL && pcd->getPetType() == PetManager::FACTIONPET && isNeutral()) {
 				return false;
 			}
+
+			ManagedReference<CreatureObject*> owner = ai->getLinkedCreature().get();
+
+			if (owner == NULL)
+				return false;
+
+			return isAttackableBy(owner);
 		}
 	}
 
@@ -1116,6 +1110,16 @@ void TangibleObjectImplementation::setDisabled(bool disabled) {
 
 bool TangibleObjectImplementation::isDisabled() {
 	return getOptionsBitmask() & OptionBitmask::DISABLED;
+}
+
+bool TangibleObjectImplementation::isInNavMesh() {
+	for (int i = 0; i < activeAreas.size(); ++i) {
+		auto& area = activeAreas.get(i);
+		if (area->isNavArea())
+			return true;
+	}
+
+	return false;
 }
 
 TangibleObject* TangibleObject::asTangibleObject() {

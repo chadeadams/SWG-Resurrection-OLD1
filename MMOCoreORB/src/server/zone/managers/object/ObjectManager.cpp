@@ -10,20 +10,13 @@
 
 #include "server/db/ServerDatabase.h"
 
-#include "ObjectMap.h"
-
-#include "server/zone/Zone.h"
 #include "server/zone/ZoneProcessServer.h"
 #include "templates/manager/TemplateManager.h"
-#include "templates/SharedObjectTemplate.h"
-#include "engine/db/berkley/BTransaction.h"
 #include "ObjectVersionUpdateManager.h"
 #include "server/ServerCore.h"
 #include "server/zone/objects/scene/SceneObjectType.h"
 #include "DeleteCharactersTask.h"
 #include "conf/ConfigManager.h"
-#include "server/zone/objects/tangible/wearables/WearableContainerObject.h"
-#include "server/zone/objects/tangible/deed/vetharvester/VetHarvesterDeed.h"
 #include "engine/orb/db/UpdateModifiedObjectsThread.h"
 #include "engine/orb/db/CommitMasterTransactionThread.h"
 
@@ -94,7 +87,7 @@ void ObjectManager::registerObjectTypes() {
 	objectFactory.registerObject<SpawnArea>(SceneObjectType::SPAWNAREA);
 	objectFactory.registerObject<CampSiteActiveArea>(SceneObjectType::CAMPAREA);
 	objectFactory.registerObject<Region>(SceneObjectType::REGIONAREA);
-	objectFactory.registerObject<NavMeshRegion>(SceneObjectType::NAVMESHAREA);
+	objectFactory.registerObject<NavArea>(SceneObjectType::NAVMESHAREA);
 	objectFactory.registerObject<StaticObject>(SceneObjectType::STATICOBJECT);
 	objectFactory.registerObject<Creature>(SceneObjectType::CREATURE);
 	objectFactory.registerObject<NonPlayerCreatureObject>(SceneObjectType::NPCCREATURE);
@@ -145,6 +138,7 @@ void ObjectManager::registerObjectTypes() {
 	objectFactory.registerObject<TangibleObject>(SceneObjectType::PLAYERLOOTCRATE);
 	objectFactory.registerObject<PlantObject>(SceneObjectType::GROWABLEPLANT);
 	objectFactory.registerObject<FsCsObject>(SceneObjectType::FSCSOBJECT);
+	objectFactory.registerObject<FsBuffItem>(SceneObjectType::FSBUFFITEM);
 
 	objectFactory.registerObject<SlicingTool>(SceneObjectType::SLICINGTOOL);
 	objectFactory.registerObject<SlicingTool>(SceneObjectType::FLOWANALYZER);
@@ -595,35 +589,33 @@ SceneObject* ObjectManager::cloneObject(SceneObject* object, bool makeTransient)
     
 	VectorMap<String, ManagedReference<SceneObject*> > slottedObjects;
 	clonedObject->getSlottedObjects(slottedObjects);
-    
-	for (int i=slottedObjects.size()-1; i>=0; i--) {
-		String key = slottedObjects.elementAt(i).getKey();
-        
+
+	SortedVector<SceneObject*> inserted;
+	inserted.setNoDuplicateInsertPlan();
+
+	for (int i = slottedObjects.size() - 1; i >= 0; i--) {
 		Reference<SceneObject*> obj = slottedObjects.elementAt(i).getValue();
-        
+
 		clonedObject->removeSlottedObject(i);
-        
-		Reference<SceneObject*> clonedChild = cloneObject(obj, makeTransient);
-		clonedChild->setParent(object);
-        
-		slottedObjects.put(key, clonedChild);
-        
+
+		if (inserted.put(obj) != -1) {
+			Reference<SceneObject*> clonedChild = cloneObject(obj, makeTransient);
+
+			clonedObject->transferObject(clonedChild, 4, false);
+		}
 	}
-	
+
 	VectorMap<uint64, ManagedReference<SceneObject*> > objects;
 	clonedObject->getContainerObjects(objects);
-	
-	for (int i=objects.size()-1; i>=0; i--) {
-		uint64 key = objects.elementAt(i).getKey();
-		
+
+	for (int i = objects.size() - 1; i >= 0; i--) {
 		Reference<SceneObject*> obj = objects.elementAt(i).getValue();
-		
-		objects.remove(i);
-		
+
+		clonedObject->removeFromContainerObjects(i);
+
 		Reference<SceneObject*> clonedChild = cloneObject(obj, makeTransient);
-		clonedChild->setParent(object);
-		
-		objects.put(key, clonedChild);
+
+		clonedObject->transferObject(clonedChild, -1, false);
 	}
 	
 	clonedObject->onCloneObject(object);

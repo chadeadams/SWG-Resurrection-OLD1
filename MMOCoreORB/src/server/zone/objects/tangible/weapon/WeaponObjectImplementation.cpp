@@ -16,12 +16,8 @@
 #include "server/zone/objects/manufactureschematic/craftingvalues/CraftingValues.h"
 #include "server/zone/objects/tangible/powerup/PowerupObject.h"
 #include "server/zone/objects/tangible/component/lightsaber/LightsaberCrystalComponent.h"
-#include "server/zone/packets/object/ObjectMenuResponse.h"
 #include "server/zone/packets/object/WeaponRanges.h"
-#include "server/zone/packets/tangible/TangibleObjectDeltaMessage3.h"
-#include "server/zone/objects/player/sessions/SlicingSession.h"
-#include "server/zone/Zone.h"
-
+#include "server/zone/ZoneProcessServer.h"
 
 
 void WeaponObjectImplementation::initializeTransientMembers() {
@@ -619,7 +615,7 @@ void WeaponObjectImplementation::updateCraftingValues(CraftingValues* values, bo
 	setMindAttackCost((int)values->getCurrentValue("attackmindcost"));
 
 	if (isJediWeapon()) {
-		setForceCost((int)values->getCurrentValue("forcecost"));
+		setForceCost(Math::getPrecision(values->getCurrentValue("forcecost"), 1));
 		setBladeColor(31);
 	}
 
@@ -815,7 +811,7 @@ bool WeaponObjectImplementation::applyPowerup(CreatureObject* player, PowerupObj
 
 	powerupObject = pup;
 
-	if(pup->getParent() != NULL) {
+	if(pup->getParent().get() != NULL) {
 		Locker clocker(pup, player);
 		pup->destroyObjectFromWorld(true);
 	}

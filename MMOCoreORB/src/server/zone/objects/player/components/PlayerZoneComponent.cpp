@@ -7,11 +7,8 @@
 
 #include "PlayerZoneComponent.h"
 
-#include "server/zone/managers/creature/CreatureManager.h"
-#include "server/zone/managers/planet/PlanetManager.h"
 #include "server/zone/objects/player/PlayerObject.h"
 #include "server/zone/objects/creature/CreatureObject.h"
-#include "server/zone/objects/building/BuildingObject.h"
 #include "server/zone/Zone.h"
 
 void PlayerZoneComponent::notifyInsertToZone(SceneObject* sceneObject, Zone* newZone) const {
@@ -62,7 +59,7 @@ void PlayerZoneComponent::switchZone(SceneObject* sceneObject, const String& new
 		CreatureObject* player = sceneObject->asCreatureObject();
 		PlayerObject* ghost = player->getPlayerObject();
 
-		ManagedReference<SceneObject*> par = sceneObject->getParent();
+		ManagedReference<SceneObject*> par = sceneObject->getParent().get();
 
 		if (par != NULL && (par->isVehicleObject() || par->isMount())) {
 			player->executeObjectControllerAction(STRING_HASHCODE("dismount"));
@@ -81,6 +78,7 @@ void PlayerZoneComponent::switchZone(SceneObject* sceneObject, const String& new
 
 		player->setMovementCounter(0);
 
+		player->notifyObservers(ObserverEventType::ZONESWITCHED);
 	}
 
 	ZoneComponent::switchZone(sceneObject, newTerrainName, newPostionX, newPositionZ, newPositionY, parentID, toggleInvisibility);
@@ -93,8 +91,9 @@ void PlayerZoneComponent::teleport(SceneObject* sceneObject, float newPositionX,
 		player = sceneObject->asCreatureObject();
 	}
 
-	if (player != NULL && sceneObject->getParent() != NULL && parentID != 0) {
-		ManagedReference<SceneObject*> par = sceneObject->getParent();
+	ManagedReference<SceneObject*> par = sceneObject->getParent().get();
+
+	if (player != NULL && par != NULL && parentID != 0) {
 
 		if (par->isVehicleObject() || par->isMount()) {
 			player->executeObjectControllerAction(STRING_HASHCODE("dismount"));
@@ -137,7 +136,7 @@ void PlayerZoneComponent::updateZone(SceneObject* sceneObject, bool lightUpdate,
 void PlayerZoneComponent::updateZoneWithParent(SceneObject* sceneObject, SceneObject* newParent, bool lightUpdate, bool sendPackets) const {
 	ZoneComponent::updateZoneWithParent(sceneObject, newParent, lightUpdate, sendPackets);
 
-	if (sceneObject->getParent() != NULL && sceneObject->isPlayerCreature()) {
+	if (sceneObject->getParent().get() != NULL && sceneObject->isPlayerCreature()) {
 		CreatureObject* player = sceneObject->asCreatureObject();
 		PlayerObject* ghost = player->getPlayerObject();
 

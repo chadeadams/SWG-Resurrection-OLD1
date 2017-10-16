@@ -11,9 +11,7 @@
 #include "server/zone/packets/cell/CellObjectMessage6.h"
 #include "server/zone/packets/cell/UpdateCellPermissionsMessage.h"
 #include "server/zone/objects/creature/CreatureObject.h"
-#include "server/zone/objects/player/PlayerObject.h"
 #include "server/zone/Zone.h"
-#include "server/zone/objects/scene/components/ContainerComponent.h"
 
 void CellObjectImplementation::initializeTransientMembers() {
 	SceneObjectImplementation::initializeTransientMembers();
@@ -134,7 +132,7 @@ bool CellObjectImplementation::transferObject(SceneObject* object, int containme
 
 	bool ret = false;
 
-	ManagedReference<SceneObject*> oldParent = object->getParent();
+	ManagedReference<SceneObject*> oldParent = object->getParent().get();
 
 	try {
 		ret = SceneObjectImplementation::transferObject(object, containmentType, notifyClient, allowOverflow, notifyRoot);

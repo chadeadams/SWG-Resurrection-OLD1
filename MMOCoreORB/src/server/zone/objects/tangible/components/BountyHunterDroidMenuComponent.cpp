@@ -12,6 +12,8 @@
 #include "server/zone/managers/mission/MissionManager.h"
 #include "server/zone/objects/mission/BountyMissionObjective.h"
 #include "server/zone/ZoneServer.h"
+#include "server/zone/objects/player/PlayerObject.h"
+#include "server/zone/objects/mission/bountyhunter/BountyHunterDroid.h"
 
 void BountyHunterDroidMenuComponent::fillObjectMenuResponse(SceneObject* droidObject, ObjectMenuResponse* menuResponse, CreatureObject* player) const {
 	if (droidObject == NULL || !droidObject->isTangibleObject() || player == NULL) {
@@ -93,7 +95,7 @@ bool BountyHunterDroidMenuComponent::isSeekerDroid(SceneObject* droidObject) con
 bool BountyHunterDroidMenuComponent::droidIsInPlayerInventory(SceneObject* droidObject, CreatureObject* player) const {
 	ManagedReference<SceneObject*> inventory = player->getSlottedObject("inventory");
 
-	return droidObject->getParent() == inventory;
+	return droidObject->getParent().get() == inventory;
 }
 
 bool BountyHunterDroidMenuComponent::droidIsInZone(SceneObject* droidObject) const {

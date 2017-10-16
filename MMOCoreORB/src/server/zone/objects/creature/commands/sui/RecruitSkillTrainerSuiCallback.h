@@ -8,10 +8,7 @@
 #ifndef RECRUITSKILLTRAINERCALLBACK_H_
 #define RECRUITSKILLTRAINERCALLBACK_H_
 
-
-#include "server/zone/objects/tangible/terminal/mission/MissionTerminal.h"
 #include "server/zone/objects/player/sui/SuiCallback.h"
-#include "server/zone/objects/scene/SceneObject.h"
 #include "server/zone/Zone.h"
 #include "server/zone/managers/creature/CreatureManager.h"
 
@@ -30,7 +27,7 @@ public:
 		if (args->size() < 1)
 			return;
 
-		if (player->getParent() != NULL)
+		if (player->getParent().get() != NULL)
 			return;
 
 		ManagedReference<CityRegion*> city = player->getCityRegion().get();

@@ -6,7 +6,6 @@
 #define STRUCTUREPAYUNCONDEMNMAINTENANCESUICALLBACK_H_
 
 #include "server/zone/objects/player/sui/SuiCallback.h"
-#include "server/zone/objects/player/PlayerObject.h"
 
 class StructurePayUncondemnMaintenanceSuiCallback : public SuiCallback {
 public:
@@ -19,7 +18,7 @@ public:
 		if (!sui->isMessageBox() || cancelPressed)
 			return;
 
-		ManagedReference<SceneObject*> obj = sui->getUsingObject();
+		ManagedReference<SceneObject*> obj = sui->getUsingObject().get();
 
 		if (obj == NULL || !obj->isStructureObject()) {
 			creature->sendSystemMessage("@player_structure:invalid_target"); // "Your original structure target is no longer valid. Aborting..."

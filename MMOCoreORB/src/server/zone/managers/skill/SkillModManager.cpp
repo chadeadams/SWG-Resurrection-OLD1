@@ -199,7 +199,7 @@ void SkillModManager::verifyStructureSkillMods(TangibleObject* tano) {
 	mods.setAllowOverwriteInsertPlan();
 	mods.setNullValue(0);
 
-	ManagedReference<SceneObject*> parent = creature->getRootParent();
+	ManagedReference<SceneObject*> parent = creature->getRootParent().get();
 
 	if (parent == NULL) {
 		if (creature->getCurrentCamp() != NULL) {
@@ -242,9 +242,9 @@ void SkillModManager::verifySkillBoxSkillMods(CreatureObject* creature) {
 	SkillList* skillList = creature->getSkillList();
 	for(int i = 0; i < skillList->size(); ++i) {
 		Reference<Skill*> skill = skillList->get(i);
-		VectorMap<String, int>* skillMods = skill->getSkillModifiers();
+		auto skillMods = skill->getSkillModifiers();
 		for(int j = 0; j < skillMods->size(); ++j) {
-			String name = skillMods->elementAt(j).getKey();
+			const String& name = skillMods->elementAt(j).getKey();
 			int value = skillMods->get(name);
 
 			if(mods.contains(name)) {
@@ -288,7 +288,7 @@ void SkillModManager::verifyBuffSkillMods(CreatureObject* creature) {
 	}
 }
 
-bool SkillModManager::compareMods(VectorMap<String, int> mods, CreatureObject* creature, uint32 type) {
+bool SkillModManager::compareMods(VectorMap<String, int>& mods, CreatureObject* creature, uint32 type) {
 
 	mods.setAllowOverwriteInsertPlan();
 	mods.setNullValue(0);

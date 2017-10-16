@@ -7,7 +7,6 @@
 
 #include "server/zone/objects/intangible/VehicleControlDevice.h"
 #include "server/zone/objects/intangible/VehicleControlObserver.h"
-#include "server/zone/managers/objectcontroller/ObjectController.h"
 #include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/objects/creature/VehicleObject.h"
 #include "server/zone/objects/creature/events/VehicleDecayTask.h"
@@ -26,7 +25,7 @@ void VehicleControlDeviceImplementation::generateObject(CreatureObject* player) 
 	if (!isASubChildOf(player))
 		return;
 
-	if (player->getParent() != NULL || player->isInCombat()) {
+	if (player->getParent().get() != NULL || player->isInCombat()) {
 		player->sendSystemMessage("@pet/pet_menu:cant_call_vehicle"); // You can only unpack vehicles while Outside and not in Combat.
 		return;
 	}
@@ -80,7 +79,7 @@ void VehicleControlDeviceImplementation::generateObject(CreatureObject* player) 
 		}
 	}
 
-	if(player->getCurrentCamp() == NULL && player->getCityRegion() == NULL) {
+	if(player->getCurrentCamp() == NULL && player->getCityRegion().get() == NULL) {
 
 		Reference<CallMountTask*> callMount = new CallMountTask(_this.getReferenceUnsafeStaticCast(), player, "call_mount");
 
@@ -116,7 +115,7 @@ void VehicleControlDeviceImplementation::spawnObject(CreatureObject* player) {
 	if (!isASubChildOf(player))
 		return;
 
-	if (player->getParent() != NULL || player->isInCombat()) {
+	if (player->getParent().get() != NULL || player->isInCombat()) {
 		player->sendSystemMessage("@pet/pet_menu:cant_call_vehicle"); // You can only unpack vehicles while Outside and not in Combat.
 		return;
 	}
@@ -180,7 +179,7 @@ void VehicleControlDeviceImplementation::storeObject(CreatureObject* player, boo
 	/*if (!controlledObject->isInQuadTree())
 		return;*/
 
-	if (player->isRidingMount() && player->getParent() == controlledObject) {
+	if (player->isRidingMount() && player->getParent().get() == controlledObject) {
 
 		if (!force && !player->checkCooldownRecovery("mount_dismount"))
 			return;
@@ -214,7 +213,6 @@ void VehicleControlDeviceImplementation::destroyObjectFromDatabase(bool destroyC
 	if (controlledObject != NULL) {
 		Locker locker(controlledObject);
 
-		//ManagedReference<CreatureObject*> object = controlledObject.castTo<CreatureObject*>()->getLinkedCreature();
 		ManagedReference<CreatureObject*> object = controlledObject->getSlottedObject("rider").castTo<CreatureObject*>();
 
 		if (object != NULL) {

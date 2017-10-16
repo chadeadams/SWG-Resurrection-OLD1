@@ -9,21 +9,14 @@
 #define SELECTCHARACTERCALLBACK_H_
 
 #include "server/zone/packets/MessageCallback.h"
-
 #include "server/zone/ZoneServer.h"
 #include "server/zone/Zone.h"
 #include "server/zone/managers/player/PlayerManager.h"
 #include "server/zone/managers/reaction/ReactionManager.h"
-
-#include "server/zone/objects/player/sessions/EntertainingSession.h"
 #include "server/zone/packets/creature/CreatureObjectDeltaMessage6.h"
-
 #include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/objects/player/PlayerObject.h"
-
 #include "server/chat/ChatManager.h"
-#include "server/login/account/Account.h"
-
 #include "server/zone/objects/player/events/DisconnectClientEvent.h"
 
 class SelectCharacterCallback : public MessageCallback {
@@ -134,12 +127,12 @@ public:
 
 			uint64 savedParentID = ghost->getSavedParentID();
 			ManagedReference<SceneObject*> playerParent = zoneServer->getObject(savedParentID, true);
-			ManagedReference<SceneObject*> currentParent = player->getParent();
+			ManagedReference<SceneObject*> currentParent = player->getParent().get();
 
 			if ((playerParent != NULL && currentParent == NULL) || (currentParent != NULL && currentParent->isCellObject())) {
 				playerParent = playerParent == NULL ? currentParent : playerParent;
 
-				ManagedReference<SceneObject*> root = playerParent->getRootParent();
+				ManagedReference<SceneObject*> root = playerParent->getRootParent().get();
 
 				root = root == NULL ? playerParent : root;
 
@@ -154,7 +147,7 @@ public:
 				} else {
 					playerParent->transferObject(player, -1, false);
 
-					if (player->getParent() == NULL) {
+					if (player->getParent().get() == NULL) {
 						zone->transferObject(player, -1, false);
 					} else if (root->getZone() == NULL) {
 						Locker clocker(root, player);

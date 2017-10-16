@@ -7,7 +7,6 @@
 
 #include "LuaTangibleObject.h"
 #include "server/zone/objects/tangible/TangibleObject.h"
-#include "templates/params/creature/CreatureFlag.h"
 #include "templates/params/PaletteColorCustomizationVariable.h"
 #include "templates/customization/AssetCustomizationManagerTemplate.h"
 #include "templates/appearance/PaletteTemplate.h"
@@ -71,11 +70,17 @@ int LuaTangibleObject::_setObject(lua_State* L) {
 	LuaSceneObject::_setObject(L);
 
 #ifdef DYNAMIC_CAST_LUAOBJECTS
-	realObject = dynamic_cast<TangibleObject*>(_getRealSceneObject());
+	auto obj = dynamic_cast<TangibleObject*>(_getRealSceneObject());
+
+	if (realObject != obj)
+		realObject = obj;
 
 	assert(!_getRealSceneObject() || realObject != NULL);
 #else
-	realObject = static_cast<TangibleObject*>(lua_touserdata(L, -1));
+	auto obj = static_cast<TangibleObject*>(lua_touserdata(L, -1));
+
+	if (realObject != obj)
+		realObject = obj;
 #endif
 
 	return 0;
@@ -196,6 +201,8 @@ int LuaTangibleObject::isCovert(lua_State* L) {
 
 int LuaTangibleObject::setConditionDamage(lua_State* L) {
 	float damage = lua_tonumber(L, -1);
+
+	Locker locker(realObject);
 
 	realObject->setConditionDamage(damage, true);
 

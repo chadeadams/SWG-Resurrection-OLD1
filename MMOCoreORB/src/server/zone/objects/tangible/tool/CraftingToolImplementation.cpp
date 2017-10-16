@@ -5,18 +5,12 @@
 #include "engine/engine.h"
 
 #include "server/zone/objects/tangible/tool/CraftingTool.h"
-#include "server/zone/Zone.h"
 #include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/objects/player/PlayerObject.h"
 #include "server/zone/packets/object/ObjectMenuResponse.h"
 #include "templates/tangible/tool/CraftingToolTemplate.h"
 #include "server/zone/objects/manufactureschematic/craftingvalues/CraftingValues.h"
-#include "server/zone/objects/manufactureschematic/ingredientslots/IngredientSlot.h"
-#include "server/zone/objects/tangible/component/Component.h"
-#include "server/zone/objects/area/ActiveArea.h"
 #include "server/zone/packets/scene/AttributeListMessage.h"
-#include "server/zone/packets/player/PlayerObjectDeltaMessage9.h"
-#include "server/zone/packets/tangible/TangibleObjectDeltaMessage3.h"
 #include "server/zone/objects/player/sessions/crafting/CraftingSession.h"
 
 void CraftingToolImplementation::loadTemplateData(SharedObjectTemplate* templateData) {
@@ -111,7 +105,7 @@ void CraftingToolImplementation::fillAttributeList(AttributeListMessage* alm,
 		alm->insertAttribute("@crafting:crit_experiment", forceCriticalExperiment);
 
 	Reference<CraftingSession*> session = object->getActiveSession(SessionFacadeType::CRAFTING).castTo<CraftingSession*>();
-	if(session == NULL && getParent() != NULL) {
+	if(session == NULL && getParent().get() != NULL) {
 		disperseItems();
 	}
 }
@@ -165,7 +159,7 @@ void CraftingToolImplementation::disperseItems() {
 
 	if(craftedComponents != NULL  && craftedComponents->getContainerObjectsSize() > 0) {
 		ManagedReference<SceneObject*> satchel = craftedComponents->getContainerObject(0);
-		ManagedReference<SceneObject*> inventory = getParent();
+		ManagedReference<SceneObject*> inventory = getParent().get();
 
 		if(satchel != NULL && inventory != NULL) {
 			while(satchel->getContainerObjectsSize() > 0) {

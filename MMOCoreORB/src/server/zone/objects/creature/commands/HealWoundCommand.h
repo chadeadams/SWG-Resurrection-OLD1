@@ -10,9 +10,7 @@
 #include "server/zone/ZoneServer.h"
 #include "server/zone/managers/player/PlayerManager.h"
 #include "server/zone/objects/creature/events/InjuryTreatmentTask.h"
-#include "server/zone/objects/creature/buffs/Buff.h"
 #include "server/zone/objects/creature/buffs/DelayedBuff.h"
-#include "server/zone/packets/object/CombatAction.h"
 #include "server/zone/managers/collision/CollisionManager.h"
 
 class HealWoundCommand : public QueueCommand {
@@ -119,7 +117,7 @@ public:
 			return false;
 		} else {
 			// are we in a cantina? we have a private medical rating so either thats form a droid or camp or hospital
-			ManagedReference<SceneObject*> root = creature->getRootParent();
+			ManagedReference<SceneObject*> root = creature->getRootParent().get();
 			if (root != NULL && root->isClientObject()) {
 				uint32 gameObjectType = root->getGameObjectType();
 				switch (gameObjectType) {

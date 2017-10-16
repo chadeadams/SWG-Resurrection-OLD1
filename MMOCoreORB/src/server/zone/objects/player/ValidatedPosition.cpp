@@ -12,7 +12,7 @@
 void ValidatedPosition::update(SceneObject* object) {
 	point = object->getPosition();
 
-	ManagedReference<SceneObject*> parentPointer = object->getParent();
+	ManagedReference<SceneObject*> parentPointer = object->getParent().get();
 
 	if (parentPointer != NULL && parentPointer->isCellObject())
 		parent = parentPointer->getObjectID();
@@ -31,7 +31,7 @@ Vector3 ValidatedPosition::getWorldPosition(ZoneServer* zoneServer) {
 	if (newParent == NULL)
 		return point;
 
-	ManagedReference<SceneObject*> root = newParent->getRootParent();
+	ManagedReference<SceneObject*> root = newParent->getRootParent().get();
 
 	float length = Math::sqrt(point.getX() * point.getX() + point.getY() * point.getY());
 	float angle = root->getDirection()->getRadians() + atan2(point.getX(), point.getY());

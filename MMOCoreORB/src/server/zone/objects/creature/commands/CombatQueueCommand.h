@@ -9,19 +9,21 @@
 #define COMBATQUEUECOMMAND_H_
 
 #include"server/zone/ZoneServer.h"
-#include "server/zone/Zone.h"
 #include "server/zone/objects/scene/SceneObject.h"
 #include "server/zone/managers/combat/CombatManager.h"
 #include "server/zone/objects/player/PlayerObject.h"
+#include "server/zone/objects/cell/CellObject.h"
 #include "server/zone/managers/combat/CreatureAttackData.h"
 #include "server/zone/managers/collision/CollisionManager.h"
 #include "templates/params/creature/CreatureAttribute.h"
 #include "templates/params/creature/CreatureState.h"
+#include "templates/params/creature/CreatureFlag.h"
 #include "server/zone/objects/creature/commands/effect/StateEffect.h"
 #include "server/zone/objects/creature/commands/effect/DotEffect.h"
 #include "server/zone/objects/creature/commands/effect/CommandEffect.h"
 #include "server/zone/packets/object/CombatSpam.h"
 #include "QueueCommand.h"
+#include "server/zone/objects/player/FactionStatus.h"
 
 class CombatQueueCommand : public QueueCommand {
 protected:
@@ -216,7 +218,7 @@ public:
 		}
 
 		if (creature->isPlayerCreature() && !targetObject->isPlayerCreature() && targetObject->getParentID() != 0 && creature->getParentID() != targetObject->getParentID()) {
-			Reference<CellObject*> targetCell = targetObject->getParent().castTo<CellObject*>();
+			Reference<CellObject*> targetCell = targetObject->getParent().get().castTo<CellObject*>();
 
 			if (targetCell != NULL) {
 				ContainerPermissions* perms = targetCell->getContainerPermissions();

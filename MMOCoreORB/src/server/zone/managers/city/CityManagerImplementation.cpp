@@ -5,7 +5,6 @@
  *      Author: crush
  */
 
-#include "engine/engine.h"
 #include "server/zone/managers/city/CityManager.h"
 #include "server/chat/ChatManager.h"
 #include "server/zone/Zone.h"
@@ -38,7 +37,6 @@
 #include "TaxPayMailTask.h"
 #include "templates/tangible/SharedStructureObjectTemplate.h"
 #include "server/zone/objects/player/sui/callbacks/RenameCitySuiCallback.h"
-
 
 #ifndef CITY_DEBUG
 #define CITY_DEBUG
@@ -1359,7 +1357,7 @@ void CityManagerImplementation::destroyCity(CityRegion* city) {
 
 	unregisterCity(city, NULL);
 
-	city->destroyNavRegion();
+	city->destroyNavMesh();
 
 	for (int i = CityManager::METROPOLIS; i > 0; i--) {
 		city->destroyAllStructuresForRank(uint8(i), false);
@@ -2212,7 +2210,7 @@ void CityManagerImplementation::registerForMayoralRace(CityRegion* city, Creatur
 	ManagedReference<BuildingObject*> declaredResidence = creature->getZoneServer()->getObject(declaredOidResidence).castTo<BuildingObject*>();
 
 	if (declaredResidence != NULL) {
-		ManagedReference<CityRegion*> declaredCity = declaredResidence->getCityRegion();
+		ManagedReference<CityRegion*> declaredCity = declaredResidence->getCityRegion().get();
 
 		if (declaredCity != NULL && declaredCity->isMayor(objectid) && city != declaredCity) {
 			creature->sendSystemMessage("@city/city:already_mayor"); //You are already the mayor of a city.  You may not be mayor of another city.

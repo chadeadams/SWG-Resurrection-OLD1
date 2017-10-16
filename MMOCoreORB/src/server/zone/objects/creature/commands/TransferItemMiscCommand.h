@@ -7,8 +7,6 @@
 
 #include "server/zone/objects/scene/SceneObject.h"
 #include "server/zone/managers/objectcontroller/ObjectController.h"
-#include "server/zone/objects/building/BuildingObject.h"
-#include "server/zone/objects/tangible/components/vendor/VendorDataComponent.h"
 #include "server/zone/managers/player/PlayerManager.h"
 #include "server/zone/objects/player/sessions/TradeSession.h"
 
@@ -67,7 +65,7 @@ public:
 			return GENERALERROR;
 		}
 
-		ManagedReference<SceneObject*> objectsParent = objectToTransfer->getParent();
+		ManagedReference<SceneObject*> objectsParent = objectToTransfer->getParent().get();
 
 		if (objectsParent == NULL) {
 			return GENERALERROR;
@@ -96,7 +94,7 @@ public:
 		Zone* zoneObject = objectToTransfer->getZone();
 
 		if (zoneObject != NULL) {
-			ManagedReference<SceneObject*> rootParent = objectToTransfer->getRootParent();
+			ManagedReference<SceneObject*> rootParent = objectToTransfer->getRootParent().get();
 
 			float maxDistance = 12.5;
 
@@ -112,7 +110,7 @@ public:
 					return INVALIDTARGET;
 				}
 
-				while ((par = obj->getParent()) != NULL) {
+				while ((par = obj->getParent().get()) != NULL) {
 					if (par->isCellObject()) {
 						if (obj->getDistanceTo(creature) > maxDistance) {
 							return TOOFAR;
@@ -183,9 +181,9 @@ public:
 
 		bool clearWeapon = objectToTransfer->isWeaponObject() && (creature == objectToTransfer->getParent().get());
 
-		bool notifyLooted = (objectToTransfer->getParentRecursively(SceneObjectType::CREATURE) != NULL || objectToTransfer->getParentRecursively(SceneObjectType::NPCCREATURE) != NULL);
+		bool notifyLooted = (objectToTransfer->getParentRecursively(SceneObjectType::CREATURE).get() != NULL || objectToTransfer->getParentRecursively(SceneObjectType::NPCCREATURE).get() != NULL);
 
-		bool notifyContainerContentsChanged = (objectToTransfer->getParentRecursively(SceneObjectType::STATICLOOTCONTAINER) != NULL);
+		bool notifyContainerContentsChanged = (objectToTransfer->getParentRecursively(SceneObjectType::STATICLOOTCONTAINER).get() != NULL);
 
 		Locker clocker(objectsParent, creature);
 

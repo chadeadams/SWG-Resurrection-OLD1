@@ -11,8 +11,6 @@
 #include "server/zone/objects/player/sui/SuiCallback.h"
 #include "server/zone/objects/creature/CreatureObject.h"
 
-
-
 class NameStructureSuiCallback : public SuiCallback {
 public:
 	NameStructureSuiCallback(ZoneServer* serv) : SuiCallback(serv) {
@@ -24,13 +22,13 @@ public:
 		if (!sui->isInputBox() || cancelPressed || args->size() < 1)
 			return;
 
-		ManagedReference<SceneObject*> obj = sui->getUsingObject();
+		ManagedReference<SceneObject*> obj = sui->getUsingObject().get();
 
 		if (obj == NULL)
 			return;
 
 		if (obj->getGameObjectType() == SceneObjectType::PLAYERTERMINALSTRUCTURE) {
-			ManagedReference<SceneObject*> root = obj->getRootParent();
+			ManagedReference<SceneObject*> root = obj->getRootParent().get();
 			if (root != NULL)
 				obj = root;
 		}

@@ -18,8 +18,6 @@
 #include "server/zone/objects/mission/HuntingMissionObjective.h"
 #include "server/zone/objects/mission/ReconMissionObjective.h"
 #include "server/zone/objects/mission/BountyMissionObjective.h"
-#include "server/zone/objects/creature/ai/AiAgent.h"
-#include "server/zone/objects/region/Region.h"
 #include "server/zone/objects/area/SpawnArea.h"
 #include "server/zone/managers/resource/ResourceManager.h"
 #include "templates/manager/TemplateManager.h"
@@ -30,12 +28,10 @@
 #include "server/zone/managers/creature/CreatureManager.h"
 #include "server/zone/managers/creature/CreatureTemplateManager.h"
 #include "templates/mobile/LairTemplate.h"
-#include "server/zone/managers/planet/HuntingTargetEntry.h"
 #include "server/zone/objects/tangible/tool/SurveyTool.h"
-#include "server/zone/objects/area/MissionReconActiveArea.h"
 #include "server/zone/Zone.h"
-#include "server/db/ServerDatabase.h"
 #include "server/zone/managers/stringid/StringIdManager.h"
+#include "server/zone/objects/player/FactionStatus.h"
 
 void MissionManagerImplementation::loadLuaSettings() {
 	try {
@@ -129,7 +125,7 @@ void MissionManagerImplementation::handleMissionListRequest(MissionTerminal* mis
 		}
 	}
 
-	ManagedReference<CityRegion*> terminalCity = missionTerminal->getCityRegion();
+	ManagedReference<CityRegion*> terminalCity = missionTerminal->getCityRegion().get();
 
 	if (terminalCity != NULL) {
 		if (terminalCity.get()->isBanned(player->getObjectID())) {
@@ -169,12 +165,12 @@ void MissionManagerImplementation::handleMissionListRequest(MissionTerminal* mis
 }
 
 void MissionManagerImplementation::handleMissionAccept(MissionTerminal* missionTerminal, MissionObject* mission, CreatureObject* player) {
-	ManagedReference<SceneObject*> missionBag = mission->getParent();
+	ManagedReference<SceneObject*> missionBag = mission->getParent().get();
 
 	if (missionBag == NULL)
 		return;
 
-	ManagedReference<SceneObject*> bagParent = missionBag->getParent();
+	ManagedReference<SceneObject*> bagParent = missionBag->getParent().get();
 
 	if (bagParent != player)
 		return;
@@ -404,7 +400,7 @@ void MissionManagerImplementation::createMissionObjectives(MissionObject* missio
 void MissionManagerImplementation::removeMission(MissionObject* mission, CreatureObject* player) {
 	ManagedReference<MissionObject*> ref = mission;
 
-	ManagedReference<SceneObject*> missionParent = mission->getParent();
+	ManagedReference<SceneObject*> missionParent = mission->getParent().get();
 	SceneObject* datapad = player->getSlottedObject("datapad");
 
 	if (missionParent != datapad)
@@ -1875,8 +1871,8 @@ BountyTargetListElement* MissionManagerImplementation::getRandomPlayerBounty(Cre
 			ManagedReference<CreatureObject*> creo = server->getObject(randomTarget->getTargetId()).castTo<CreatureObject*>();
 
 			if (creo != NULL) {
-				ZoneClientSession* targetClient = creo->getClient();
-				ZoneClientSession* playerClient = player->getClient();
+				auto targetClient = creo->getClient();
+				auto playerClient = player->getClient();
 
 				if (targetClient != NULL && playerClient != NULL) {
 					if (targetClient->getAccountID() == playerClient->getAccountID()) {
@@ -1900,8 +1896,8 @@ BountyTargetListElement* MissionManagerImplementation::getRandomPlayerBounty(Cre
 			ManagedReference<CreatureObject*> creo = server->getObject(randomTarget->getTargetId()).castTo<CreatureObject*>();
 
 			if (creo != NULL) {
-				ZoneClientSession* targetClient = creo->getClient();
-				ZoneClientSession* playerClient = player->getClient();
+				auto targetClient = creo->getClient();
+				auto playerClient = player->getClient();
 
 				if (targetClient != NULL && playerClient != NULL) {
 					if (targetClient->getAccountID() == playerClient->getAccountID()) {
@@ -1951,8 +1947,9 @@ void MissionManagerImplementation::failPlayerBountyMission(uint64 bountyHunter) 
 			ManagedReference<BountyMissionObjective*> objective = cast<BountyMissionObjective*>(mission->getMissionObjective());
 
 			if (objective != NULL) {
-				if (objective->getPlayerOwner() != NULL) {
-					objective->getPlayerOwner().get()->sendSystemMessage("@mission/mission_generic:failed");
+				ManagedReference<CreatureObject*> player = objective->getPlayerOwner().get();
+				if (player != NULL) {
+					player->sendSystemMessage("@mission/mission_generic:failed");
 				}
 				objective->fail();
 			}

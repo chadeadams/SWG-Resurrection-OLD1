@@ -8,11 +8,20 @@ sp_black_market_dealers = ScreenPlay:new {
 registerScreenPlay("sp_black_market_dealers", true)
 
 function sp_black_market_dealers:start() 
-	-- Spawn our characters for dealers and their locations with pointers.
-	local pLarry1 = spawnMobile("corellia", "black_market_dealer", 1, -121, 28, -4696, -1, 0 )
-	local pLarry2 = spawnMobile("naboo", "black_market_dealer", 1, -4805, 6, 4141, -1, 0 )
-    -- Add New Characters Above Here
+    self:spawnMobiles()
 end 
+
+function sp_black_market_dealers:spawnMobiles()
+
+
+    -- Spawn our characters for dealers and their locations with pointers.
+    spawnMobile("corellia", "black_market_dealer", 1, -121, 28, -4696, -1, 0 )
+	spawnMobile("naboo", "black_market_dealer", 1, -4805, 6, 4141, -1, 0 )
+    --Terra Nova
+    spawnMobile("corellia", "black_market_dealer", 1, -91, 29, -5714 , -1, 0)
+	
+end
+
 
 black_market_convo_handler = Object:new {
 	tstring = "myconversation"
@@ -66,7 +75,7 @@ function black_market_convo_handler:getNextConversationScreen(conversationTempla
 				nextConversationScreen = conversation:getScreen("deny_quest")
 			elseif ( optionLink == "SithSpeeder" and credits >= 500000) then
 				creature:subtractCashCredits(500000)
-				local pItem = giveItem(pInventory, "object/tangible/deed/vehicle_deed/sith_speeder.iff", -1)
+				local pItem = giveItem(pInventory, "object/tangible/deed/vehicle_deed/sith_speeder_deed.iff", -1)
 				nextConversationScreen = conversation:getScreen("SithSpeeder")
 			elseif ( optionLink == "BarcSpeeder" and credits >= 250000) then
 				creature:subtractCashCredits(250000)

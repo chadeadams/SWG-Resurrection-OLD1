@@ -11,8 +11,6 @@
 #include "templates/params/ObserverEventType.h"
 #include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/objects/resource/ResourceSpawn.h"
-#include "server/zone/managers/mission/MissionManager.h"
-#include "server/zone/ZoneServer.h"
 
 void SurveyMissionObjectiveImplementation::activate() {
 	MissionObjectiveImplementation::activate();
@@ -21,7 +19,7 @@ void SurveyMissionObjectiveImplementation::activate() {
 		return;
 	}
 
-	ManagedReference<CreatureObject*> player = getPlayerOwner();
+	ManagedReference<CreatureObject*> player = getPlayerOwner().get();
 	if (player != NULL) {
 		ManagedReference<MissionObserver*> observer = new MissionObserver(_this.getReferenceUnsafeStaticCast());
 		addObserver(observer, true);
@@ -38,7 +36,7 @@ void SurveyMissionObjectiveImplementation::abort() {
 
 	ManagedReference<MissionObserver*> observer = getObserver(0);
 
-	ManagedReference<CreatureObject*> player = getPlayerOwner();
+	ManagedReference<CreatureObject*> player = getPlayerOwner().get();
 	if (player != NULL) {
 		player->dropObserver(ObserverEventType::SURVEY, observer);
 
@@ -52,7 +50,7 @@ void SurveyMissionObjectiveImplementation::complete() {
 
 int SurveyMissionObjectiveImplementation::notifyObserverEvent(MissionObserver* observer, uint32 eventType, Observable* observable, ManagedObject* arg1, int64 arg2) {
 	if (eventType == ObserverEventType::SURVEY) {
-		ManagedReference<CreatureObject*> player = getPlayerOwner();
+		ManagedReference<CreatureObject*> player = getPlayerOwner().get();
 		ManagedReference<MissionObject*> mission = this->mission.get();
 
 		if (player == NULL || mission == NULL) {

@@ -146,7 +146,7 @@ public:
 					instrument->setBeingUsed(true);
 				}
 
-				if (targetedInstrument && (instrument->getParent() != NULL  || instrument->getSpawnerPlayer() != NULL)) {
+				if (targetedInstrument && (instrument->getParent().get() != NULL  || instrument->getSpawnerPlayer().get() != NULL)) {
 					instrument->setDirection(*groupMember->getDirection());
 					instrument->teleport(groupMember->getPositionX(), groupMember->getPositionZ(), groupMember->getPositionY(), groupMember->getParentID());
 				}
@@ -204,7 +204,7 @@ public:
 
 			if (nala != NULL && dynamic_cast<Instrument*> (nala.get())) {
 				instrument = cast<Instrument*> (nala.get());
-				ManagedReference<SceneObject*> creatureParent = creature->getParent();
+				ManagedReference<SceneObject*> creatureParent = creature->getParent().get();
 
 				if (!checkDistance(creature, nala, 3) || nala->getZone()
 						== NULL || (creatureParent == NULL && NULL
@@ -214,8 +214,8 @@ public:
 					return false;
 				}
 
-				if (instrument->getSpawnerPlayer() != NULL
-						&& instrument->getSpawnerPlayer() != creature) {
+				ManagedReference<CreatureObject*> spawnerPlayer = instrument->getSpawnerPlayer().get();
+				if (spawnerPlayer != NULL && spawnerPlayer != creature) {
 					creature->sendSystemMessage("You must be the owner of the instrument");
 
 					return false;

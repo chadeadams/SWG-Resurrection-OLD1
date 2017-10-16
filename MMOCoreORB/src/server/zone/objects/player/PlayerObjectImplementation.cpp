@@ -5,10 +5,8 @@
 #include "server/zone/objects/player/PlayerObject.h"
 
 #include "server/zone/managers/object/ObjectManager.h"
-#include "server/zone/managers/objectcontroller/ObjectController.h"
 #include "server/zone/managers/player/PlayerManager.h"
 #include "server/zone/managers/skill/SkillManager.h"
-#include "server/zone/managers/guild/GuildManager.h"
 #include "server/zone/managers/planet/PlanetManager.h"
 #include "server/zone/managers/mission/MissionManager.h"
 #include "server/zone/managers/combat/CombatManager.h"
@@ -21,6 +19,9 @@
 #include "server/zone/ZoneServer.h"
 #include "server/zone/ZoneClientSession.h"
 #include "server/zone/packets/player/PlayerObjectMessage3.h"
+#include "server/zone/packets/player/PlayerObjectMessage6.h"
+#include "server/zone/packets/player/PlayerObjectMessage8.h"
+#include "server/zone/packets/player/PlayerObjectMessage9.h"
 #include "server/zone/packets/player/PlayerObjectDeltaMessage3.h"
 #include "server/zone/packets/player/PlayerObjectDeltaMessage8.h"
 #include "server/zone/packets/player/PlayerObjectDeltaMessage9.h"
@@ -30,41 +31,25 @@
 #include "server/zone/packets/chat/ChatOnChangeFriendStatus.h"
 #include "server/zone/packets/chat/ChatOnChangeIgnoreStatus.h"
 #include "server/zone/packets/chat/ChatFriendsListUpdate.h"
-#include "server/zone/packets/object/CombatSpam.h"
-#include "server/zone/packets/player/PlayerObjectMessage6.h"
-#include "server/zone/packets/player/PlayerObjectMessage8.h"
-#include "server/zone/packets/player/PlayerObjectMessage9.h"
 #include "server/zone/packets/zone/CmdSceneReady.h"
 #include "server/zone/objects/waypoint/WaypointObject.h"
-#include "server/zone/objects/creature/commands/QueueCommand.h"
-#include "server/zone/objects/player/variables/PlayerList.h"
 #include "server/zone/objects/creature/CreatureObject.h"
 #include "server/chat/StringIdChatParameter.h"
 #include "server/zone/objects/area/ActiveArea.h"
-#include "server/zone/objects/tangible/tool/CraftingTool.h"
-#include "server/zone/objects/tangible/tool/SurveyTool.h"
 #include "server/zone/objects/player/events/PlayerDisconnectEvent.h"
 #include "server/zone/objects/player/events/PlayerRecoveryEvent.h"
 #include "server/zone/managers/group/GroupManager.h"
-#include "server/zone/objects/creature/commands/QueueCommand.h"
 #include "server/zone/objects/creature/variables/Skill.h"
-#include "server/zone/objects/player/sui/listbox/SuiListBox.h"
 #include "server/zone/objects/player/sui/inputbox/SuiInputBox.h"
 #include "server/zone/objects/building/BuildingObject.h"
 #include "server/zone/objects/group/GroupObject.h"
+#include "server/zone/objects/guild/GuildObject.h"
 #include "server/zone/objects/intangible/ControlDevice.h"
-#include "server/zone/objects/intangible/PetControlDevice.h"
-#include "server/zone/objects/player/Races.h"
-#include "server/zone/objects/installation/InstallationObject.h"
 #include "server/zone/objects/structure/events/StructureSetOwnerTask.h"
-#include "server/zone/objects/player/badges/Badge.h"
-#include "server/zone/objects/player/badges/Badges.h"
 #include "server/zone/packets/player/BadgesResponseMessage.h"
-#include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/managers/weather/WeatherManager.h"
 #include "server/zone/objects/player/variables/Ability.h"
-#include "server/zone/objects/player/sui/listbox/SuiListBox.h"
-#include "server/zone/objects/mission/DeliverMissionObjective.h"
+#include "server/zone/objects/mission/MissionObjective.h"
 #include "server/zone/objects/mission/MissionObject.h"
 #include "server/zone/objects/player/FactionStatus.h"
 #include "server/zone/managers/faction/FactionManager.h"
@@ -75,10 +60,8 @@
 #include "server/zone/objects/player/events/RemoveSpouseTask.h"
 #include "server/zone/objects/player/events/PvpTefRemovalTask.h"
 #include "server/zone/managers/visibility/VisibilityManager.h"
-#include "server/zone/managers/gcw/GCWManager.h"
 #include "server/zone/managers/jedi/JediManager.h"
 #include "server/zone/objects/player/events/ForceRegenerationEvent.h"
-#include "server/login/account/Account.h"
 #include "server/login/account/AccountManager.h"
 
 #include "server/zone/objects/tangible/deed/eventperk/EventPerkDeed.h"
@@ -109,7 +92,7 @@ void PlayerObjectImplementation::initializeAccount() {
 		if (creature == NULL)
 			return;
 
-		ZoneClientSession* owner = creature->getClient();
+		auto owner = creature->getClient();
 
 		if (owner != NULL)
 			accountID = owner->getAccountID();
@@ -220,7 +203,7 @@ void PlayerObjectImplementation::unload() {
 	PlayerManager* playerManager = creature->getZoneServer()->getPlayerManager();
 	playerManager->ejectPlayerFromBuilding(creature);
 
-	ManagedReference<SceneObject*> creoParent = creature->getParent();
+	ManagedReference<SceneObject*> creoParent = creature->getParent().get();
 
 	if (creature->getZone() != NULL) {
 		savedTerrainName = creature->getZone()->getZoneName();
@@ -415,9 +398,12 @@ void PlayerObjectImplementation::sendFriendLists() {
 
 void PlayerObjectImplementation::sendMessage(BasePacket* msg) {
 	ManagedReference<SceneObject*> strongParent = getParent().get();
-	if (strongParent == NULL)
+	if (strongParent == NULL) {
+#ifdef LOCKFREE_BCLIENT_BUFFERS
+		if (!msg->getReferenceCount())
+#endif
 		delete msg;
-	else {
+	} else {
 		strongParent->sendMessage(msg);
 	}
 }
@@ -1085,14 +1071,14 @@ void PlayerObjectImplementation::removeAllFriends() {
 		ManagedReference<CreatureObject*> playerToRemove = zoneServer->getObject(objID).castTo<CreatureObject*>();
 
 		if (playerToRemove != NULL && playerToRemove->isPlayerCreature()) {
-			EXECUTE_TASK_2(playerToRemove, playerName, {
-					Locker locker(playerToRemove_p);
+			Core::getTaskManager()->executeTask([=] () {
+				Locker locker(playerToRemove);
 
-					PlayerObject* ghost = playerToRemove_p->getPlayerObject();
-					if (ghost != NULL) {
-						ghost->removeFriend(playerName_p, false);
-					}
-			});
+				PlayerObject* ghost = playerToRemove->getPlayerObject();
+				if (ghost != NULL) {
+					ghost->removeFriend(playerName, false);
+				}
+			}, "RemoveFriendLambda");
 		}
 
 		removeReverseFriend(name);
@@ -1110,14 +1096,14 @@ void PlayerObjectImplementation::removeAllReverseFriends(const String& oldName) 
 		ManagedReference<CreatureObject*> reverseFriend = zoneServer->getObject(objID).castTo<CreatureObject*>();
 
 		if (reverseFriend != NULL && reverseFriend->isPlayerCreature()) {
-			EXECUTE_TASK_2(reverseFriend, oldName, {
-					Locker locker(reverseFriend_p);
+			Core::getTaskManager()->executeTask([=] () {
+				Locker locker(reverseFriend);
 
-					PlayerObject* ghost = reverseFriend_p->getPlayerObject();
-					if (ghost != NULL) {
-						ghost->removeFriend(oldName_p, false);
-					}
-			});
+				PlayerObject* ghost = reverseFriend->getPlayerObject();
+				if (ghost != NULL) {
+					ghost->removeFriend(oldName, false);
+				}
+			}, "RemoveFriendLambda2");
 		}
 
 		removeReverseFriend(name);
@@ -1153,7 +1139,7 @@ void PlayerObjectImplementation::addIgnore(const String& name, bool notifyClient
 
 void PlayerObjectImplementation::removeIgnore(const String& name, bool notifyClient) {
 	String nameLower = name.toLowerCase();
-	ManagedReference<SceneObject*> parent = getParent();
+	ManagedReference<SceneObject*> parent = getParent().get();
 
 	if (!ignoreList.contains(nameLower)) {
 		if (notifyClient) {
@@ -1533,8 +1519,9 @@ void PlayerObjectImplementation::doRecovery(int latency) {
 
 			setOffline();
 
-			if (creature->getClient() != NULL)
-				creature->getClient()->closeConnection(false, true);
+			auto session = creature->getClient();
+			if (session != NULL)
+				session->closeConnection(false, true);
 
 			return;
 		} else {
@@ -1607,13 +1594,13 @@ void PlayerObjectImplementation::checkForNewSpawns() {
 		return;
 	}
 
-	ManagedReference<SceneObject*> parent = creature->getParent();
+	ManagedReference<SceneObject*> parent = creature->getParent().get();
 
 	if (parent != NULL && parent->isCellObject()) {
 		return;
 	}
 
-	if (creature->getCityRegion() != NULL) {
+	if (creature->getCityRegion().get() != NULL) {
 		return;
 	}
 
@@ -1683,9 +1670,9 @@ void PlayerObjectImplementation::checkForNewSpawns() {
 		return;
 	}
 
-	EXECUTE_TASK_2(finalArea, creature, {
-			finalArea_p->tryToSpawn(creature_p);
-	});
+	Core::getTaskManager()->executeTask([=] () {
+		finalArea->tryToSpawn(creature);
+	}, "TryToSpawnLambda");
 }
 
 void PlayerObjectImplementation::activateRecovery() {
@@ -1778,7 +1765,7 @@ void PlayerObjectImplementation::reload(ZoneClientSession* client) {
 	if (isLoggingIn()) {
 		creature->unlock();
 
-		ZoneClientSession* owner = creature->getClient();
+		auto owner = creature->getClient();
 
 		if (owner != NULL && owner != client)
 			owner->disconnect();
@@ -1792,7 +1779,7 @@ void PlayerObjectImplementation::reload(ZoneClientSession* client) {
 
 	//notifiedSentObjects.removeAll();
 
-	if (creature->isRidingMount() && creature->getParent() == NULL) {
+	if (creature->isRidingMount() && creature->getParent().get() == NULL) {
 		creature->clearState(CreatureState::RIDINGMOUNT);
 	}
 
@@ -1809,7 +1796,7 @@ void PlayerObjectImplementation::disconnect(bool closeClient, bool doLock) {
 		return;
 
 	if (!isOnline()) {
-		ZoneClientSession* owner = creature->getClient();
+		auto owner = creature->getClient();
 
 		if (closeClient && owner != NULL)
 			owner->closeConnection(false, true);
@@ -1834,7 +1821,7 @@ void PlayerObjectImplementation::disconnect(bool closeClient, bool doLock) {
 	if (disconnectEvent != NULL)
 		disconnectEvent = NULL;
 
-	ZoneClientSession* owner = creature->getClient();
+	auto owner = creature->getClient();
 
 	if (closeClient && owner != NULL)
 		owner->closeConnection(false, true);
@@ -2207,11 +2194,11 @@ void PlayerObjectImplementation::destroyObjectFromDatabase(bool destroyContained
 						ManagedReference<CityRegion*> city = structure->getCityRegion().get();
 
 						if (city != NULL) {
-							EXECUTE_TASK_1(city, {
-									Locker locker(city_p);
+							Core::getTaskManager()->executeTask([=] () {
+								Locker locker(city);
 
-									city_p->setMayorID(0);
-							});
+								city->setMayorID(0);
+							}, "SetMayorIDLambda");
 						}
 					}
 

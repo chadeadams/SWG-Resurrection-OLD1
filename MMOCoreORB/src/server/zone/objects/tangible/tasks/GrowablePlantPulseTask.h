@@ -1,8 +1,8 @@
 #ifndef GROWABLEPLANTPULSETASK_H_
 #define GROWABLEPLANTPULSETASK_H_
 
-#include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/objects/tangible/misc/PlantObject.h"
+#include "server/zone/ZoneServer.h"
 
 namespace server {
 namespace zone {
@@ -43,8 +43,8 @@ public:
 		else if (cycles > 10)
 			cycles = 10;
 
-		ManagedReference<SceneObject*> rootParent = strongRef->getRootParent();
-		ManagedReference<SceneObject*> parent = strongRef->getParent();
+		ManagedReference<SceneObject*> rootParent = strongRef->getRootParent().get();
+		ManagedReference<SceneObject*> parent = strongRef->getParent().get();
 
 		strongRef->updateLastPulse();
 

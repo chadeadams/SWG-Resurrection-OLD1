@@ -106,8 +106,9 @@ core3_TESTS = 	server/zone/objects/area/areashapes/tests/CircularAreaShapeTest.c
 			  	server/zone/tests/ZoneTest.cpp \
 			  	server/zone/managers/objectcontroller/command/tests/CommandLuaTest.cpp
 
-core3_IDLS =	autogen/server/zone/objects/tangible/misc/FsCsObject.cpp \
-				autogen/server/zone/objects/pathfinding/NavMeshRegion.cpp \
+core3_IDLS =	autogen/server/zone/objects/tangible/misc/FsBuffItem.cpp \
+				autogen/server/zone/objects/tangible/misc/FsCsObject.cpp \
+				autogen/server/zone/objects/pathfinding/NavArea.cpp \
 				autogen/server/zone/objects/creature/buffs/ConcealBuff.cpp \
 				autogen/server/zone/objects/tangible/eventperk/ScavengerDroid.cpp \
 				autogen/server/zone/managers/gcw/GCWBaseShutdownObserver.cpp \
@@ -150,7 +151,6 @@ core3_IDLS =	autogen/server/zone/objects/tangible/misc/FsCsObject.cpp \
 				autogen/server/zone/objects/intangible/PetControlObserver.cpp \
 				autogen/server/zone/objects/intangible/PetControlDevice.cpp \
 				autogen/server/zone/managers/space/SpaceManager.cpp \
-				autogen/server/zone/objects/player/sessions/StructureStatusSession.cpp \
 				autogen/server/zone/objects/player/sessions/ImageDesignPositionObserver.cpp \
 				autogen/server/zone/objects/area/FsVillageArea.cpp \
 				autogen/server/zone/objects/area/SarlaccArea.cpp \
@@ -254,7 +254,6 @@ core3_IDLS =	autogen/server/zone/objects/tangible/misc/FsCsObject.cpp \
 				autogen/server/zone/objects/player/sessions/PlaceStructureSession.cpp \
 				autogen/server/zone/objects/player/sessions/DestroyStructureSession.cpp \
 				autogen/server/zone/objects/player/sessions/ConversationSession.cpp \
-				autogen/server/zone/objects/player/sessions/TrainerConversationSession.cpp \
 				autogen/server/zone/objects/player/EntertainingObserver.cpp \
 				autogen/server/zone/objects/manufactureschematic/ManufactureSchematic.cpp \
 				autogen/server/zone/objects/cell/CellObject.cpp \
@@ -368,12 +367,12 @@ core3_IDLS =	autogen/server/zone/objects/tangible/misc/FsCsObject.cpp \
 				autogen/server/zone/managers/gcw/sessions/ContrabandScanSession.cpp \
 				autogen/server/zone/objects/tangible/threat/ThreatMapObserver.cpp \
 				autogen/server/zone/objects/creature/conversation/ConversationObserver.cpp \
-				autogen/server/zone/objects/creature/conversation/TrainerConversationObserver.cpp \
 				autogen/server/zone/objects/creature/conversation/DeliverMissionConversationObserver.cpp \
 				autogen/server/zone/objects/creature/conversation/InformantMissionConversationObserver.cpp
 
 core3_SOURCES =	$(core3_IDLS) \
 		$(core3_TESTS) \
+		server/zone/objects/creature/variables/LuaSkill.cpp \
 		server/zone/objects/player/sui/listbox/LuaSuiListBox.cpp \
 		server/zone/objects/player/sui/LuaSuiPageData.cpp \
 		server/zone/objects/player/sui/SuiPageData.cpp \
@@ -389,6 +388,7 @@ core3_SOURCES =	$(core3_IDLS) \
 		server/zone/objects/manufactureschematic/craftingvalues/CraftingValues.cpp \
 		server/zone/objects/manufactureschematic/factoryblueprint/FactoryBlueprint.cpp \
 		server/zone/objects/manufactureschematic/factoryblueprint/BlueprintEntry.cpp \
+		server/zone/managers/skill/LuaSkillManager.cpp \
 		server/zone/managers/skill/SkillManager.cpp \
 		server/zone/managers/skill/SkillModManager.cpp \
 		server/login/account/AccountImplementation.cpp \
@@ -445,6 +445,7 @@ core3_SOURCES =	$(core3_IDLS) \
 		server/zone/objects/player/sessions/StructureSetAccessFeeSessionImplementation.cpp \
 		server/zone/objects/player/sessions/DroidMaintenanceSessionImplementation.cpp \
 		server/zone/objects/region/CityRegionImplementation.cpp \
+		server/zone/objects/region/LuaCityRegion.cpp \
 		server/zone/objects/tangible/threat/ThreatMapObserverImplementation.cpp \
 		server/zone/objects/area/LuaActiveArea.cpp \
 		server/zone/objects/tangible/LuaTangibleObject.cpp \
@@ -509,6 +510,7 @@ core3_SOURCES =	$(core3_IDLS) \
 		server/zone/objects/tangible/components/generic/CoaMessageMenuComponent.cpp \
 		server/zone/objects/tangible/components/generic/CoaEncodedDiskMenuComponent.cpp \
 		server/zone/objects/tangible/misc/PlantObjectImplementation.cpp \
+		server/zone/objects/tangible/misc/FsBuffItemImplementation.cpp \
 		server/zone/objects/scene/components/LuaObjectMenuComponent.cpp \
 		server/zone/objects/scene/components/LuaContainerComponent.cpp \
 		server/zone/objects/scene/components/LuaObjectMenuResponse.cpp \
@@ -747,15 +749,13 @@ core3_SOURCES =	$(core3_IDLS) \
 		server/zone/objects/creature/ai/bt/ParallelSelectorBehavior.cpp \
 		server/zone/objects/creature/ai/bt/LuaBehavior.cpp \
 		server/zone/objects/creature/conversation/ConversationObserverImplementation.cpp \
-		server/zone/objects/creature/conversation/TrainerConversationObserverImplementation.cpp \
 		server/zone/objects/creature/conversation/DeliverMissionConversationObserverImplementation.cpp \
 		server/zone/objects/creature/conversation/PetTrainingConversationObserverImplementation.cpp \
 		server/zone/objects/creature/conversation/InformantMissionConversationObserverImplementation.cpp \
-		server/zone/objects/creature/conversation/screenhandlers/TrainerScreenHandlers.cpp \
 		server/zone/objects/creature/conversation/screenhandlers/DeliverMissionScreenHandler.cpp \
 		server/zone/objects/creature/conversation/screenhandlers/PetTrainingScreenHandler.cpp \
 		server/zone/objects/creature/conversation/screenhandlers/InformantMissionScreenHandler.cpp \
-		server/zone/objects/pathfinding/NavMeshRegionImplementation.cpp \
+		server/zone/objects/pathfinding/NavAreaImplementation.cpp \
 		server/zone/objects/player/PlayerObjectImplementation.cpp \
 		server/zone/objects/player/sui/callbacks/DelegateSuiCallback.cpp \
 		server/zone/objects/player/sui/callbacks/LuaSuiCallback.cpp \
@@ -781,7 +781,6 @@ core3_SOURCES =	$(core3_IDLS) \
 		server/zone/objects/player/ValidatedPosition.cpp \
 		server/zone/objects/player/sessions/CitySpecializationSessionImplementation.cpp \
 		server/zone/objects/player/sessions/CityTreasuryWithdrawalSessionImplementation.cpp \
-		server/zone/objects/player/sessions/TrainerConversationSessionImplementation.cpp \
 		server/zone/objects/player/sessions/LuaConversationSession.cpp \
 		server/zone/objects/player/sessions/EntertainingSessionImplementation.cpp \
 		server/zone/objects/player/sessions/ImageDesignSessionImplementation.cpp \

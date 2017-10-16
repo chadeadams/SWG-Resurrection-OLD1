@@ -13,13 +13,10 @@
 #include "server/chat/ChatManager.h"
 #include "server/zone/managers/city/CityManager.h"
 #include "server/zone/managers/planet/PlanetManager.h"
-#include "server/zone/managers/planet/PlanetTravelPoint.h"
 #include "server/zone/managers/stringid/StringIdManager.h"
 #include "server/zone/managers/structure/StructureManager.h"
-#include "server/zone/objects/area/ActiveArea.h"
 #include "server/zone/objects/building/BuildingObject.h"
 #include "server/zone/objects/creature/commands/BoardShuttleCommand.h"
-#include "server/zone/objects/creature/commands/QueueCommand.h"
 #include "server/zone/objects/creature/CreatureObject.h"
 #include "server/zone/objects/player/PlayerObject.h"
 #include "server/zone/objects/region/Region.h"
@@ -28,13 +25,10 @@
 #include "server/zone/objects/tangible/components/vendor/AuctionTerminalDataComponent.h"
 #include "templates/tangible/SharedStructureObjectTemplate.h"
 #include "server/zone/Zone.h"
-#include "server/zone/objects/player/sui/messagebox/SuiMessageBox.h"
 #include "server/zone/managers/collision/NavMeshManager.h"
-#include "server/zone/objects/creature/commands/QueueCommand.h"
 #include "server/zone/objects/creature/commands/TransferstructureCommand.h"
-#include "server/zone/managers/collision/NavMeshManager.h"
 #include "pathfinding/RecastNavMesh.h"
-#include "server/zone/objects/pathfinding/NavMeshRegion.h"
+#include "server/zone/objects/pathfinding/NavArea.h"
 
 int BoardShuttleCommand::MAXIMUM_PLAYER_COUNT = 3000;
 
@@ -63,11 +57,11 @@ void CityRegionImplementation::notifyLoadFromDatabase() {
 
 	ZoneServer *zServer = ServerCore::getZoneServer();
 	if (zServer != NULL) {
-		bool destroyNavRegions = zServer->shouldDeleteNavRegions();
+		bool destroyNavAreas = zServer->shouldDeleteNavAreas();
 
-		if (destroyNavRegions) {
-			destroyNavRegion();
-			createNavRegion();
+		if (destroyNavAreas) {
+			destroyNavMesh();
+			createNavMesh();
 		}
 	}
 }
@@ -112,12 +106,12 @@ void CityRegionImplementation::initialize() {
 }
 
 void CityRegionImplementation::updateNavmesh(const AABB& bounds, const String& queue) {
-	ManagedReference<NavMeshRegion*> navRegion = navmeshRegion.get();
+	ManagedReference<NavArea*> area = navMesh.get();
 
-	if (navRegion == NULL)
+	if (area == NULL)
 		return;
 
-	RecastNavMesh *navmesh = navRegion->getNavMesh();
+	RecastNavMesh *navmesh = area->getNavMesh();
 
 	RecastSettings settings;
 
@@ -129,9 +123,9 @@ void CityRegionImplementation::updateNavmesh(const AABB& bounds, const String& q
 	}
 
 	if (navmesh == NULL || !navmesh->isLoaded()) {
-		NavMeshManager::instance()->enqueueJob(zone, navRegion, navRegion->getBoundingBox(), settings, queue);
+		NavMeshManager::instance()->enqueueJob(zone, area, area->getBoundingBox(), settings, queue);
 	} else {
-		NavMeshManager::instance()->enqueueJob(zone, navRegion, bounds, settings, queue);
+		NavMeshManager::instance()->enqueueJob(zone, area, bounds, settings, queue);
 	}
 
 
@@ -301,7 +295,7 @@ void CityRegionImplementation::notifyExit(SceneObject* object) {
 		ManagedReference<Region*> activeRegion = tano->getActiveRegion().castTo<Region*>();
 
 		if (activeRegion != NULL) {
-			ManagedReference<CityRegion*> city = activeRegion->getCityRegion();
+			ManagedReference<CityRegion*> city = activeRegion->getCityRegion().get();
 
 			object->setCityRegion(city);
 
@@ -455,54 +449,54 @@ bool CityRegionImplementation::hasZoningRights(uint64 objectid) {
 	return (now.getTime() <= timestamp);
 }
 
-void CityRegionImplementation::createNavRegion() {
+void CityRegionImplementation::createNavMesh() {
 	// This is invoked when a new city hall is placed, always force a rebuild
-    createNavRegion(NavMeshManager::TileQueue, true);
+    createNavMesh(NavMeshManager::TileQueue, true);
 }
 
-void CityRegionImplementation::destroyNavRegion() {
-	ManagedReference<NavMeshRegion*> navRegion = navmeshRegion.get();
+void CityRegionImplementation::destroyNavMesh() {
+	ManagedReference<NavArea*> strongMesh = navMesh.get();
 
-	if (navRegion != NULL) {
-		NavMeshManager::instance()->cancelJobs(navRegion);
-		Locker locker(navRegion);
-		navRegion->destroyObjectFromWorld(true);
+	if (strongMesh != NULL) {
+		NavMeshManager::instance()->cancelJobs(strongMesh);
+		Locker locker(strongMesh);
+		strongMesh->destroyObjectFromWorld(true);
 
-		if (navRegion->isPersistent())
-			navRegion->destroyObjectFromDatabase(true);
-
-		navmeshRegion = NULL;
+		if (strongMesh->isPersistent())
+			strongMesh->destroyObjectFromDatabase(true);
 	}
 }
 
-void CityRegionImplementation::createNavRegion(const String& queue, bool forceRebuild) {
+void CityRegionImplementation::createNavMesh(const String& queue, bool forceRebuild) {
 
 	if (forceRebuild)
-		destroyNavRegion();
+		destroyNavMesh();
 
 	bool clientRegion = isClientRegion();
 
-	ManagedReference<NavMeshRegion*> navRegion = navmeshRegion.get();
+	ManagedReference<NavArea*> strongMesh = navMesh.get();
 
-	if (navRegion != NULL) {
+	if (strongMesh != NULL) {
 		RecastNavMesh* mesh = getNavMesh();
 		if (mesh == NULL || !mesh->isLoaded()) {
+			Reference<CityRegion*> strongRef = _this.getReferenceUnsafeStaticCast();
+
 			Core::getTaskManager()->executeTask([=] {
-				updateNavmesh(navRegion->getBoundingBox(), queue);
+				strongRef->updateNavmesh(strongMesh->getBoundingBox(), queue);
 			}, "cityregion_navmesh_update");
 			return;
 		}
 	}
 
-	navRegion = zone->getZoneServer()->createObject(STRING_HASHCODE("object/region_navmesh.iff"),
-															!clientRegion).castTo<NavMeshRegion *>();
+	strongMesh = zone->getZoneServer()->createObject(STRING_HASHCODE("object/region_navmesh.iff"),
+															!clientRegion).castTo<NavArea *>();
 
-	if (navRegion == NULL || !navRegion->isRegion()) {
+	if (strongMesh == NULL) {
 		error("Failed to create navmesh region");
 		return;
 	}
 
-	Locker clocker(navRegion, _this.getReferenceUnsafeStaticCast());
+	Locker clocker(strongMesh, _this.getReferenceUnsafeStaticCast());
 
 	String name = getNavMeshName();
 	name = name.subString(name.lastIndexOf(':')+1);
@@ -552,16 +546,16 @@ void CityRegionImplementation::createNavRegion(const String& queue, bool forceRe
 
 		AABB box(Vector3(minx, miny, minz), Vector3(maxx, maxy, maxz));
 		Vector3 position = Vector3(box.center()[0], 0, box.center()[1]);
-		navRegion->disableMeshUpdates(true);
-		navRegion->initializeNavRegion(position, box.extents()[box.longestAxis()], zone, name, true, forceRebuild);
+		strongMesh->disableMeshUpdates(true);
+		strongMesh->initializeNavArea(position, box.extents()[box.longestAxis()], zone, name, true, forceRebuild);
 	} else {
 		Vector3 position = Vector3(getPositionX(), 0, getPositionY());
-		navRegion->initializeNavRegion(position, 480.0f, zone, name, true, forceRebuild);
+		strongMesh->initializeNavArea(position, 480.0f, zone, name, true, forceRebuild);
 	}
 
-	zone->transferObject(navRegion, -1, false);
+	zone->transferObject(strongMesh, -1, false);
 
-	navmeshRegion = navRegion;
+	navMesh = strongMesh;
 }
 
 void CityRegionImplementation::setZone(Zone* zne) {
@@ -794,34 +788,33 @@ void CityRegionImplementation::applySpecializationModifiers(CreatureObject* crea
 	typedef VectorMap<String, int> SkillMods;
 	typedef VectorMapEntry<String, int> SkillModsEntry;
 
-	EXECUTE_ORDERED_TASK_3(creature, creatureReference, cityspec, city, {
-			Locker locker(creatureReference_p);
+	creature->executeOrderedTask([=] () {
+		Locker locker(creatureReference);
 
-			//Remove all current city skillmods
-			creatureReference_p->removeAllSkillModsOfType(SkillModManager::CITY);
+		//Remove all current city skillmods
+		creatureReference->removeAllSkillModsOfType(SkillModManager::CITY);
 
-			SkillMods* mods = cityspec_p->getSkillMods();
+		SkillMods* mods = cityspec->getSkillMods();
 
-			for (int i = 0; i < mods->size(); ++i) {
-				SkillModsEntry& entry = mods->elementAt(i);
+		for (int i = 0; i < mods->size(); ++i) {
+			SkillModsEntry& entry = mods->elementAt(i);
 
-				if (entry.getKey() == "private_defense" && !city_p->isMilitiaMember(creatureReference_p->getObjectID()))
-					continue;
+			if (entry.getKey() == "private_defense" && !city->isMilitiaMember(creatureReference->getObjectID()))
+				continue;
 
-				creatureReference_p->addSkillMod(SkillModManager::CITY, entry.getKey(), entry.getValue());
-			}
-	});
+			creatureReference->addSkillMod(SkillModManager::CITY, entry.getKey(), entry.getValue());
+		}
+	}, "ApplySpecializationModifiersLambda");
 }
 
 void CityRegionImplementation::removeSpecializationModifiers(CreatureObject* creature) {
 	Reference<CreatureObject*> creatureReference = creature;
 
-	EXECUTE_ORDERED_TASK_1(creature, creatureReference, {
-			Locker locker(creatureReference_p);
+	creature->executeOrderedTask([=] () {
+		Locker locker(creatureReference);
 
-			creatureReference_p->removeAllSkillModsOfType(SkillModManager::CITY);
-	});
-
+		creatureReference->removeAllSkillModsOfType(SkillModManager::CITY);
+	}, "RemoveSpecializationModifiersLambda");
 }
 
 void CityRegionImplementation::transferCivicStructuresToMayor() {
